@@ -28,3 +28,8 @@ Once everything have been installed, and hosts configured, the ansible playbook 
 ```
 ansible-playbook galaxy.yml
 ```
+
+## Found bugs
+
+On ubuntu 20.04 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therfore playbook ends in error.
+
