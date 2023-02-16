@@ -1,0 +1,27 @@
+---
+
+- name: Include initial OS-specific tasks
+  include_tasks: "init_{{ ansible_os_family | lower }}.yml"
+  vars:
+    _cvmfs_role: localproxy
+    _cvmfs_upgrade: "{{ cvmfs_upgrade_server }}"
+
+- name: Include squid tasks
+  include_tasks: squid.yml
+  vars:
+    _cvmfs_squid_conf_src: "{{ cvmfs_squid_conf_src | default('localproxy_squid.conf.j2') }}"
+
+# Need to double check that this actually works (see the hosts_file directive)
+#- name: Create squid hosts file
+#  copy:
+#    content: |
+#      {{ inventory_hostname }} 127.0.0.1
+#    dest: /etc/squid/hosts
+#  notify:
+#    - restart squid
+
+- name: Include firewall tasks
+  include_tasks: firewall.yml
+  vars:
+    _cvmfs_http_ports: "{{ cvmfs_http_ports | default(cvmfs_localproxy_http_ports) }}"
+  when: cvmfs_manage_firewall

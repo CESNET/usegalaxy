@@ -1,0 +1,22 @@
+---
+# handlers file for galaxyproject.cvmfs
+
+- name: reload autofs
+  service:
+    name: autofs
+    state: reloaded
+
+- name: restart squid
+  service:
+    name: "{{ cvmfs_squid_service_name }}"
+    state: restarted
+
+- name: restart apache
+  service:
+    name: "{{ cvmfs_apache_service_name }}"
+    state: restarted
+
+- name: reload apache
+  service:
+    name: "{{ cvmfs_apache_service_name }}"
+    state: reloaded
