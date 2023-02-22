@@ -54,4 +54,8 @@ Later we should use this [role](https://github.com/galaxyproject/ansible-galaxy-
 ## Found bugs
 
 On ubuntu 20.04 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therfore playbook ends in error.
+- on ubuntu 22.04 upload didn't work at all when tusd was used.
 
+TASK [galaxyproject.slurm : Install slurm.conf] **************************************************************************
+fatal: [www.usegalaxy.edirex.ics.muni.cz]: FAILED! => {"changed": false, "checksum": "245b3eb4fc3db372943b73ef65d39d8cc6408c5a", "msg": "Destination directory /etc/slurm-llnl does not exist"}
+- had to sudo mkdir /etc/slurm-llnl
