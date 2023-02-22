@@ -24,6 +24,13 @@ After the instalation, you should configure your [inventory file](https://traini
 
 ```NGINX``` is configured to run without SSL, see [guide](https://training.galaxyproject.org/training-material/topics/admin/tutorials/ansible-galaxy/tutorial.html#nginx) on how to configure it to use SSL.
 
+Install ephemeris for tool management:
+```
+virtualenv -p python3 ~/ephemeris_venv
+. ~/ephemeris_venv/bin/activate
+pip install ephemeris
+```
+
 Once everything have been installed, and hosts configured, the ansible playbook can be run as follows:
 ```
 ansible-playbook galaxy.yml
