@@ -24,17 +24,28 @@ After the instalation, you should configure your [inventory file](https://traini
 
 ```NGINX``` is configured to run without SSL, see [guide](https://training.galaxyproject.org/training-material/topics/admin/tutorials/ansible-galaxy/tutorial.html#nginx) on how to configure it to use SSL.
 
+Once everything have been installed, and hosts configured, the ansible playbook can be run as follows:
+```
+ansible-playbook galaxy.yml
+```
+
+## Usegalaxy tools
+
 Install ephemeris for tool management:
 ```
 virtualenv -p python3 ~/ephemeris_venv
 . ~/ephemeris_venv/bin/activate
 pip install ephemeris
 ```
-
-Once everything have been installed, and hosts configured, the ansible playbook can be run as follows:
+To obtain the list of tools from the [usegalaxy.eu](https://usegalaxy.eu) use:
 ```
-ansible-playbook galaxy.yml
+get-tool-list -g "https://usegalaxy.eu" -o "eu_tool_list.yaml"
 ```
+and then to install them:
+```
+shed-tools install -g https://your-galaxy -a <api-key> -t eu_tool_list.yaml
+```
+The api key can be found in the User -> Preferences -> Manage API Key in Galaxy menu.
 
 ## Found bugs
 
