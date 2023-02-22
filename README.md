@@ -47,6 +47,10 @@ shed-tools install -g https://your-galaxy -a <api-key> -t eu_tool_list.yaml
 ```
 The api key can be found in the User -> Preferences -> Manage API Key in Galaxy menu.
 
+...
+
+Later we should use this [role](https://github.com/galaxyproject/ansible-galaxy-tools) to automate this, but there are too many tools to be installed and it is very inpractical for testing purposes. 
+
 ## Found bugs
 
 On ubuntu 20.04 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therfore playbook ends in error.
