@@ -1,0 +1,13 @@
+---
+- name: Ensure group "rabbitmq" exists with correct gid
+  ansible.builtin.group:
+    name: rabbitmq
+    state: present
+    gid: 999
+
+- name: Add the user 'rabbitmq' with a specific uid and a primary group of 'rabbitmq'
+  ansible.builtin.user:
+    name: rabbitmq
+    comment: RabbitMQ app
+    uid: 999
+    group: rabbitmq

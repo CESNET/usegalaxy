@@ -8,9 +8,7 @@ upstream galaxy {
 
 server {
     # Listen on port 443
-    # listen        *:443 ssl default_server;
-    # Listen on port 80
-    listen        *:80 default_server;
+    listen        *:443 ssl default_server;
     # The virtualhost is our domain name
     server_name   "{{ inventory_hostname }}";
 
@@ -28,22 +26,6 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header Upgrade $http_upgrade;
-    }
-
-    location /api/upload/resumable_upload {
-        # Disable request and response buffering
-        proxy_request_buffering     off;
-        proxy_buffering             off;
-        proxy_http_version          1.1;
-
-        # Add X-Forwarded-* headers
-        proxy_set_header X-Forwarded-Host   $host;
-        proxy_set_header X-Forwarded-Proto  $scheme;
-
-        proxy_set_header Upgrade            $http_upgrade;
-        proxy_set_header Connection         "upgrade";
-        client_max_body_size        0;
-        proxy_pass http://localhost:{{ galaxy_tusd_port }}/files;
     }
 
     # Static files can be more efficiently served by Nginx. Why send the
@@ -75,15 +57,5 @@ server {
 
     location /favicon.ico {
         alias {{ galaxy_server_dir }}/static/favicon.ico;
-    }
-
-    location /_x_accel_redirect {
-        internal;
-        alias /;
-    }
-
-    # Support click-to-run in the GTN-in-Galaxy Webhook
-    location /training-material/ {
-        proxy_pass https://training.galaxyproject.org/training-material/;
     }
 }

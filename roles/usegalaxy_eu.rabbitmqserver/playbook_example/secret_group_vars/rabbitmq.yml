@@ -1,0 +1,6 @@
+---
+# If you have a plan to publish somewhere this playbook,
+# this file should be encrypted with ansible-vault
+rabbitmq_users_password:
+  mqadmin: mqadmin
+  galaxy: galaxy

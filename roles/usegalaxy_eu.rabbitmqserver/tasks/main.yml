@@ -1,0 +1,6 @@
+---
+- include_tasks: init.yml
+
+- include_tasks: start.yml
+
+- include_tasks: configure.yml

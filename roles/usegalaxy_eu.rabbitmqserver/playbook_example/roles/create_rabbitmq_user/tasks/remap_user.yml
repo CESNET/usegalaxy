@@ -1,0 +1,73 @@
+---
+# Centos8 uses systemd-coredump:input for (999:999) which we need to map to
+# the galaxy user/group.
+#
+# Debian 11 uses systemd-timesync:systemd-timesync for (999:999) which we need to map to
+# the galaxy user/group.
+#
+# Ubuntu 20.04 uses systemd-coredump:systemd-coredump for (999:999) which we need to map to
+# the galaxy user/group.
+#
+- name: Set strings
+  block:
+    - name: Set CentOS strings
+      set_fact:
+        group_src: "input:x:999:"
+        group_rpl: 'input:x:500:'
+        user_src: "systemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin"
+        user_rpl: "systemd-coredump:x:500:997:systemd Core Dumper:/:/sbin/nologin"
+      when: ansible_distribution == 'CentOS'
+    - name: Set Debian strings
+      set_fact:
+        group_src: "systemd-timesync:x:999:"
+        group_rpl: "systemd-timesync:x:500:"
+        user_src: "systemd-timesync:x:999:999:systemd Time Synchronization:/:/usr/sbin/nologin"
+        user_rpl: "systemd-timesync:x:500:500:systemd Time Synchronization:/:/usr/sbin/nologin"
+      when: ansible_distribution == 'Debian'
+    - name: Set Ubuntu strings
+      set_fact:
+        group_src: "systemd-coredump:x:999:"
+        group_rpl: "systemd-coredump:x:500:"
+        user_src: "systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin"
+        user_rpl: "systemd-coredump:x:500:500:systemd Core Dumper:/:/usr/sbin/nologin"
+      when: ansible_distribution == 'Ubuntu'
+
+- name: Search for 999 group
+  ansible.builtin.command: grep -Fxq "{{ group_src }}" /etc/group
+  ignore_errors: true
+  register: check_group
+  changed_when: false
+
+- name: Replace in group file
+  ansible.builtin.lineinfile:
+    path: /etc/group
+    regexp: "{{ group_src }}"
+    line: "{{ group_rpl }}"
+  when: 'not ansible_check_mode and check_group.rc == 0'
+
+- name: Search and replace 999 group files
+  ansible.builtin.command: "find / -mount -gid 999 -exec chgrp 500 '{}' +"
+  ignore_errors: true
+  when: check_group.rc == 0
+  tags:
+    - ignore_errors
+
+- name: Search for 999 user
+  ansible.builtin.command: grep -Fxq "{{ user_src }}" /etc/passwd
+  ignore_errors: true
+  register: check_user
+  changed_when: false
+
+- name: Replace in passwd file
+  ansible.builtin.lineinfile:
+    path: /etc/passwd
+    regexp: "{{ user_src }}"
+    line: "{{ user_rpl }}"
+  when: 'not ansible_check_mode and check_user.rc == 0'
+
+- name: Search and replace 999 user files
+  ansible.builtin.command: "find / -mount -uid 999 -exec chown 500 '{}' +"
+  ignore_errors: true
+  when: check_user.rc == 0
+  tags:
+    - ignore_errors

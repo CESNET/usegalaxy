@@ -1,0 +1,32 @@
+---
+- name: Generate a random erlang_cookie and set it
+  block:
+    - name: Generate
+      set_fact:
+        rabbitmq_generated_erlang_cookie: "{{ lookup('community.general.random_string', special=false, length=16) }}"
+
+    - name: Set
+      set_fact:
+        rabbitmq_erlang_cookie: "{{ rabbitmq_generated_erlang_cookie }}"
+  when: rabbitmq_predefined_erlang_cookie == "itsasecret"
+
+- name: Set the erlang_cookie with the predefined value
+  set_fact:
+    rabbitmq_erlang_cookie: "{{ rabbitmq_predefined_erlang_cookie }}"
+  when: rabbitmq_predefined_erlang_cookie != "itsasecret"
+
+- name: Create the directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ rabbitmq_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy templates
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - {'src': 'rabbitmq.conf.j2', 'dest': "{{ rabbitmq_path }}/rabbitmq.conf", mode: '0644'}
+    - {'src': 'erlang.cookie.j2', 'dest': "{{ rabbitmq_path }}/.erlang.cookie", mode: '0600'}
+  notify: docker restart

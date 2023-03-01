@@ -1,3 +1,4 @@
+---
 # Python 3 support
 pip_virtualenv_command: /usr/bin/python3 -m virtualenv # usegalaxy_eu.certbot, usegalaxy_eu.tiaas2, galaxyproject.galaxy
 certbot_virtualenv_package_name: python3-virtualenv    # usegalaxy_eu.certbot
@@ -12,6 +13,7 @@ postgresql_objects_databases:
 # PostgreSQL Backups
 postgresql_backup_dir: /data/backups
 postgresql_backup_local_dir: "{{ '~postgres' | expanduser }}/backups"
+
 # Galaxy
 galaxy_create_user: true
 galaxy_separate_privileges: true
@@ -27,7 +29,11 @@ miniconda_manage_dependencies: false
 
 galaxy_config:
   galaxy:
-    # tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
+    library_import_dir: /libraries/admin
+    user_library_import_dir: /libraries/user
+    dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
+    containers_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
+    tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     brand: "🧬🔬🚀"
     admin_users: admin@example.org
     database_connection: "postgresql:///galaxy?host=/var/run/postgresql"
@@ -60,7 +66,7 @@ galaxy_config:
     # Tool security
     outputs_to_working_directory: true
     # TUS
-    tus_upload_store: /data/tus
+    # tus_upload_store: /data/tus
   gravity:
     galaxy_root: "{{ galaxy_root }}/server"
     app_server: gunicorn
@@ -85,6 +91,10 @@ galaxy_config:
 galaxy_config_templates:
   - src: templates/galaxy/config/job_conf.yml.j2
     dest: "{{ galaxy_config.galaxy.job_config_file }}"
+  - src: templates/galaxy/config/container_resolvers_conf.xml.j2
+    dest: "{{ galaxy_config.galaxy.containers_resolvers_config_file }}"
+  - src: templates/galaxy/config/dependency_resolvers_conf.xml
+    dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
 
 # systemd
 galaxy_manage_systemd: true
@@ -100,8 +110,10 @@ certbot_environment: staging
 certbot_well_known_root: /srv/nginx/_well-known_root
 certbot_share_key_users:
   - nginx
+  - rabbitmq
 certbot_post_renewal: |
     systemctl restart nginx || true
+    systemctl restart rabbitmq-server || true
 certbot_domains:
  - "{{ inventory_hostname }}"
 certbot_agree_tos: --agree-tos
@@ -109,8 +121,8 @@ certbot_agree_tos: --agree-tos
 # NGINX
 nginx_selinux_allow_local_connections: true
 nginx_servers:
-        #  - redirect-ssl
-        #nginx_ssl_servers:
+  - redirect-ssl
+nginx_ssl_servers:
   - galaxy
 nginx_enable_default_server: false
 nginx_conf_http:
@@ -137,19 +149,59 @@ nginx_conf_http:
       image/png
       image/svg+xml
       image/x-icon
-      #nginx_ssl_role: usegalaxy_eu.certbot
-      #nginx_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
-      #nginx_conf_ssl_certificate_key: /etc/ssl/user/privkey-nginx.pem
+nginx_ssl_role: usegalaxy_eu.certbot
+nginx_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
+nginx_conf_ssl_certificate_key: /etc/ssl/user/privkey-nginx.pem
+
+# Golang
+golang_gopath: '/opt/workspace-go'
+# Singularity target version
+singularity_version: "3.7.4"
+singularity_go_path: "{{ golang_install_dir }}"
+
+# RabbitMQ
+rabbitmq_users:
+  - user: mqadmin
+    password: "{{ rabbitmq_users_password.mqadmin }}"
+    tags: administrator
+    vhost: /
+  - user: galaxy
+    password: "{{ rabbitmq_users_password.galaxy }}"
+    vhost: galaxy
+
+rabbitmq_plugins:
+  - rabbitmq_management
+
+rabbitmq_config:
+  consumer_timeout: 3600000 # one hour in milliseconds
+  listeners:
+    tcp: none
+  ssl_listeners:
+    default: 5671
+  ssl_options:
+    cacertfile: /etc/ssl/certs/fullchain.pem
+    certfile: /etc/ssl/certs/cert.pem
+    keyfile: /etc/ssl/user/privkey-rabbitmq.pem
+    verify: verify_peer
+    fail_if_no_peer_cert: 'false'
+  management_agent:
+    disable_metrics_collector: 'false'
+
+rabbitmq_container:
+  name: rabbit_hole
+  image: rabbitmq:3.9.11
+  hostname: "{{ inventory_hostname }}"
+
 
 # TUS
-galaxy_tusd_port: 1080
-tusd_instances:
-  - name: main
-    user: "{{ galaxy_user.name }}"
-    group: "galaxy"
-    args:
-      - "-host=localhost"
-      - "-port={{ galaxy_tusd_port }}"
-      - "-upload-dir={{ galaxy_config.galaxy.tus_upload_store }}"
-      - "-hooks-http=https://{{ inventory_hostname }}/api/upload/hooks"
-      - "-hooks-http-forward-headers=X-Api-Key,Cookie"
+#galaxy_tusd_port: 1080
+#tusd_instances:
+#  - name: main
+#    user: "{{ galaxy_user.name }}"
+#    group: "galaxy"
+#    args:
+#      - "-host=localhost"
+#      - "-port={{ galaxy_tusd_port }}"
+#      - "-upload-dir={{ galaxy_config.galaxy.tus_upload_store }}"
+#      - "-hooks-http=https://{{ inventory_hostname }}/api/upload/hooks"
+#      - "-hooks-http-forward-headers=X-Api-Key,Cookie"

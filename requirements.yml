@@ -15,4 +15,14 @@
 - name: galaxyproject.tusd
   version: 0.0.1
 - src: galaxyproject.cvmfs
-  version: 0.2.13 
+  version: 0.2.18
+- src: cyverse-ansible.singularity
+  version: 048c4f178077d05c1e67ae8d9893809aac9ab3b7
+- src: gantsign.golang
+  version: 3.1.1
+- name: geerlingguy.docker
+  version: 4.1.1
+- name: usegalaxy_eu.rabbitmqserver
+  version: 1.4.1
+- src: galaxyproject.pulsar
+  version: 1.0.10
