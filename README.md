@@ -22,7 +22,17 @@ ansible-galaxy install -p roles -r requirements.yml
 
 After the instalation, you should configure your [inventory file](https://training.galaxyproject.org/training-material/topics/admin/tutorials/ansible/tutorial.html#inventory-file).
 
-Once everything have been installed, and hosts configured, the ansible playbook can be run as follows:
+Make sure you have these ports enabled on your machine:
+```
+80(HTTP)
+443(HTTPS)
+4369(TCP)
+5671(TCP)
+15672(TCP)
+25672(TCP)
+```
+
+Once everything have been installed and configured, the ansible playbook can be run as follows:
 ```
 ansible-playbook galaxy.yml
 ```
