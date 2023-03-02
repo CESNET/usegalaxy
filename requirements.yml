@@ -1,5 +1,5 @@
 - src: galaxyproject.galaxy
-  version: 0.10.4
+  version: 0.10.8
 - src: galaxyproject.nginx
   version: 0.7.0
 - src: galaxyproject.postgresql
