@@ -19,8 +19,18 @@ git clone https://github.com/CESNET/usegalaxy.git
 cd usegalaxy
 ansible-galaxy install -p roles -r requirements.yml
 ```
+Note that the roles are already present in this repo.
 
-After the instalation, you should configure your [inventory file](https://training.galaxyproject.org/training-material/topics/admin/tutorials/ansible/tutorial.html#inventory-file).
+After the instalation, you should configure your [inventory file](https://training.galaxyproject.org/training-material/topics/admin/tutorials/ansible/tutorial.html#inventory-file) ([hosts](https://github.com/CESNET/usegalaxy/blob/main/hosts)) and set up a vault:
+```
+openssl rand -base64 24 > .vault-password.txt
+ansible-vault create group_vars/secret.yml
+```
+The second command opens an editor wherein you should define `vault_id_secret` variable eg.:
+```
+vault_id_secret: BxI6zlQVhoHLPVf3gqQ
+```
+The value should be a long random value, which can be obtained by command `openssl rand -base64 24`
 
 Make sure you have these ports enabled on your machine:
 ```
