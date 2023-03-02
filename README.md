@@ -7,7 +7,7 @@ On fresh install of ubuntu:
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 sudo apt install software-properties-common
 sudo apt-add-repository --yes --update ppa:ansible/ansible
 sudo apt install ansible
