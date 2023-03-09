@@ -106,7 +106,7 @@ certbot_auth_method: --webroot
 certbot_install_method: virtualenv
 certbot_auto_renew: yes
 certbot_auto_renew_user: root
-certbot_environment: staging
+certbot_environment: production
 certbot_well_known_root: /srv/nginx/_well-known_root
 certbot_share_key_users:
   - nginx
@@ -191,6 +191,31 @@ rabbitmq_container:
   name: rabbit_hole
   image: rabbitmq:3.9.11
   hostname: "{{ inventory_hostname }}"
+
+rabbitmq_container_pause: 20
+
+rabbitmq_container_standalone_setup_details:
+  volumes:
+    - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
+    - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
+    - /etc/ssl:/etc/ssl:ro
+    - /etc/pki:/etc/pki:ro
+  ports:
+    - 15672:15672
+    - 5671:5671
+
+rabbitmq_container_cluster_setup_details:
+  volumes:
+    - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
+    - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
+    - /etc/ssl:/etc/ssl:ro
+    - /etc/pki:/etc/pki:ro
+  ports:
+    - 15672:15672
+    - 5671:5671
+    - 4369:4369
+    - 25672:25672
+  env: {'RABBITMQ_USE_LONGNAME': 'true'}
 
 
 # TUS
