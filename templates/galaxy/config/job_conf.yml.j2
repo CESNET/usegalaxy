@@ -2,6 +2,16 @@ runners:
   local_runner:
     load: galaxy.jobs.runners.local:LocalJobRunner
     workers: 4
+  pulsar_remote:
+    load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+    galaxy_url: "https://{{ inventory_hostname }}"
+    amqp_url: "pyamqp://galaxy:{{ vault_rabbitmq_password_vhost }}@{{ inventory_hostname }}:5671/galaxy?ssl=1"
+    amqp_acknowledge: true
+    amqp_ack_republish_time: 1200
+    amqp_consumer_timeout: 2
+    amqp_publish_retry: true
+    amqp_publish_retry_max_retries: 60
+    manager: _default_
 
 execution:
   default: singularity
@@ -21,7 +31,19 @@ execution:
       # Singularity uses a temporary directory to build the squashfs filesystem
       - name: SINGULARITY_TMPDIR
         value: /tmp
+    pulsar_singularity:
+      runner: pulsar_remote
+      default_file_action: remote_transfer
+      dependency_resolution: remote
+      jobs_directory: __PULSAR_JOBS_DIRECTORY__
+      persistence_directory: __PULSAR_PERSISTENCE_DIRECTORY__
+      remote_metadata: false
+      rewrite_parameters: true
+      transport: curl
+      outputs_to_working_directory: false
 
 tools:
 - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
   environment: local_dest
+- id: fastqc
+  environment: pulsar_singularity
