@@ -1,27 +1,27 @@
 - src: galaxyproject.galaxy
   version: 0.10.8
 - src: galaxyproject.nginx
-  version: 0.7.0
+  version: 0.7.1
 - src: galaxyproject.postgresql
-  version: 1.0.3
+  version: 1.1.2
 - src: galaxyproject.postgresql_objects
-  version: 1.1.0
+  version: 1.2.0
 - src: geerlingguy.pip
-  version: 2.0.0
+  version: 2.2.0
 - src: uchida.miniconda
   version: 0.3.0
 - src: usegalaxy_eu.certbot
-  version: 0.1.5
+  version: 0.1.7
 - name: galaxyproject.tusd
   version: 0.0.1
 - src: galaxyproject.cvmfs
-  version: 0.2.18
+  version: 0.2.21
 - src: cyverse-ansible.singularity
   version: 048c4f178077d05c1e67ae8d9893809aac9ab3b7
 - src: gantsign.golang
   version: 3.1.1
 - name: geerlingguy.docker
-  version: 4.1.1
+  version: 6.1.0
 - name: usegalaxy_eu.rabbitmqserver
   version: 1.4.1
 - src: galaxyproject.pulsar
