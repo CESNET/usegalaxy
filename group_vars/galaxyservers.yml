@@ -160,6 +160,12 @@ singularity_version: "3.7.4"
 singularity_go_path: "{{ golang_install_dir }}"
 
 # RabbitMQ
+# Destination path
+rabbitmq_path: /opt/rabbitmq
+
+# Change this to set your predefined erlang cookie
+rabbitmq_predefined_erlang_cookie: itsasecret
+
 rabbitmq_users:
   - user: mqadmin
     password: "{{ rabbitmq_users_password.mqadmin }}"
