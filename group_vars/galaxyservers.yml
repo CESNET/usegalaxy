@@ -95,6 +95,10 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.containers_resolvers_config_file }}"
   - src: templates/galaxy/config/dependency_resolvers_conf.xml
     dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
+  - src: templates/galaxy/config/oidc_config.xml
+    dest: "{{ galaxy_config.galaxy.oidc_config_file }}"
+  - src: templates/galaxy/config/oidc_backends_config.xml
+    dest: "{{ galaxy_config.galaxy.oidc_backends_config_file }}"
 
 # systemd
 galaxy_manage_systemd: true

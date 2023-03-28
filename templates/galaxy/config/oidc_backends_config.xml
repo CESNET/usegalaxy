@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<OIDC>
+    <provider name="elixir">
+        <client_id>d81292fd-e103-4dea-a270-c83f06073ac6</client_id>
+        <client_secret>72ab939b-6779-499a-9249-9e42dd2c7e2c70205795-dd54-4aba-a2d7-caaf6024d55c</client_secret>
+        <redirect_uri>https://usegalaxy.cerit-sc.cz/authnz/elixir/callback</redirect_uri>
+        <!--<url>https://lifescience-ri.eu/ls-login/</url>-->
+    </provider>
+</OIDC>
