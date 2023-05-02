@@ -7,10 +7,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: check out repository
+        uses: actions/checkout@v2
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: Create SSH key
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
       - name: Deploy test instance with rsync
         run: rsync -rav * ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
