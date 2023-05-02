@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
 
-  deploy:
+  deploy-test:
     runs-on: ubuntu-latest
     steps:
       - name: check out repository
@@ -20,5 +20,9 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
-      - name: Deploy test instance with rsync
-        run: rsync -rav * ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
+      - name: Copy files to test instance and preserve secrets and hosts
+        run: |
+          rsync -rav * ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
+          scp ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy/hosts ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
+          scp ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy/.vault-password.txt ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
+          scp ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy/group_vars/secret.yml ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}/group_vars
