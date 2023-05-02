@@ -26,3 +26,5 @@
   version: 1.4.1
 - src: galaxyproject.pulsar
   version: 1.0.10
+- src: https://github.com/galaxyproject/ansible-galaxy-tools.git
+  name: galaxyprojectdotorg.galaxy-tools

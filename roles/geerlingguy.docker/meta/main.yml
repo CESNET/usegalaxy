@@ -18,14 +18,19 @@ galaxy_info:
         - all
     - name: Debian
       versions:
-        - stretch
         - buster
         - bullseye
     - name: Ubuntu
       versions:
-        - xenial
         - bionic
         - focal
+        - jammy
+    - name: Alpine
+      version:
+        - all
+    - name: ArchLinux
+      versions:
+        - all
   galaxy_tags:
     - web
     - system

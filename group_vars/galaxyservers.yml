@@ -21,7 +21,7 @@ galaxy_manage_paths: true
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: galaxy, shell: /bin/bash}
-galaxy_commit_id: release_22.05
+galaxy_commit_id: b502bd0a786ca7089d079919491a5d0c317b209a # release_22.05
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 4.7.12
@@ -35,16 +35,18 @@ galaxy_config:
     oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
     # Sets the path to OIDC backends configuration file.
     oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
-    tus_upload_store: /data/tus
+    tus_upload_store: /database/tus
     library_import_dir: /libraries/admin
     user_library_import_dir: /libraries/user
     dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
     containers_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
     tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
-    brand: "🧬🔬🚀"
-    admin_users: admin@example.org
+#    brand: "🧬🔬🚀"
+    brand: "e-infra.cz"
+    admin_users: "admin@example.org,325073@muni.cz,demko@cesnet.cz"
     database_connection: "postgresql:///galaxy?host=/var/run/postgresql"
-    file_path: /data
+    file_path: /database
+    job_working_directory: "/database/jobs"
     check_migrate_tools: false
     tool_data_path: "{{ galaxy_mutable_data_dir }}/tool-data"
     object_store_store_by: uuid
@@ -55,7 +57,7 @@ galaxy_config:
     slow_query_log_threshold: 5
     enable_per_request_sql_debugging: true
     # File serving Performance
-    nginx_x_accel_redirect_base: /_x_accel_redirect
+    #nginx_x_accel_redirect_base: /_x_accel_redirect
     # Automation / Ease of Use / User-facing features
     watch_job_rules: 'auto'
     allow_path_paste: true
@@ -72,9 +74,8 @@ galaxy_config:
     allow_user_impersonation: true
     # Tool security
     outputs_to_working_directory: true
-    # TUS
-    # tus_upload_store: /data/tus
   gravity:
+    process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
     app_server: gunicorn
     gunicorn:
@@ -106,6 +107,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.oidc_config_file }}"
   - src: templates/galaxy/config/oidc_backends_config.xml
     dest: "{{ galaxy_config.galaxy.oidc_backends_config_file }}"
+  - src: templates/galaxy/static/welcome.html
+    dest: "{{ galaxy_config_dir }}"
 
 # systemd
 galaxy_manage_systemd: true
@@ -124,7 +127,8 @@ certbot_share_key_users:
   - rabbitmq
 certbot_post_renewal: |
     systemctl restart nginx || true
-    systemctl restart rabbitmq-server || true
+    docker restart rabbit_hole || true
+#    systemctl restart rabbitmq-server || true
 certbot_domains:
  - "{{ inventory_hostname }}"
 certbot_agree_tos: --agree-tos
@@ -170,21 +174,17 @@ golang_gopath: '/opt/workspace-go'
 singularity_version: "3.7.4"
 singularity_go_path: "{{ golang_install_dir }}"
 
+
+#Install pip docker package for ansible
+pip_install_packages:
+  - name: docker
 # RabbitMQ
-# Destination path
-rabbitmq_path: /opt/rabbitmq
-
-# Change this to set your predefined erlang cookie
-rabbitmq_predefined_erlang_cookie: itsasecret
-
-rabbitmq_users:
-  - user: mqadmin
-    password: "{{ rabbitmq_users_password.mqadmin }}"
-    tags: administrator
-    vhost: /
-  - user: galaxy
-    password: "{{ rabbitmq_users_password.galaxy }}"
-    vhost: galaxy
+rabbitmq_hostname: "{{ inventory_hostname }}"
+#rabbitmq_hostname: "usegalaxy.cerit-sc.cz"
+rabbitmq_container:
+  name: rabbit_hole
+  image: rabbitmq:3.11
+  hostname: "{{ inventory_hostname }}"
 
 rabbitmq_plugins:
   - rabbitmq_management
@@ -196,44 +196,38 @@ rabbitmq_config:
   ssl_listeners:
     default: 5671
   ssl_options:
-    cacertfile: /etc/ssl/certs/fullchain.pem
-    certfile: /etc/ssl/certs/cert.pem
-    keyfile: /etc/ssl/user/privkey-rabbitmq.pem
     verify: verify_peer
+    cacertfile: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+    certfile: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
+    keyfile: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
     fail_if_no_peer_cert: 'false'
   management_agent:
-    disable_metrics_collector: 'false'
+    disable_metrics_collector: "false"
 
-rabbitmq_container:
-  name: rabbit_hole
-  image: rabbitmq:3.9.11
-  hostname: "{{ inventory_hostname }}"
+rabbitmq_vhosts:
+  - galaxy
 
-rabbitmq_container_pause: 20
+rabbitmq_users:
+  - user: ubuntu
+    password: "{{ rabbitmq_users_password.mqadmin }}"
+    tags: administrator
+    vhost: /
+  - user: galaxy
+    password: "{{ rabbitmq_users_password.galaxy }}"
+    vhost: galaxy
+  - user: galaxy_gpu
+    password: "{{ rabbitmq_users_password.galaxy_gpu }}"
+    vhost: galaxy_gpu
 
 rabbitmq_container_standalone_setup_details:
   volumes:
     - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
     - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
-    - /etc/ssl:/etc/ssl:ro
+    - /etc/letsencrypt:/etc/letsencrypt:ro
     - /etc/pki:/etc/pki:ro
   ports:
     - 15672:15672
     - 5671:5671
-
-rabbitmq_container_cluster_setup_details:
-  volumes:
-    - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
-    - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
-    - /etc/ssl:/etc/ssl:ro
-    - /etc/pki:/etc/pki:ro
-  ports:
-    - 15672:15672
-    - 5671:5671
-    - 4369:4369
-    - 25672:25672
-  env: {'RABBITMQ_USE_LONGNAME': 'true'}
-
 
 # TUS
 galaxy_tusd_port: 1080

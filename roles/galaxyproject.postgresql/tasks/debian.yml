@@ -1,20 +1,29 @@
 ---
 
-- name: Install pgdg package signing key (Debian/pgdg)
-  apt_key:
-    keyserver: pgp.mit.edu
-    id: ACCC4CF8
-  register: __postgresql_apt_key_result
-  until: __postgresql_apt_key_result is succeeded
-  retries: 5
-  delay: 5
+- name: PGDG block
   when: postgresql_flavor is defined and postgresql_flavor == "pgdg"
+  block:
 
-- name: Install pgdg repository (Debian/pgdg)
-  apt_repository:
-    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
-    update_cache: yes
-  when: postgresql_flavor is defined and postgresql_flavor == "pgdg"
+    - name: APT keyrings directory
+      file:
+        path: "{{ postgresql_apt_keys_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Install pgdg package signing key (Debian/pgdg)
+      get_url:
+        url: "{{ postgresql_pgdg_key_url }}"
+        dest: "{{ postgresql_pgdg_key_dest }}"
+        mode: "0644"
+      register: __postgresql_apt_key_result
+      until: __postgresql_apt_key_result is succeeded
+      retries: 5
+      delay: 5
+
+    - name: Install pgdg repository (Debian/pgdg)
+      apt_repository:
+        repo: "{{ postgresql_pgdg_repo }}"
+        update_cache: true
 
 - name: Install PostgreSQL (Debian)
   apt:
@@ -34,3 +43,8 @@
   set_fact:
     postgresql_version: "{{ __postgresql_version_query_result.stdout.split('+') | first }}"
   when: postgresql_version is not defined
+
+- name: Install psycopg2
+  apt:
+    name: "python{{ (ansible_python.version.major == 3) | ternary('3', '') }}-psycopg2"
+  when: postgresql_install_psycopg2

@@ -12,19 +12,21 @@
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
   roles:
-    - galaxyproject.postgresql
-    - role: galaxyproject.postgresql_objects
-      become: true
-      become_user: postgres
-    - geerlingguy.pip
-    - gantsign.golang
-    - cyverse-ansible.singularity
+    # - galaxyproject.postgresql
+    # - role: galaxyproject.postgresql_objects
+    #   become: true
+    #   become_user: postgres
+    # - geerlingguy.pip
+    # - gantsign.golang
+    # - cyverse-ansible.singularity
     - galaxyproject.galaxy
-    - role: uchida.miniconda
+    - role: copy.files
       become: true
-      become_user: "{{ galaxy_user.name }}"
-    - geerlingguy.docker
-    - galaxyproject.nginx
-    - usegalaxy_eu.rabbitmqserver
-      #    - galaxyproject.tusd
-    - galaxyproject.cvmfs
+    # - role: uchida.miniconda
+    #   become: true
+    #   become_user: "{{ galaxy_user.name }}"
+    # - geerlingguy.docker
+    # - usegalaxy_eu.rabbitmqserver
+    #- galaxyproject.nginx
+    #    - galaxyproject.tusd
+    #    - galaxyproject.cvmfs

@@ -3,15 +3,15 @@ dependencies: []
 
 galaxy_info:
   role_name: certbot
+  namespace: usegalaxy_eu
   author: usegalaxy-eu
   description: "Certbot with custom additions"
   license: "license (BSD, MIT)"
-  min_ansible_version: 2.0
+  min_ansible_version: "2.9"
   platforms:
     - name: EL
       versions:
-        - 6
-        - 7
+        - all
     - name: Fedora
       versions:
         - all

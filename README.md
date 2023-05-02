@@ -28,10 +28,9 @@ ansible-vault create group_vars/secret.yml
 ```
 The second command opens an editor wherein you should define variables eg.:
 ```
-vault_id_secret: long-random-value
-rabbitmq_users_password:
-  mqadmin: long-random-value
-  galaxy: long-random-value
+vault_id_secret: BxI6zlQVhoHLPVf3gqQ
+vault_rabbitmq_password_vhost: "a-really-long-password-here"
+vault_rabbitmq_admin_password: "a-different-really-long-password"
 ```
 The value should be a long random value, which can be obtained by command `openssl rand -base64 24`
 

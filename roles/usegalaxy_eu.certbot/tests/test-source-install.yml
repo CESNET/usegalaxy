@@ -2,7 +2,7 @@
 - hosts: all
 
   vars:
-    certbot_install_from_source: yes
+    certbot_install_from_source: true
 
   pre_tasks:
     - name: Update apt cache.

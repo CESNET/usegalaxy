@@ -1,0 +1,74 @@
+---
+
+galaxy_tools_install_tools: yes
+galaxy_tools_install_data_managers: no 
+galaxy_tools_install_workflows: no
+galaxy_tools_create_bootstrap_user: no
+galaxy_tools_delete_bootstrap_user: no
+
+# If enabled, the restart handler will attempt to restart Galaxy after tool
+# installation, assuming Galaxy is controlled by run.sh, docker or supervisor.
+galaxy_restart_handler_enabled: no
+
+# A URL or an IP address for the Galaxy instance where the tools are to be
+# installed
+galaxy_tools_galaxy_instance_url: http://127.0.0.1:8080
+
+# A list of yml files that list the tools to be installed. See `files/tool_list.yaml.sample`
+# file for more about the format requirements of this file. The file names must be unique.
+galaxy_tools_tool_list_files: [ "tool_list.yaml" ]
+
+# A yml file that lists the data-managers and genomes to be installed
+# see `files/tool_list.yaml.sample`
+galaxy_tools_data_managers_list: "run_data_managers.yaml"
+
+# should the playbook continue when errors are found
+galaxy_tools_ignore_errors: true
+
+# A system path from where this role will be run
+galaxy_tools_base_dir: /tmp
+
+# Set this to yes and change galaxy_tools_api_key to a string to create a predefined api key for the bootstrap user.
+galaxy_tools_admin_user_preset_api_key: no
+
+# Blank variable to make sure it's defined
+galaxy_tools_api_key: ''
+
+# List of workflow files to be installed. List the path to the workflows, e.g.:
+# galaxy_tools_workflows:
+#   - sample-workflow.ga
+
+galaxy_tools_workflows: []
+
+## Variables below are used only if the galaxy_install_bootstrap_user var is set
+
+# A user for the Galaxy bootstrap user
+galaxy_tools_admin_user: cloud@galaxyproject.org
+galaxy_tools_admin_username: cloud
+
+# Name of Galaxy's PID file
+galaxy_tools_pid_file_name: main.pid
+
+# Name of Galaxy's log file
+galaxy_tools_log_file_name: main.log
+
+
+## Below variable names are used in several other roles that compose Galaxy's
+## playbooks and are hence scoped differently
+
+# User name for the system galaxy user
+galaxy_user_name: galaxy
+
+# A path where Galaxy is installed
+galaxy_server_dir: /mnt/galaxy/galaxy-app
+
+# A system path where a virtualenv for Galaxy is installed
+galaxy_venv_dir: "{{ galaxy_server_dir }}/.venv"
+
+# A system path for Galaxy's main configuration file
+galaxy_config_file: "{{ galaxy_server_dir }}/config/galaxy.ini"
+
+## Set this to 'yes' if you are targeting galaxy in a docker container
+galaxy_runs_in_docker: no
+# galaxy_docker_container_id is either the container id or name shown by `docker ps`
+galaxy_docker_container_id: galaxy

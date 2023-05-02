@@ -1,16 +1,15 @@
 ---
-
 - name: Ensure http is not firewalled (firewalld)
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ item }}/tcp"
     state: enabled
-    permanent: yes
-    immediate: yes
+    permanent: true
+    immediate: true
   with_items: "{{ _cvmfs_http_ports }}"
   when: ansible_os_family == "RedHat"
 
 - name: Ensure http is not firewalled (ufw)
-  ufw:
+  community.general.system.ufw:
     rule: allow
     port: "{{ item }}"
     proto: tcp

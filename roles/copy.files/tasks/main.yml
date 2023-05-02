@@ -1,0 +1,12 @@
+---
+
+- name: Copy welcome.html
+  file:
+    src: "templates/galaxy/static/welcome.html"
+    # src: "/home/ubuntu/usegalaxy_30.3.2023/templates/galaxy/static/welcome.html"
+    path: "/srv/galaxy/server/{{ item }}"
+    mode: "0644"
+    state: hard
+    force: true
+  with_items:
+    - static/welcome.html

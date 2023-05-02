@@ -1,13 +1,13 @@
 ---
 - name: Create the ssl-cert group if it doesn't exist
-  group:
+  ansible.builtin.group:
     name: "{{ certbot_ssl_group }}"
     state: present
-    system: yes
+    system: true
   when: certbot_ssl_group is defined
 
 - name: Write the certificate post-renewal hook script
-  copy:
+  ansible.builtin.copy:
     content: |
         #!/bin/bash
         mkdir -p  /etc/ssl/private/

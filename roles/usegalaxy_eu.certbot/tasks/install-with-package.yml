@@ -1,34 +1,34 @@
 ---
 - name: Install software-properties-common
-  package:
+  ansible.builtin.package:
     name: software-properties-common
     state: present
   when: ansible_distribution == 'Ubuntu'
 
 - name: Install PPA for ubuntu
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'ppa:certbot/certbot'
   when: ansible_distribution == 'Ubuntu'
 
 - name: Install yum-utils
-  package:
+  ansible.builtin.package:
     name: yum-utils
     state: present
   when: ansible_distribution == 'Centos'
 
 - name: "Enable EPEL"
-  yum:
+  ansible.builtin.yum:
     name: epel-release
     state: present
   when: ansible_distribution == 'Centos'
 
 - name: Install Certbot.
-  package:
+  ansible.builtin.package:
     name: "{{ certbot_package }}"
     state: present
 
 - name: Install Certbot DNS package
-  package:
+  ansible.builtin.package:
     name: "certbot-dns-{{ certbot_dns_provider }}"
     state: present
   when: certbot_dns_provider is defined

@@ -13,7 +13,7 @@ certbot_package: certbot
 certbot_script: "{{ certbot_package }}"
 certbot_repo: https://github.com/certbot/certbot.git
 certbot_version: master
-certbot_keep_updated: yes
+certbot_keep_updated: true
 # Automatically sets certbot_force_run
 certbot_expand: false
 
@@ -21,8 +21,9 @@ certbot_expand: false
 certbot_dir: /opt/certbot
 
 certbot_letsencrypt_dir: /etc/letsencrypt
-# the test in tasks/request-cert.yml ensure that this is not used if certbot_dns_provider is not defined
-# but a default is necessary to ensure that an error is not triggered when certbot_dns_provider is not defined 
+# the test in tasks/request-cert.yml ensure that this is not used if
+# certbot_dns_provider is not defined but a default is necessary to ensure that
+# an error is not triggered when certbot_dns_provider is not defined
 certbot_dns_credentials_file: "{{ certbot_letsencrypt_dir }}/dns-{{ certbot_dns_provider | default('ERROR') }}-credentials.ini"
 
 certbot_environment: production

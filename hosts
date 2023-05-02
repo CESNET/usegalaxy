@@ -1,3 +1,3 @@
 [galaxyservers]
-usegalaxy.edirex.ics.muni.cz ansible_connection=local ansible_user=ubuntu
+usegalaxy.cz ansible_connection=local ansible_user=ubuntu
 

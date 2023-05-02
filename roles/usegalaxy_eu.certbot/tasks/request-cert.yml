@@ -1,20 +1,23 @@
 ---
 - name: Create webroot directories
-  file:
+  ansible.builtin.file:
     path: "{{ certbot_well_known_root }}"
     state: directory
+    mode: 0755
   when: certbot_auth_method | default("--standalone") == "--webroot"
 
 - name: DNS provider credential task block
+  when: certbot_dns_provider is defined and certbot_dns_credentials is defined
   block:
 
     - name: Create DNS provider credential directory
-      file:
+      ansible.builtin.file:
         path: "{{ certbot_dns_credentials_file | dirname }}"
         state: directory
+        mode: 0755
 
     - name: Create DNS provider credentials
-      copy:
+      ansible.builtin.copy:
         content: |
           ##
           ## This file is maintained by Ansible - CHANGES WILL BE OVERWRITTEN.
@@ -25,10 +28,8 @@
         dest: "{{ certbot_dns_credentials_file }}"
         mode: "0400"
 
-  when: certbot_dns_provider is defined and certbot_dns_credentials is defined
-
 - name: Request certificate
-  command: >-
+  ansible.builtin.command: >-
       {{ certbot_script }}
         certonly
         {{ "--test-cert" if certbot_environment == "staging" else "" }}
@@ -37,6 +38,9 @@
             --dns-{{ certbot_dns_provider }}
             {% if certbot_dns_credentials is defined %}
             --dns-{{ certbot_dns_provider }}-credentials {{ certbot_dns_credentials_file }}
+            {% endif %}
+            {% if certbot_dns_provider_propagation_seconds is defined %}
+            --dns-{{ certbot_dns_provider }}-propagation-seconds {{ certbot_dns_provider_propagation_seconds }}
             {% endif %}
         {% else %}
             {{ certbot_auth_method | default("--standalone") }}
@@ -60,6 +64,6 @@
     - Execute the certificate post-renewal script
 
 - name: Log output of certbot command
-  debug:
+  ansible.builtin.debug:
     var: request
   when: request is not skipped

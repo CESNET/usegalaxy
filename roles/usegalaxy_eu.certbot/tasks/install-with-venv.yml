@@ -1,11 +1,11 @@
 ---
 - name: Ensure virtualenv is present
-  package:
+  ansible.builtin.package:
     name: "{{ certbot_virtualenv_package_name | default('python-virtualenv') }}"
     state: present
 
 - name: Install certbot into virtualenv
-  pip:
+  ansible.builtin.pip:
     name:
       - certbot
       - idna<2.8,>=2.5
@@ -13,7 +13,7 @@
     virtualenv: "{{ certbot_dir }}"
 
 - name: Install certbot DNS provider
-  pip:
+  ansible.builtin.pip:
     name:
       - "certbot-dns-{{ certbot_dns_provider }}"
     virtualenv_command: "{{ certbot_virtualenv_command | default(pip_virtualenv_command | default(omit)) }}"
@@ -21,5 +21,5 @@
   when: certbot_dns_provider is defined
 
 - name: Set Certbot script variable.
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_script: "{{ certbot_dir }}/bin/certbot"

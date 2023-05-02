@@ -3,7 +3,8 @@ PostgreSQL
 
 An [Ansible][ansible] role for installing and managing [PostgreSQL][postgresql] servers. This role works with both
 Debian and RedHat based systems, and provides backup scripts for [PostgreSQL Continuous Archiving and Point-in-Time
-Recovery][postgresql_pitr].
+Recovery][postgresql_pitr]. It does not create or manage PostgreSQL users, roles, groups, databases, and so forth. For
+that, see [galaxyproject.postgresql_objects][postgresql_objects].
 
 On RedHat-based platforms, the [PostgreSQL Global Development Group (PGDG) packages][pgdg_yum] packages will be
 installed. On Debian-based platforms, you can choose from the distribution's packages (from APT) or the [PGDG
@@ -12,6 +13,7 @@ packages][pgdg_apt].
 [ansible]: http://www.ansible.com/
 [postgresql]: http://www.postgresql.org/
 [postgresql_pitr]: http://www.postgresql.org/docs/9.4/static/continuous-archiving.html
+[postgresql_objects]: https://github.com/galaxyproject/ansible-postgresql-objects/
 [pgdg_yum]: http://yum.postgresql.org/
 [pgdg_apt]: http://apt.postgresql.org/
 
@@ -83,18 +85,17 @@ Role Variables
 
 - `postgresql_conf_dir`: As with `postgresql_pgdata` except for the configuration directory.
 
+- `postgresql_install_psycopg2`: Attempt to install the correct pacakge providing psycopg2 to the Python interpreter
+  that Ansible is using on the remote side. This allows for the use of the `postgresql_*` Ansible modules (perhaps via
+  [galaxyproject.postgresql_objects][postgresql_objects]), which depend on psycopg2. Defaults to `true`.
+
 ### Backups ###
 
 - `postgresql_backup_dir`: If set, enables [PITR][postgresql_pitr] backups. Set this to a directory where your database
   will be backed up (this can be any format supported by rsync, e.g. `user@host:/path`). The most recent backup will be
   in a subdirectory named `current`.
 
-- `postgresql_backup_rotate`: Boolean, defaults to `true`, which will cause the `current` directory to be renamed prior
-  to creating a new backup. If set to `false`, `current` will be deleted (this is useful if you are using snapshots or
-  some other means to archive previous backups).
-
-- `postgresql_backup_local_dir`: Filesystem path on the PostgreSQL server where backup scripts will be placed and
-  working WALs will be written prior to a WAL archive.
+- `postgresql_backup_local_dir`: Filesystem path on the PostgreSQL server where backup scripts will be placed.
 
 - `postgresql_backup_[hour|minute]`: Controls what time the cron job will run to perform a full backup. Defaults to 1:00
   AM.
@@ -102,16 +103,15 @@ Role Variables
 - `postgresql_backup_[day|month|weekday]`: Additional cron controls for when the full backup is performed (default:
   `*`).
 
-- `postgresql_backup_mail_recipient`: User or address that should receive mail from the backup scripts.
-
-- `postgresql_backup_remote_rsync_path`: Path to `rsync` on the remote system.
-
 - `postgresql_backup_post_command`: Arbitrary command to run after successful completion of a scheduled backup.
+
+Additional options pertaining to backups can be found in the [defaults file](defaults/main.yml).
 
 Dependencies
 ------------
 
-None
+Backup functionality requires Python 2.7 or 3.5+, psycopg2, and rsync. Note that if installing PGDG versions of
+PostgreSQL on Enterprise Linux, corresponding psycopg2 packages are available from the PGDG yum repositories.
 
 Example Playbook
 ----------------
@@ -179,4 +179,4 @@ License
 Author Information
 ------------------
 
-[Nate Coraor](https://github.com/natefoo)  
+The [Galaxy Community](https://galaxyproject.org/) and [contributors](https://github.com/galaxyproject/ansible-postgresql/graphs/contributors)

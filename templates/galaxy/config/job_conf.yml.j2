@@ -2,19 +2,29 @@ runners:
   local_runner:
     load: galaxy.jobs.runners.local:LocalJobRunner
     workers: 4
-  pulsar_remote:
+  pulsar_runner:
     load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-    galaxy_url: "https://{{ inventory_hostname }}"
-    amqp_url: "pyamqp://galaxy:{{ vault_rabbitmq_password_vhost }}@{{ inventory_hostname }}:5671/galaxy?ssl=1"
+    galaxy_url: "https://{{ rabbitmq_hostname }}"
+    amqp_url: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy }}@{{ rabbitmq_hostname }}:5671/galaxy?ssl=1"
     amqp_acknowledge: true
     amqp_ack_republish_time: 1200
     amqp_consumer_timeout: 2
     amqp_publish_retry: true
     amqp_publish_retry_max_retries: 60
     manager: _default_
+  pulsar_gpu_runner:
+    load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+    galaxy_url: "https://{{ rabbitmq_hostname }}"
+    amqp_url: "pyamqp://galaxy_gpu:{{ rabbitmq_users_password.galaxy_gpu }}@{{ rabbitmq_hostname }}:5671/galaxy_gpu?ssl=1"
+    amqp_acknowledge: true
+    amqp_ack_republish_time: 1200
+    amqp_consumer_timeout: 2
+    amqp_publish_retry: true
+    amqp_publish_retry_max_retries: 60
+    manager: drmaa_gpu
 
 execution:
-  default: singularity
+  default: pulsar
   environments:
     local_dest:
       runner: local_runner
@@ -32,18 +42,118 @@ execution:
       - name: SINGULARITY_TMPDIR
         value: /tmp
     pulsar_singularity:
-      runner: pulsar_remote
+      runner: pulsar_runner
       default_file_action: remote_transfer
       dependency_resolution: remote
-      jobs_directory: __PULSAR_JOBS_DIRECTORY__
+      jobs_directory: "/opt/pulsar/files/staging"
       persistence_directory: __PULSAR_PERSISTENCE_DIRECTORY__
       remote_metadata: false
       rewrite_parameters: true
       transport: curl
       outputs_to_working_directory: false
+    pulsar:
+      runner: pulsar_runner
+      default_file_action: remote_rsync_transfer
+      dependency_resolution: remote
+      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
+      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
+      #jobs_directory: "/opt/pulsar/no_drmaa_test/files/staging"
+      #persistence_directory: "/opt/pulsar/no_drmaa_test/files/persistent"
+      remote_metadata: false
+      rewrite_parameters: true
+      outputs_to_working_directory: false
+      submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
+      ## Following configuration works!
+      #singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro"
+      container_resolvers: 
+        - type: explicit_singularity
+        - type: mulled_singularity
+      ssh_user: {{ galaxy_user.name }}
+      ssh_host: {{ inventory_hostname }}
+      ssh_port: 22
+      ssh_key: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACAonATHbBRX3FMl1tbOgsoh2DKBTzrMWkAJnhtAMfX9TgAAAJh2JLntdiS5
+        7QAAAAtzc2gtZWQyNTUxOQAAACAonATHbBRX3FMl1tbOgsoh2DKBTzrMWkAJnhtAMfX9Tg
+        AAAEAjJEh7bxnKxWkbTld8BUKj8wEEMrAFpKcd5BW7csc4wSicBMdsFFfcUyXW1s6CyiHY
+        MoFPOsxaQAmeG0Ax9f1OAAAAEGdhbGF4eUB1c2VnYWxheHkBAgMEBQ==
+        -----END OPENSSH PRIVATE KEY-----
+      env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+      - name: LC_ALL
+        value: C
+      # The cache directory holds the docker containers that get converted
+      #- name: SINGULARITY_CACHEDIR
+      #  value: "/storage/praha5-elixir/home/galaxyeu/usegalaxy_data/cache/singularity"
+      # Singularity uses a temporary directory to build the squashfs filesystem
+      #- name: SINGULARITY_TMPDIR
+      #  value: "/storage/praha5-elixir/home/galaxyeu/usegalaxy_data/cache/singularity"
+      #- name: SINGULARITY_BINDPATH
+      #  value: "/storage/praha5-elixir/home/galaxyeu:/home/galaxyeu:rw, $SCRATCHDIR:/scratch"
+      - name: TMPDIR
+        value: "$SCRATCHDIR"
+      - name: TMP
+        value: "$SCRATCHDIR"
+      - name: TEMP
+        value: "$SCRATCHDIR"
+    pulsar_gpu:
+      runner: pulsar_gpu_runner
+      default_file_action: remote_rsync_transfer
+      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging" 
+      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persisted" 
+      dependency_resolution: none
+      remote_metadata: false 
+      rewrite_parameters: true
+      outputs_to_working_directory: false
+      singularity_enabled: true
+      singularity_run_extra_arguments: '--nv'
+      singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/storage/praha5-elixir/home/galaxyeu:/home/galaxyeu:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data:ro'
+      submit_native_specification: '-l select=1:ncpus=12:ngpus=1:mem=80gb:scratch_local=100gb:gpu_mem=8gb -l walltime=10:00:00 -q gpu' 
+      ssh_user: {{ galaxy_user.name }}
+      ssh_host: {{ inventory_hostname }}
+      ssh_port: 22
+      ssh_key: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACAonATHbBRX3FMl1tbOgsoh2DKBTzrMWkAJnhtAMfX9TgAAAJh2JLntdiS5
+        7QAAAAtzc2gtZWQyNTUxOQAAACAonATHbBRX3FMl1tbOgsoh2DKBTzrMWkAJnhtAMfX9Tg
+        AAAEAjJEh7bxnKxWkbTld8BUKj8wEEMrAFpKcd5BW7csc4wSicBMdsFFfcUyXW1s6CyiHY
+        MoFPOsxaQAmeG0Ax9f1OAAAAEGdhbGF4eUB1c2VnYWxheHkBAgMEBQ==
+        -----END OPENSSH PRIVATE KEY-----
+      env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+      - name: LC_ALL
+        value: C
+      # The cache directory holds the docker containers that get converted
+      #- name: SINGULARITY_CACHEDIR
+      #  value: "/storage/brno11-elixir/home/galaxyelixir/pulsar/singularity/cache"
+      # Singularity uses a temporary directory to build the squashfs filesystem
+      #- name: SINGULARITY_TMPDIR
+      #  value: "/storage/brno11-elixir/home/galaxyelixir/pulsar/singularity/tmp"
+      #- name: SINGULARITY_BINDPATH
+      #  value: "/storage/brno11-elixir/home/galaxyelixir:/home/galaxyelixir:rw, $SCRATCHDIR:/scratch"
+      # Alphafold specific variables
+      - name: ALPHAFOLD_DB
+        value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
+      #- name: ALPHAFOLD_DB_ROOT
+      #  value: "/storage/brno11-elixir/projects/alphafold"
+      # General variables
+      - name: TMPDIR
+        value: "$SCRATCHDIR"
+      - name: TMP
+        value: "$SCRATCHDIR"
+      - name: TEMP
+        value: "$SCRATCHDIR"
+      - name: NGPUS
+        value: "$PBS_NGPUS"
 
 tools:
 - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
   environment: local_dest
-- id: fastqc
-  environment: pulsar_singularity
+#- id: fastqc
+#  environment: pulsar_singularity
+- id: alphafold
+  environment: pulsar_gpu
