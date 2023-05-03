@@ -27,6 +27,6 @@
       become_user: "{{ galaxy_user.name }}"
     - geerlingguy.docker
     - usegalaxy_eu.rabbitmqserver
-     galaxyproject.nginx
-       - galaxyproject.tusd
-       - galaxyproject.cvmfs
+    - galaxyproject.nginx
+    - galaxyproject.tusd
+    - galaxyproject.cvmfs
