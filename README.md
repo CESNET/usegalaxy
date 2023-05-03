@@ -13,7 +13,7 @@ sudo apt-add-repository --yes --update ppa:ansible/ansible
 sudo apt install -y ansible
 ```
 
-Clone the repo and instal requireded galaxy roles.
+Clone the repo and instal required galaxy roles.
 ```
 git clone https://github.com/CESNET/usegalaxy.git
 cd usegalaxy
@@ -28,11 +28,13 @@ ansible-vault create group_vars/secret.yml
 ```
 The second command opens an editor wherein you should define variables eg.:
 ```
-vault_id_secret: BxI6zlQVhoHLPVf3gqQ
-vault_rabbitmq_password_vhost: "a-really-long-password-here"
-vault_rabbitmq_admin_password: "a-different-really-long-password"
+vault_id_secret: "a-long-random-value"
+rabbitmq_users_password:
+  mqadmin: "a-long-random-value"
+  galaxy: "a-long-random-value"
+  galaxy_gpu: "a-long-random-value"
 ```
-The value should be a long random value, which can be obtained by command `openssl rand -base64 24`
+The value should be a long random value, which can be obtained by command `openssl rand -base64 24`, though you should avoid having a `/` or `\` in your password as galaxy will interpret this as a path.
 
 Make sure you have these ports enabled on your machine:
 ```
