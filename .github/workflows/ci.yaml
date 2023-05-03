@@ -23,6 +23,9 @@ jobs:
       - name: Copy files to test instance and preserve secrets and hosts
         run: |
           rsync -rav * ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
-          scp ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy/hosts ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
-          scp ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy/.vault-password.txt ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
-          scp ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy/group_vars/secret.yml ubuntu@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}/group_vars
+          ssh ubuntu@usegalaxy-test.cerit-sc.cz 'cp ~/usegalaxy/hosts ~/usegalaxy-${{ steps.date.outputs.date }}'
+          ssh ubuntu@usegalaxy-test.cerit-sc.cz 'cp ~/usegalaxy/.vault-password.txt ~/usegalaxy-${{ steps.date.outputs.date }}'
+          ssh ubuntu@usegalaxy-test.cerit-sc.cz 'cp ~/usegalaxy/group_vars/secret.yml ~/usegalaxy-${{ steps.date.outputs.date }}/group_vars'
+      - name: Run playbook
+        run: |
+          ssh ubuntu@usegalaxy-test.cerit-sc.cz 'cd ~/usegalaxy && ansible-playbook galaxy.yml'
