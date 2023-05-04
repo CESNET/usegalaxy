@@ -57,7 +57,7 @@ None.
         certbot_auto_renew_user: your_username_here
         certbot_auto_renew_minute: 20
         certbot_auto_renew_hour: 5
-    
+        # certbot_agree_tos: "--agree-tos" # Uncomment me to agree
       roles:
         - geerlingguy.certbot
 
@@ -83,4 +83,5 @@ MIT / BSD
 
 ## Author Information
 
-This role was created in 2016 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
+- This role was created in 2016 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
+- It has been further modified and maintained by Galaxy Europe

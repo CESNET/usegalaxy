@@ -1,4 +1,17 @@
 ---
+- hosts: dbservers
+  become: true
+  become_user: root
+  pre_tasks:
+    - name: Install Dependencies
+      package:
+        name: 'acl'
+  roles:
+    - galaxyproject.postgresql
+    - role: galaxyproject.postgresql_objects
+      become: true
+      become_user: postgres
+
 - hosts: galaxyservers
   become: true
   become_user: root
@@ -7,26 +20,11 @@
   pre_tasks:
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'python3-psycopg2', 'tar', 'virtualenv']
-    - git:
-        repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
-        dest: /libraries/
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-venv', 'python3-setuptools']
   roles:
-    - galaxyproject.postgresql
-    - role: galaxyproject.postgresql_objects
-      become: true
-      become_user: postgres
-    - geerlingguy.pip
-    - gantsign.golang
-    - cyverse-ansible.singularity
     - galaxyproject.galaxy
-    - role: copy.files
+    - role: galaxyproject.miniconda
       become: true
-    - role: uchida.miniconda
-      become: true
-      become_user: "{{ galaxy_user.name }}"
-    - geerlingguy.docker
-    - usegalaxy_eu.rabbitmqserver
+      become_user: "{{ galaxy_user_name }}"
     - galaxyproject.nginx
-    - galaxyproject.tusd
-    - galaxyproject.cvmfs
+

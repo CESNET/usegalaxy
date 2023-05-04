@@ -1,3 +1,4 @@
 [galaxyservers]
-usegalaxy.cz ansible_connection=local ansible_user=ubuntu
-
+usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=ubuntu
+[dbservers:children]
+galaxyservers

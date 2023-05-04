@@ -1,3 +1,4 @@
 ### Values and Secrets ###
+roles/
 .vault-password.txt
 hosts

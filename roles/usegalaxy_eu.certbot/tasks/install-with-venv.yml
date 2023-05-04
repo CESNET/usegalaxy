@@ -1,9 +1,4 @@
 ---
-- name: Ensure virtualenv is present
-  ansible.builtin.package:
-    name: "{{ certbot_virtualenv_package_name | default('python-virtualenv') }}"
-    state: present
-
 - name: Install certbot into virtualenv
   ansible.builtin.pip:
     name:

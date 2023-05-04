@@ -37,6 +37,10 @@
         cp /etc/ssl/private/privkey.pem {{ certbot_share_key_dir }}/privkey-{{ user }}.pem
         chown {{ user }}: {{ certbot_share_key_dir }}/privkey-{{ user }}.pem
         {% endfor %}
+        {% for spec in certbot_share_key_ids %}
+        cp /etc/ssl/private/privkey.pem {{ certbot_share_key_dir }}/privkey-{{ spec }}.pem
+        chown {{ spec }} {{ certbot_share_key_dir }}/privkey-{{ spec }}.pem
+        {% endfor %}
         # Other
         {{ certbot_post_renewal }}
     dest: "{{ certbot_letsencrypt_dir }}/renewal-hooks/post/ansible.sh"

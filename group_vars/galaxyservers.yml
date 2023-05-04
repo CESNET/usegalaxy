@@ -1,117 +1,56 @@
 ---
-# Python 3 support
-pip_virtualenv_command: /usr/bin/python3 -m virtualenv # usegalaxy_eu.certbot, usegalaxy_eu.tiaas2, galaxyproject.galaxy
-certbot_virtualenv_package_name: python3-virtualenv    # usegalaxy_eu.certbot
-pip_package: python3-pip                               # geerlingguy.pip
-
-# PostgreSQL
-postgresql_objects_users:
-  - name: galaxy
-postgresql_objects_databases:
-  - name: galaxy
-    owner: galaxy
-# PostgreSQL Backups
-postgresql_backup_dir: /data/backups
-postgresql_backup_local_dir: "{{ '~postgres' | expanduser }}/backups"
-
 # Galaxy
-galaxy_create_user: true
-galaxy_separate_privileges: true
-galaxy_manage_paths: true
+galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
+galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
+galaxy_manage_paths: true # False by default as your administrator might e.g. have root_squash enabled on NFS. Here we can create the directories so it's fine.
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
-galaxy_user: {name: galaxy, shell: /bin/bash}
-galaxy_commit_id: b502bd0a786ca7089d079919491a5d0c317b209a # release_22.05
+galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
+galaxy_commit_id: release_23.0
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 4.7.12
-miniconda_manage_dependencies: false
+miniconda_version: 4.12.0
+miniconda_channels: ['conda-forge', 'defaults']
 
 galaxy_config:
   galaxy:
-    # Enables and disables OpenID Connect (OIDC) support.
-    enable_oidc: true
-    # Sets the path to OIDC configuration file.
-    oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
-    # Sets the path to OIDC backends configuration file.
-    oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
-    tus_upload_store: /database/tus
-    library_import_dir: /libraries/admin
-    user_library_import_dir: /libraries/user
-    dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
-    containers_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
-    tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
-#    brand: "🧬🔬🚀"
-    brand: "e-infra.cz"
-    admin_users: "admin@example.org,325073@muni.cz,demko@cesnet.cz"
-    database_connection: "postgresql:///galaxy?host=/var/run/postgresql"
-    file_path: /database
-    job_working_directory: "/database/jobs"
-    check_migrate_tools: false
-    tool_data_path: "{{ galaxy_mutable_data_dir }}/tool-data"
+    # Main Configuration
+    admin_users:
+    - admin@example.org
+    database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
+    file_path: /data/datasets
+    job_working_directory: /data/jobs
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
-    job_config_file: "{{ galaxy_config_dir }}/job_conf.yml"
-    # SQL Performance
-    database_engine_option_server_side_cursors: true
-    slow_query_log_threshold: 5
-    enable_per_request_sql_debugging: true
-    # File serving Performance
-    #nginx_x_accel_redirect_base: /_x_accel_redirect
-    # Automation / Ease of Use / User-facing features
-    watch_job_rules: 'auto'
-    allow_path_paste: true
-    enable_quotas: true
-    allow_user_deletion: true
-    show_welcome_with_login: true
-    expose_user_name: true
-    expose_dataset_path: true
-    expose_potentially_sensitive_job_metrics: true
-    # NFS workarounds
-    retry_job_output_collection: 3
-    # Debugging
-    cleanup_job: onsuccess
-    allow_user_impersonation: true
-    # Tool security
-    outputs_to_working_directory: true
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
-    app_server: gunicorn
+    galaxy_user: "{{ galaxy_user_name }}"
+    virtualenv: "{{ galaxy_venv_dir }}"
     gunicorn:
       # listening options
       bind: "unix:{{ galaxy_mutable_config_dir }}/gunicorn.sock"
       # performance options
       workers: 2
       # Other options that will be passed to gunicorn
+      # This permits setting of 'secure' headers like REMOTE_USER (and friends)
+      # https://docs.gunicorn.org/en/stable/settings.html#forwarded-allow-ips
       extra_args: '--forwarded-allow-ips="*"'
+      # This lets Gunicorn start Galaxy completely before forking which is faster.
+      # https://docs.gunicorn.org/en/stable/settings.html#preload-app
       preload: true
     celery:
       concurrency: 2
       loglevel: DEBUG
     handlers:
       handler:
-        processes: 3
+        processes: 2
         pools:
-          - job-handler
-          - workflow-scheduler
+          - job-handlers
+          - workflow-schedulers
 
-galaxy_config_templates:
-  - src: templates/galaxy/config/job_conf.yml.j2
-    dest: "{{ galaxy_config.galaxy.job_config_file }}"
-  - src: templates/galaxy/config/container_resolvers_conf.xml.j2
-    dest: "{{ galaxy_config.galaxy.containers_resolvers_config_file }}"
-  - src: templates/galaxy/config/dependency_resolvers_conf.xml
-    dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
-  - src: templates/galaxy/config/oidc_config.xml
-    dest: "{{ galaxy_config.galaxy.oidc_config_file }}"
-  - src: templates/galaxy/config/oidc_backends_config.xml
-    dest: "{{ galaxy_config.galaxy.oidc_backends_config_file }}"
-  - src: templates/galaxy/static/welcome.html
-    dest: "{{ galaxy_config_dir }}"
-
-# systemd
-galaxy_manage_systemd: true
+galaxy_extra_dirs:
+  - /data
 
 # Certbot
 certbot_auto_renew_hour: "{{ 23 |random(seed=inventory_hostname)  }}"
@@ -123,12 +62,9 @@ certbot_auto_renew_user: root
 certbot_environment: production
 certbot_well_known_root: /srv/nginx/_well-known_root
 certbot_share_key_users:
-  - nginx
-  - rabbitmq
+  - www-data
 certbot_post_renewal: |
     systemctl restart nginx || true
-    docker restart rabbit_hole || true
-#    systemctl restart rabbitmq-server || true
 certbot_domains:
  - "{{ inventory_hostname }}"
 certbot_agree_tos: --agree-tos
@@ -168,76 +104,3 @@ nginx_ssl_role: usegalaxy_eu.certbot
 nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
 nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
 
-# Golang
-golang_gopath: '/opt/workspace-go'
-# Singularity target version
-singularity_version: "3.7.4"
-singularity_go_path: "{{ golang_install_dir }}"
-
-
-#Install pip docker package for ansible
-pip_install_packages:
-  - name: docker
-# RabbitMQ
-rabbitmq_hostname: "{{ inventory_hostname }}"
-#rabbitmq_hostname: "usegalaxy.cerit-sc.cz"
-rabbitmq_container:
-  name: rabbit_hole
-  image: rabbitmq:3.11
-  hostname: "{{ inventory_hostname }}"
-
-rabbitmq_plugins:
-  - rabbitmq_management
-
-rabbitmq_config:
-  consumer_timeout: 3600000 # one hour in milliseconds
-  listeners:
-    tcp: none
-  ssl_listeners:
-    default: 5671
-  ssl_options:
-    verify: verify_peer
-    cacertfile: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-    certfile: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
-    keyfile: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
-    fail_if_no_peer_cert: 'false'
-  management_agent:
-    disable_metrics_collector: "false"
-
-rabbitmq_vhosts:
-  - galaxy
-
-rabbitmq_users:
-  - user: ubuntu
-    password: "{{ rabbitmq_users_password.mqadmin }}"
-    tags: administrator
-    vhost: /
-  - user: galaxy
-    password: "{{ rabbitmq_users_password.galaxy }}"
-    vhost: galaxy
-  - user: galaxy_gpu
-    password: "{{ rabbitmq_users_password.galaxy_gpu }}"
-    vhost: galaxy_gpu
-
-rabbitmq_container_standalone_setup_details:
-  volumes:
-    - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
-    - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
-    - /etc/letsencrypt:/etc/letsencrypt:ro
-    - /etc/pki:/etc/pki:ro
-  ports:
-    - 15672:15672
-    - 5671:5671
-
-# TUS
-galaxy_tusd_port: 1080
-tusd_instances:
-  - name: main
-    user: "{{ galaxy_user.name }}"
-    group: "galaxy"
-    args:
-      - "-host=localhost"
-      - "-port={{ galaxy_tusd_port }}"
-      - "-upload-dir={{ galaxy_config.galaxy.tus_upload_store }}"
-      - "-hooks-http=https://{{ inventory_hostname }}/api/upload/hooks"
-      - "-hooks-http-forward-headers=X-Api-Key,Cookie"
