@@ -73,7 +73,14 @@ The api key can be found in the User -> Preferences -> Manage API Key in Galaxy 
 
 Later we should use this [role](https://github.com/galaxyproject/ansible-galaxy-tools) to automate this, but there are too many tools to be installed and it is very inpractical for testing purposes. 
 
-## Found bugs
+## Notes
 
-On ubuntu 20.04 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therfore playbook ends in error.
-- on ubuntu 22.04 upload didn't work at all when tusd was used.
+On ubuntu < 22.04 and Debian < 12 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therfore playbook ends in error.
+- in `roles/galaxyproject.tusd/defaults/main.yml` you have to set the `tusd_version:` to 'v1.6.0' (tested, possibly higher)
+
+On Debian 11 the default version of `ansible` is 2.10.08 which fails to extract binaries for TUSd.
+- workaround: 
+  - `sudo vim /etc/apt/sources.list` add this line : `deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main`
+  - then `sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367`
+  - followed by `sudo apt-get update` and `sudo apt-get install ansible -y`
+- Note that you might need to `sudo apt remove ansible` `sudo apt autoremove` before you try to install ansible.
