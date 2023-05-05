@@ -17,7 +17,7 @@
 # TUS (uploads)
 - name: galaxyproject.tusd
   version: 0.0.1
-# CVMFS Support
+# CVMFS Support role
 - src: galaxyproject.cvmfs
   version: 0.2.21
 
