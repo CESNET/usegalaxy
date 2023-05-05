@@ -1,0 +1,6 @@
+---
+gxadmin_dir: "/srv/gxadmin"
+gxadmin_bin_dir: "/usr/local/bin"
+gxadmin_config_dir: "~/.config"
+gxadmin_create_bin_dir: true
+gxadmin_repo: "https://github.com/galaxyproject/gxadmin.git"

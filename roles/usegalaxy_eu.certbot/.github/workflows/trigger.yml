@@ -1,0 +1,37 @@
+---
+# This workflow requires a GALAXY_API_KEY secret present in the GitHub
+# repository or organization.
+#
+# See: https://github.com/marketplace/actions/publish-ansible-role-to-galaxy
+# See: https://github.com/ansible/galaxy/issues/46
+#
+# Note on the file name:
+#   Reminding me (@hexylena) to make a release of a role was the last thing
+#   @Slugger70 asked me our group chat. I'd forgotten to do it and he was
+#   waiting on me for it, well, here's to you mate, none of us can forget to
+#   make a point release again.
+
+name: "Trigger Ansible Galaxy import"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible.
+        run: pip3 install ansible-base
+
+      - name: Trigger a new import on Galaxy.
+        run: |
+          org=$(echo ${{ github.repository }} | cut -d/ -f1)
+          repo=$(echo ${{ github.repository }} | cut -d/ -f2)
+          key=${{ secrets.GALAXY_API_KEY }}
+          ansible-galaxy role import --api-key $key $org $repo --branch main

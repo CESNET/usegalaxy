@@ -1,0 +1,7 @@
+local_cats() { ## : Makes cat noises
+	handle_help "$@" <<-EOF
+		Here is some documentation on this function
+	EOF
+
+	echo "Meow"
+}
