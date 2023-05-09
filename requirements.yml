@@ -23,4 +23,6 @@
 # Singularity/Apptainer
 - src: usegalaxy_eu.apptainer
   version: 0.0.1
-
+# TPV Linting
+- name: usegalaxy_eu.tpv_auto_lint
+  version: 0.4.4

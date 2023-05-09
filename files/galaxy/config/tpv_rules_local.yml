@@ -1,0 +1,58 @@
+global:
+  default_inherits: default
+
+tools:
+  default:
+    abstract: true
+    cores: 1
+    mem: cores * 4
+  .*testing.*:
+    cores: 2
+    mem: cores * 4
+    params:
+      walltime: 8
+    rules:
+      - id: admin_only_testing_tool
+        if: |
+          # Only allow the tool to be executed if the user is an admin
+          admin_users = app.config.admin_users
+          # last line in block must evaluate to a value - which determines whether the TPV if conditional matches or not
+          not user or user.email not in admin_users
+        fail: Unauthorized. Only admins can execute this tool.
+
+      - id: resource_params_defined
+        if: |
+          param_dict = job.get_param_values(app)
+          param_dict.get('__job_resource', {}).get('__job_resource__select') == 'yes'
+        cores: int(job.get_param_values(app)['__job_resource']['cores'])
+        params:
+           walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
+
+destinations:
+  local_env:
+    runner: local_runner
+    max_accepted_cores: 1
+    params:
+      tmp_dir: true
+  singularity:
+    runner: local_runner
+    max_accepted_cores: 1
+    params:
+      singularity_enabled: true
+    env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+      LC_ALL: C
+      # The cache directory holds the docker containers that get converted
+      SINGULARITY_CACHEDIR: /tmp/singularity
+      # Singularity uses a temporary directory to build the squashfs filesystem
+      APPTAINER_TMPDIR: /tmp
+  slurm:
+    inherits: singularity
+    runner: slurm
+    max_accepted_cores: 24
+    max_accepted_mem: 256
+    max_cores: 2
+    max_mem: 8
+    params:
+      native_specification: --nodes=1 --ntasks=1 --cpus-per-task={cores} --time={params['walltime']}:00:00
+
