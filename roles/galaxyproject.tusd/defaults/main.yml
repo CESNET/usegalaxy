@@ -2,7 +2,7 @@
 
 # Use 'latest' to install the latest (stable) release from https://github.com/tus/tusd/releases/, or a valid tag for a
 # specific tagged release (e.g. v1.7.3)
-tusd_version: v1.6.0 # latest
+tusd_version: v1.8.0 # latest
 
 # Path of the tusd binary
 tusd_path: /usr/local/sbin/tusd

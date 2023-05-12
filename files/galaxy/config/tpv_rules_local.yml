@@ -27,6 +27,14 @@ tools:
         cores: int(job.get_param_values(app)['__job_resource']['cores'])
         params:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
+  .*/bwa/.*:
+    scheduling:
+      require:
+        - pulsar
+  .*/bwa_mem/.*:
+    scheduling:
+      require:
+        - pulsar
 
 destinations:
   local_env:
@@ -55,4 +63,17 @@ destinations:
     max_mem: 8
     params:
       native_specification: --nodes=1 --ntasks=1 --cpus-per-task={cores} --time={params['walltime']}:00:00
-
+  pulsar:
+    runner: pulsar_runner
+    params:
+      default_file_action: remote_transfer
+      dependency_resolution: remote
+      jobs_directory: /storage/praha5-elixir/home/galaxyeu/pulsar-test/files/staging
+      persistence_directory: /storage/praha5-elixir/home/galaxyeu/pulsar-test/files/persisted_data
+      remote_metadata: false
+      rewrite_parameters: true
+      transport: curl
+      outputs_to_working_directory: false
+    scheduling:
+      require:
+        - pulsar

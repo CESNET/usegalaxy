@@ -4,3 +4,7 @@
 - include_tasks: start.yml
 
 - include_tasks: configure.yml
+
+- name: Create users and vhosts
+  include_tasks: users_vhosts.yml
+  loop: "{{ rabbitmq_users }}"

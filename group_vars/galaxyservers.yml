@@ -19,6 +19,16 @@ galaxy_job_config:
     local_runner:
       load: galaxy.jobs.runners.local:LocalJobRunner
       workers: 4
+    pulsar_runner:
+      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+      galaxy_url: "https://{{ inventory_hostname }}"
+      amqp_url: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy }}@{{ inventory_hostname }}:5671/galaxy?ssl=1"
+      amqp_acknowledge: true
+      amqp_ack_republish_time: 1200
+      amqp_consumer_timeout: 2
+      amqp_publish_retry: true
+      amqp_publish_retry_max_retries: 60
+      manager: _default_
   handling:
     assign: ['db-skip-locked']
   execution:
@@ -48,6 +58,52 @@ galaxy_job_config:
         tpv_config_files:
           - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
           - "{{ tpv_config_dir }}/tpv_rules_local.yml"
+      pulsar:
+        runner: pulsar_runner
+        default_file_action: remote_rsync_transfer
+        dependency_resolution: remote
+        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-test/files/staging"
+        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-test/files/persistent"
+        remote_metadata: false
+        rewrite_parameters: true
+        outputs_to_working_directory: false
+        submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
+        singularity_enabled: true
+        singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
+        ## Following configuration works!
+        #singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro"
+        container_resolvers: 
+          - type: explicit_singularity
+          - type: mulled_singularity
+        ssh_user: "{{ galaxy_user.name }}"
+        ssh_host: "{{ inventory_hostname }}"
+        ssh_port: 22
+        ssh_key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+          QyNTUxOQAAACAonATHbBRX3FMl1tbOgsoh2DKBTzrMWkAJnhtAMfX9TgAAAJh2JLntdiS5
+          7QAAAAtzc2gtZWQyNTUxOQAAACAonATHbBRX3FMl1tbOgsoh2DKBTzrMWkAJnhtAMfX9Tg
+          AAAEAjJEh7bxnKxWkbTld8BUKj8wEEMrAFpKcd5BW7csc4wSicBMdsFFfcUyXW1s6CyiHY
+          MoFPOsxaQAmeG0Ax9f1OAAAAEGdhbGF4eUB1c2VnYWxheHkBAgMEBQ==
+          -----END OPENSSH PRIVATE KEY-----
+        env:
+        # Ensuring a consistent collation environment is good for reproducibility.
+        - name: LC_ALL
+          value: C
+        # The cache directory holds the docker containers that get converted
+        #- name: SINGULARITY_CACHEDIR
+        #  value: "/storage/praha5-elixir/home/galaxyeu/usegalaxy_data/cache/singularity"
+        # Singularity uses a temporary directory to build the squashfs filesystem
+        #- name: SINGULARITY_TMPDIR
+        #  value: "/storage/praha5-elixir/home/galaxyeu/usegalaxy_data/cache/singularity"
+        #- name: SINGULARITY_BINDPATH
+        #  value: "/storage/praha5-elixir/home/galaxyeu:/home/galaxyeu:rw, $SCRATCHDIR:/scratch"
+        - name: TMPDIR
+          value: "$SCRATCHDIR"
+        - name: TMP
+          value: "$SCRATCHDIR"
+        - name: TEMP
+          value: "$SCRATCHDIR"
   resources:
     default: default
     groups:
@@ -180,8 +236,11 @@ certbot_environment: production
 certbot_well_known_root: /srv/nginx/_well-known_root
 certbot_share_key_users:
   - www-data
+certbot_share_key_ids:
+  - "999:999"
 certbot_post_renewal: |
     systemctl restart nginx || true
+    docker restart rabbit_hole || true
 certbot_domains:
  - "{{ inventory_hostname }}"
 certbot_agree_tos: --agree-tos
@@ -220,6 +279,47 @@ nginx_conf_http:
 nginx_ssl_role: usegalaxy_eu.certbot
 nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
 nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+
+#Install pip docker package for ansible
+pip_install_packages:
+  - name: docker
+# RabbitMQ
+rabbitmq_container:
+  name: rabbit_hole
+  image: rabbitmq:3.11-management
+  hostname: "{{ inventory_hostname }}"
+
+rabbitmq_plugins:
+  - rabbitmq_management
+
+rabbitmq_config:
+  listeners:
+    tcp: none
+  ssl_listeners:
+    default: 5671
+  ssl_options:
+    verify: verify_peer
+    cacertfile: /etc/ssl/certs/fullchain.pem
+    certfile: /etc/ssl/certs/cert.pem
+    keyfile: /etc/ssl/user/privkey-999:999.pem
+    fail_if_no_peer_cert: 'false'
+  management_agent:
+    disable_metrics_collector: "false"
+  management:
+    disable_stats: 'false'
+  consumer_timeout: 21600000 # 6 hours in milliseconds
+
+rabbitmq_vhosts:
+  - galaxy
+
+rabbitmq_users:
+  - user: debian
+    password: "{{ rabbitmq_users_password.mqadmin }}"
+    tags: administrator
+    vhost: /
+  - user: galaxy
+    password: "{{ rabbitmq_users_password.galaxy }}"
+    vhost: galaxy
 
 # TUS
 galaxy_tusd_port: 1080

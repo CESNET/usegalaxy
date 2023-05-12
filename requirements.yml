@@ -26,3 +26,8 @@
 # TPV Linting
 - name: usegalaxy_eu.tpv_auto_lint
   version: 0.4.4
+# RabbitMQ for Pulsar
+- src: geerlingguy.docker
+  version: 6.1.0
+- src: usegalaxy_eu.rabbitmqserver
+  version: 1.4.4

@@ -1,0 +1,40 @@
+---
+- name: Create vhosts
+  community.docker.docker_container_exec:
+    container: "{{ rabbitmq_container.name }}"
+    command: "rabbitmqctl add_vhost {{ item.vhost }}"
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Check if user is OK
+  community.docker.docker_container_exec:
+    container: "{{ rabbitmq_container.name }}"
+    command: 'rabbitmqctl authenticate_user "{{ item.user }}" "{{ item.password }}"'
+  ignore_errors: true
+  register: user_ok
+
+- name: Create user if authentication failed
+  community.docker.docker_container_exec:
+    container: "{{ rabbitmq_container.name }}"
+    command: 'rabbitmqctl delete_user "{{ item.user }}"'
+  ignore_errors: true
+  when: user_ok.rc > 0
+
+- name: Create user if authentication failed
+  community.docker.docker_container_exec:
+    container: "{{ rabbitmq_container.name }}"
+    command: 'rabbitmqctl add_user "{{ item.user }}" "{{ item.password }}"'
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: user_ok.rc > 0
+
+- name: Set permission on users
+  community.docker.docker_container_exec:
+    container: "{{ rabbitmq_container.name }}"
+    command: 'rabbitmqctl set_permissions -p "{{ item.vhost }}" "{{ item.user }}" ".*" ".*" ".*"'
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Set tags on user
+  community.docker.docker_container_exec:
+    container: "{{ rabbitmq_container.name }}"
+    command: 'rabbitmqctl set_user_tags "{{ item.user }}" ""{{ item.tags }}'
+  when: "item.tags is defined"
+  ignore_errors: "{{ ansible_check_mode }}"
