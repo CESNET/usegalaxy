@@ -47,7 +47,7 @@
     - usegalaxy_eu.rabbitmqserver
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
-    - galaxyproject.gxadmin
+    - dj-wasabi.telegraf
   post_tasks:
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:

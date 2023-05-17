@@ -169,6 +169,9 @@ galaxy_config:
     celery_conf:
       result_backend: "redis://localhost:6379/0"
     enable_celery_tasks: true
+    # Monitoring
+    statsd_host: localhost
+    statsd_influxdb: true
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
@@ -373,3 +376,19 @@ flower_ui_users:
 
 flower_environment_variables:
   GALAXY_CONFIG_FILE: "{{ galaxy_config_file }}"
+
+# Telegraf
+telegraf_plugins_extra:
+  listen_galaxy_routes:
+    plugin: "statsd"
+    config:
+      - service_address = ":8125"
+      - metric_separator = "."
+      - allowed_pending_messages = 10000
+  monitor_galaxy_queue:
+    plugin: "exec"
+    config:
+      - commands = ["/usr/bin/env PGDATABASE=galaxy /usr/local/bin/gxadmin iquery queue-overview --short-tool-id"]
+      - timeout = "10s"
+      - data_format = "influx"
+      - interval = "15s"

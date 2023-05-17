@@ -89,3 +89,4 @@ On Debian 11 the default version of `ansible` is 2.10.08 which fails to extract 
 
 Use `sudo apt install python3-docker` before running the `usegalaxy.rabbitmqserver` role.
 
+For influxdb apt key error: https://www.influxdata.com/blog/linux-package-signing-key-rotation/

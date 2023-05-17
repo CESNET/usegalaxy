@@ -2,3 +2,5 @@
 usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
 [dbservers:children]
 galaxyservers
+[monitoring]
+usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
