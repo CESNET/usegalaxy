@@ -1,0 +1,25 @@
+---
+- name: Set up app
+  hosts: all
+  tasks:
+    - name: Ensure group exists
+      ansible.builtin.group:
+        name: galaxy
+        state: present
+
+    - name: Ensure user exists
+      ansible.builtin.user:
+        name: galaxy
+        groups: galaxy
+        append: yes
+
+    - name: Create directory
+      file:
+        path: /opt/galaxy/server/lib/
+        state: directory
+    - name: Copy app
+      copy:
+        src: ./files/tasks.py
+        dest: /opt/galaxy/server/lib/tasks.py
+        owner: galaxy
+        group: galaxy

@@ -6,6 +6,9 @@ tools:
     abstract: true
     cores: 1
     mem: cores * 4
+    scheduling:
+      require:
+        - pulsar
   .*testing.*:
     cores: 2
     mem: cores * 4
@@ -27,14 +30,14 @@ tools:
         cores: int(job.get_param_values(app)['__job_resource']['cores'])
         params:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
-  .*/bwa/.*:
-    scheduling:
-      require:
-        - pulsar
-  .*/bwa_mem/.*:
-    scheduling:
-      require:
-        - pulsar
+#  .*/bwa/.*:
+#    scheduling:
+#      require:
+#        - pulsar
+#  .*/bwa_mem/.*:
+#    scheduling:
+#      require:
+#        - pulsar
 
 destinations:
   local_env:
@@ -54,17 +57,14 @@ destinations:
       SINGULARITY_CACHEDIR: /tmp/singularity
       # Singularity uses a temporary directory to build the squashfs filesystem
       APPTAINER_TMPDIR: /tmp
-  slurm:
-    inherits: singularity
-    runner: slurm
-    max_accepted_cores: 24
-    max_accepted_mem: 256
-    max_cores: 2
-    max_mem: 8
-    params:
-      native_specification: --nodes=1 --ntasks=1 --cpus-per-task={cores} --time={params['walltime']}:00:00
   pulsar:
     runner: pulsar_runner
+    max_accepted_cores: 128
+    max_accepted_mem: 512
+    max_accepted_gpus: 2
+    max_cores: 16
+    max_mem: 64
+    max_gpus: 1
     params:
       default_file_action: remote_transfer
       dependency_resolution: remote

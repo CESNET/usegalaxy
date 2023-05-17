@@ -50,14 +50,6 @@ galaxy_job_config:
         # Apptainer uses a temporary directory to build the squashfs filesystem
         - name: APPTAINER_TMPDIR
           value: /tmp
-      tpv_dispatcher:
-        runner: dynamic
-        type: python
-        function: map_tool_to_destination
-        rules_module: tpv.rules
-        tpv_config_files:
-          - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
-          - "{{ tpv_config_dir }}/tpv_rules_local.yml"
       pulsar:
         runner: pulsar_runner
         default_file_action: remote_rsync_transfer
@@ -104,6 +96,14 @@ galaxy_job_config:
           value: "$SCRATCHDIR"
         - name: TEMP
           value: "$SCRATCHDIR"
+      tpv_dispatcher:
+        runner: dynamic
+        type: python
+        function: map_tool_to_destination
+        rules_module: tpv.rules
+        tpv_config_files:
+          - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
+          - "{{ tpv_config_dir }}/tpv_rules_local.yml"
   resources:
     default: default
     groups:
@@ -123,6 +123,7 @@ galaxy_config:
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users:
     - admin@example.org
+    - 499542@muni.cz
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: /data/datasets
     job_working_directory: /data/jobs
@@ -163,6 +164,11 @@ galaxy_config:
     # Data Library Directories
     library_import_dir: /libraries/admin
     user_library_import_dir: /libraries/user
+    # Celery
+    amqp_internal_connection: "pyamqp://galaxy:{{ vault_rabbitmq_password_galaxy }}@localhost:5671/galaxy_internal?ssl=1"
+    celery_conf:
+      result_backend: "redis://localhost:6379/0"
+    enable_celery_tasks: true
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
@@ -181,6 +187,11 @@ galaxy_config:
       # https://docs.gunicorn.org/en/stable/settings.html#preload-app
       preload: true
     celery:
+      enable_beat: true
+      enable: true
+      queues: celery,galaxy.internal,galaxy.external
+      pool: threads
+      memory_limit: 2
       concurrency: 2
       loglevel: DEBUG
     tusd:
@@ -311,6 +322,7 @@ rabbitmq_config:
 
 rabbitmq_vhosts:
   - galaxy
+  - galaxy_internal
 
 rabbitmq_users:
   - user: debian
@@ -320,7 +332,37 @@ rabbitmq_users:
   - user: galaxy
     password: "{{ rabbitmq_users_password.galaxy }}"
     vhost: galaxy
+  - user: galaxy
+    password: "{{ vault_rabbitmq_password_galaxy }}"
+    vhost: galaxy_internal
+  - user: flower
+    password: "{{ vault_rabbitmq_password_flower }}"
+    tags: administrator
+    vhost: galaxy_internal
 
 # TUS
 galaxy_tusd_port: 1080
 galaxy_tus_upload_store: /data/tus
+
+#Redis
+galaxy_additional_venv_packages:
+  - redis
+
+# Flower
+flower_python_version: python3
+flower_app_dir: "{{ galaxy_root }}"
+flower_python_path: "{{ galaxy_root }}/server/lib"
+flower_venv_dir: "{{ galaxy_venv_dir }}"
+flower_app_name: galaxy.celery
+flower_db_file: "{{ galaxy_root }}/var/flower.db"
+flower_persistent: true
+flower_broker_api: "https://flower:{{ vault_rabbitmq_password_flower }}@localhost:5671/api/"
+flower_broker_url: "amqp://flower:{{ vault_rabbitmq_password_flower }}@localhost:5671/galaxy_internal?ssl=true"
+flower_proxy_prefix: /flower
+
+flower_ui_users:
+  - name: admin
+    password: "{{ vault_flower_user_password}}"
+
+flower_environment_variables:
+  GALAXY_CONFIG_FILE: "{{ galaxy_config_file }}"

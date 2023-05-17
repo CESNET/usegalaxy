@@ -40,11 +40,14 @@
     - role: galaxyproject.miniconda
       become: true
       become_user: "{{ galaxy_user_name }}"
+    - geerlingguy.redis
+    - usegalaxy_eu.flower
     - galaxyproject.nginx
     - geerlingguy.docker
     - usegalaxy_eu.rabbitmqserver
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
+    - galaxyproject.gxadmin
   post_tasks:
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:

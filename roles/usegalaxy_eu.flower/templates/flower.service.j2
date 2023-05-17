@@ -1,0 +1,32 @@
+[Unit]
+Description=Galaxy Celery
+After=network.target
+After=time-sync.target
+
+[Service]
+UMask=022
+Type=simple
+User={{ flower_user }}
+Group={{ flower_group }}
+TimeoutStartSec=10
+WorkingDirectory={{ flower_app_dir }}
+ExecStart={{ flower_venv_dir }}/bin/celery {% if flower_broker_url %}--broker={{ flower_broker_url }}{% endif %} {% if flower_app_name %}-A {{ flower_app_name }}{% endif %} flower {% if flower_conf_dir %}--conf={{ flower_conf_dir }}/flowerconfig.py{% endif %} {% if flower_log_file %}--log_file_prefix={{ flower_log_file }} {% endif %} {% if flower_proxy_prefix is defined %}--url_prefix={{ flower_proxy_prefix }} {% endif %}
+
+{% if flower_galaxy_conf %}Environment=GALAXY_CONFIG_FILE={{ flower_galaxy_conf }}{% endif %}
+
+{% if flower_python_path %}Environment=PYTHONPATH={{ flower_python_path }}{% endif %}
+
+{% for item in flower_environment_variables %}
+Environment={{ item }}={{ flower_environment_variables[item] }}
+{% endfor %}
+
+MemoryLimit={{ flower_mem_limit }}
+
+Restart=always
+
+MemoryAccounting=yes
+CPUAccounting=yes
+BlockIOAccounting=yes
+
+[Install]
+WantedBy=multi-user.target
