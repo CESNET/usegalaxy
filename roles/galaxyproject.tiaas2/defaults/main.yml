@@ -1,0 +1,133 @@
+# TIaaS Configuration
+tiaas_galaxy_db_url: postgres
+tiaas_galaxy_idsecret: '{{ galaxy_config.galaxy.id_secret | default("USING THE DEFAULT IS NOT SECURE!") }}'
+tiaas_show_advertising: true
+
+# Ask for consent to retain contact info for extra time
+tiaas_retain_contact_require_consent: true
+# Additional months to retain contact info
+tiaas_retain_contact_extra_months: "{{ retain_extra_time | default(12) }}"
+
+# TIaaS Deployment
+tiaas_dir: /opt/tiaas
+tiaas_code_dir: "{{ tiaas_dir }}/code"
+tiaas_config_dir: "{{ tiaas_dir }}/config"
+tiaas_static_dir: "{{ tiaas_dir }}/static"
+tiaas_venv_dir: "{{ tiaas_dir }}/venv"
+tiaas_socket: /run/tiaas.sock
+tiaas_socket_bind: "unix:{{ tiaas_socket }}"
+tiaas_socket_listen: "unix:{{ tiaas_socket }}"
+tiaas_user: tiaas
+tiaas_group: tiaas
+tiaas_repo: "https://github.com/galaxyproject/tiaas2"
+tiaas_version: main
+tiaas_galaxy_stylesheet: "{{ galaxy_server_dir }}/static/style/base.css"
+tiaas_worker_threads: 1
+tiaas_extra_args: ""
+
+# If you run galaxy under a prefix, e.g. /galaxy, please set that prefix value here **without** a trailing slash
+tiaas_galaxy_prefix: ""
+
+# Create a cron job to disassociate training roles from groups after trainings have expired, set to `false` to disable
+tiaas_disassociate_training_roles:
+  hour: 0      # optional, defaults to 0
+  minute: 0    # optional, defaults to 0
+
+# Galaxy DB access
+tiaas_galaxy_db_name: "galaxy"
+tiaas_galaxy_db_user: ""
+tiaas_galaxy_db_pass: ""
+tiaas_galaxy_db_host: "/var/run/postgresql/"
+tiaas_galaxy_db_port: ""
+
+# TIaaS DB access (default is SQLite in {{ tiaas_dir }}/db.sqlite3)
+tiaas_tiaas_use_sqlite: true  # disable and set options below as needed for PostgreSQL
+tiaas_tiaas_db_name: "tiaas"
+tiaas_tiaas_db_user: ""
+tiaas_tiaas_db_pass: ""
+tiaas_tiaas_db_host: "/var/run/postgresql/"
+tiaas_tiaas_db_port: ""
+
+tiaas_show_username: false
+tiaas_send_email_to_requester: false
+tiaas_late_request_prevention_days: 10
+
+tiaas_other_config: ""
+tiaas_info:
+  owner: default                                 # e.g. "Galaxy Antarctica"
+  owner_email: admin@localhost
+  owner_site: "http://{{ inventory_hostname }}"  # Your galaxy website
+  domain: "{{ inventory_hostname }}"             # Your galaxy domain name
+
+tiaas_create_group: true
+tiaas_create_user: true
+tiaas_force_checkout: true
+tiaas_secret_key: "Using the default is bad news bears"
+
+tiaas_admin_user: admin
+tiaas_admin_pass: admin
+
+tiaas_statsd_host: null
+tiaas_statsd_prefix: tiaas
+
+# Add these lines to playbook vars to override default tiaas files with
+# playbook files:
+
+# Copy TIAAS HTML template snippets across:
+# N.B. Don't use these as ansible templates, Django template tags will be
+#   interpreted as Jinja tags and cause errors!
+# tiaas_templates_dir: files/tiaas/html
+
+# Put static files required by above templates in here:
+# tiaas_extra_static_dir: files/tiaas/static
+
+tiaas_html_templates:
+  - src: "footer.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/footer.html"
+  - src: "about/1_intro.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/about/1_intro.html"
+  - src: "about/2_why_tiaas_funding.txt"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/about/2_why_tiaas_funding.txt"
+  - src: "about/3_eligibility.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/about/3_eligibility.html"
+  - src: "about/4_how_does_it_work.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/about/4_how_does_it_work.html"
+  - src: "calendar/intro.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/calendar/intro.html"
+  - src: "register/1_intro.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/register/1_intro.html"
+  - src: "register/2_about_the_course.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/register/2_about_the_course.html"
+  - src: "register/3_resource_usage.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/register/3_resource_usage.html"
+  - src: "register/4_advertising.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/register/4_advertising.html"
+  - src: "register/5_conclusion.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/register/5_conclusion.html"
+  - src: "register/6_thanks.html"
+    dest: "{{ tiaas_code_dir }}/templates/snippets/register/6_thanks.html"
+
+tiaas_nginx_routes: |
+  location /tiaas {
+      proxy_pass            http://{{ tiaas_socket_listen }};
+      proxy_redirect        off;
+      proxy_set_header      Host                 $host;
+      proxy_set_header      X-Real-IP            $remote_addr;
+      proxy_set_header      X-Forwarded-For      $proxy_add_x_forwarded_for;
+      proxy_hide_header     X-Frame-Options;
+      proxy_read_timeout    600;  # seconds
+  }
+
+  location /tiaas/static {
+      alias {{ tiaas_static_dir }};
+  }
+
+  location {{ tiaas_galaxy_prefix }}/join-training {
+      proxy_pass            http://{{ tiaas_socket_listen }};
+      proxy_redirect        off;
+      proxy_set_header      Host                 $host;
+      proxy_set_header      X-Real-IP            $remote_addr;
+      proxy_set_header      X-Forwarded-For      $proxy_add_x_forwarded_for;
+      proxy_hide_header     X-Frame-Options;
+      proxy_read_timeout    600;  # seconds
+  }
