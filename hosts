@@ -4,3 +4,6 @@ usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
 galaxyservers
 [monitoring]
 usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
+[sentryservers]
+usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
+

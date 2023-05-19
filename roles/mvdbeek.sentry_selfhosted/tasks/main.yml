@@ -1,0 +1,72 @@
+---
+- name: Prepare folder for sentry docker-compose project
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0700
+  loop:
+    - "{{ sentry_docker_compose_project_folder }}"
+
+- name: Checkout sentry self hosted docker-compose project
+  git:
+    repo: https://github.com/getsentry/onpremise.git
+    version: "{{ sentry_version }}"
+    dest: "{{ sentry_docker_compose_project_folder }}"
+    force: true
+  register: sentry_repo
+
+- name: Adjust .env
+  loop: >
+    {{
+      sentry_env
+      | combine({'SENTRY_BIND': sentry_bind})
+      | dict2items
+    }}
+  ansible.builtin.lineinfile:
+    path: "{{ sentry_docker_compose_project_folder }}/.env"
+    regexp: ^{{ item.key }}
+    line: "{{ item.key }}={{ item.value }}"
+
+- name: Run install.sh
+  command:
+    chdir: "{{ sentry_docker_compose_project_folder }}"
+    cmd: ./install.sh --skip-user-creation --no-report-self-hosted-issues
+  when: sentry_repo.after != sentry_repo.before
+
+- name: Configure sentry email settings
+  loop: "{{ sentry_mail | dict2items }}"
+  ansible.builtin.lineinfile:
+    path: "{{ sentry_docker_compose_project_folder }}/sentry/config.yml"
+    regexp: "^#?\\s*mail.{{ item.key }}:"
+    line: "mail.{{ item.key }}: {{ item.value | to_json }}"
+
+- name: Configure sentry url prefix
+  ansible.builtin.lineinfile:
+    path: "{{ sentry_docker_compose_project_folder }}/sentry/config.yml"
+    regexp: '^#?\s*system.url-prefix:'
+    line: "system.url-prefix: {{ sentry_url | to_json }}"
+
+- name: Configure sentry misc settings
+  loop: "{{ sentry_config | dict2items }}"
+  ansible.builtin.lineinfile:
+    path: "{{ sentry_docker_compose_project_folder }}/sentry/config.yml"
+    regexp: "^#?\\s*{{ item.key }}:"
+    line: "{{ item.key }}: {{ item.value | to_json }}"
+
+- name: Start sentry self hosted docker-compose project
+  docker_compose:
+    project_src: "{{ sentry_docker_compose_project_folder }}"
+    remove_orphans: true
+    state: present
+
+- name: Add sentry super users
+  command:
+    chdir: "{{ sentry_docker_compose_project_folder }}"
+    cmd: >
+      docker-compose run --rm web createuser
+        --email "{{ item.email }}"
+        --password "{{ item.password }}"
+        --superuser
+        --no-input
+  loop: "{{ sentry_superusers }}"
+  ignore_errors: true
