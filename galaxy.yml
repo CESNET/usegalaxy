@@ -18,6 +18,15 @@
   vars_files:
     - group_vars/secret.yml
   pre_tasks:
+    - pip:
+        name: passlib
+    - htpasswd:
+        path: /etc/nginx/passwd
+        name: admin        # Pick a username
+        password: "{{ vault_reports_admin_password }}" # and a password
+        owner: www-data    # nginx on centos
+        group: root
+        mode: 0640
     - name: Install Dependencies
       package:
         name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-venv', 'python3-setuptools']

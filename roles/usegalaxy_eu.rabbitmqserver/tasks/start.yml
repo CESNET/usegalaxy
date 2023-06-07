@@ -23,7 +23,6 @@
     volumes: "{{ rabbitmq_container_volumes }}"
     ports: "{{ rabbitmq_container_ports }}"
     env: "{{ rabbitmq_container_env }}"
-  no_log: true
 
 - name: Pause for some seconds to give time to the container to come up
   pause:

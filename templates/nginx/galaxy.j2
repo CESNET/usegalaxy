@@ -105,6 +105,8 @@ server {
 	}
 
 	location /reports/ {
+		auth_basic           galaxy;
+                auth_basic_user_file /etc/nginx/passwd;
 		proxy_pass http://{{ galaxy_config.gravity.reports.bind }}:/;
 	}
 
