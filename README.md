@@ -17,7 +17,7 @@ Clone the repo and instal required galaxy roles.
 ```
 git clone https://github.com/CESNET/usegalaxy.git
 cd usegalaxy
-ansible-galaxy install -p roles -r requirements.yml --force
+ansible-galaxy install -p roles -r requirements.yml
 ```
 Note that the roles are already present in this repo.
 
