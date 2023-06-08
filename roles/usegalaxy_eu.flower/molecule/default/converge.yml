@@ -1,0 +1,15 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    - flower_venv_dir: /test/venv
+    - flower_python_path: server/lib
+    - flower_python_version: python3
+    - flower_log_file: /var/log/flower
+    - flower_app_dir: /opt/galaxy
+    - flower_app_name: tasks
+
+  tasks:
+    - name: "Include flower_ansible_role"
+      include_role:
+        name: "flower_ansible_role"

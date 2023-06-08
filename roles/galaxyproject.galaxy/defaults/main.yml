@@ -107,12 +107,18 @@ galaxy_dirs:
   - "{{ galaxy_tool_data_path }}"
   - "{{ galaxy_log_dir }}"
 
+# Additional directories to create as the Galaxy user, so you don't have to copy the default galaxy_dirs
+galaxy_extra_dirs: []
+
 # Directories to create as the privilege separated user if galaxy_manage_paths is enabled
 galaxy_privsep_dirs:
   - "{{ galaxy_venv_dir }}"
   - "{{ galaxy_server_dir }}"
   - "{{ galaxy_config_dir }}"
   - "{{ galaxy_local_tools_dir }}"
+
+# Additional directories to create as the privilege separated user, so you don't have to copy the default galaxy_dirs
+galaxy_extra_privsep_dirs: []
 
 # Local (relative to playbook) path to local tools
 galaxy_local_tools_src_dir: files/galaxy/tools
@@ -246,6 +252,7 @@ galaxy_app_config_section: "{{ 'galaxy' if galaxy_config_style in ('yaml', 'yml'
 
 # Galaxy configuration files will be written with these permissions (mode argument to Ansible copy/template module)
 galaxy_config_perms: 0640
+galaxy_config_perms_public: 0644
 
 # The default Galaxy configuration, ensures that Galaxy can find all of the configs if galaxy_config_dir !=
 # galaxy_server_dir
@@ -313,6 +320,8 @@ galaxy_errordocs_prefix: /error
 # templates to be installed on the managed host.
 galaxy_config_files: []
 galaxy_config_templates: []
+# Like above, except with world readable permissions
+galaxy_config_files_public: []
 
 # Default Gravity configuration
 galaxy_gravity_state_dir: "{{ (galaxy_mutable_data_dir, 'gravity') | path_join }}"
@@ -369,9 +378,20 @@ galaxy_client_build_steps:
     - stageLibs
     - plugins
 
+__galaxy_node_version_max:
+  "redhat7": "16.19.1"
+galaxy_node_version_max: >-
+  {{
+    (__galaxy_node_version_max[(ansible_os_family | lower) ~ ansible_distribution_major_version]) | default(galaxy_node_version)
+  }}
+
 #
 # systemd options
 #
+
+__galaxy_gravity_pm: "{{ (galaxy_config_merged.gravity | default({})).process_manager | default('supervisor') }}"
+__galaxy_gravity_instance_name: "{{ (galaxy_config_merged.gravity | default({})).instance_name | default(none) }}"
+galaxy_gravity_wrapper_path: "/usr/local/bin/galaxyctl{{ __galaxy_gravity_instance_name | ternary('-' ~ __galaxy_gravity_instance_name, '') }}"
 
 # Currently `mule` (aka uWSGI) and `gravity` (runs Galaxy 22.01+ under gunicorn) are supported
 galaxy_systemd_mode: "{{ 'mule' if __galaxy_major_version is version('22.05', '<') else 'gravity' }}"

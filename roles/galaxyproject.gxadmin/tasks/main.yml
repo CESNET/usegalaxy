@@ -1,0 +1,53 @@
+---
+
+- name: Clone gxadmin repository
+  ansible.builtin.git:
+    repo: "{{ gxadmin_repo }}"
+    dest: "{{ gxadmin_dir }}"
+    version: "{{ gxadmin_commit | default(omit) }}"
+    force: "{{ gxadmin_force | default(false) }}"
+  register: __gxadmin_git_update_result
+
+- name: Check if executable exists
+  ansible.builtin.stat:
+    path: "{{ gxadmin_dir }}/gxadmin"
+  register: __gxadmin_check
+
+- name: Compile gxadmin when there are updates
+  community.general.system.make:
+    chdir: "{{ gxadmin_dir }}"
+    target: gxadmin
+  when: |
+    __gxadmin_git_update_result is changed or  not __gxadmin_check.stat.exists
+
+- name: Create bin directory
+  ansible.builtin.file:
+    path: "{{ gxadmin_bin_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Add gxadmin to bin dir
+  ansible.builtin.file:
+    src: "{{ gxadmin_dir }}/gxadmin"
+    dest: "{{ gxadmin_bin_dir }}/gxadmin"
+    state: link
+  # will fail due to missing git, potentially.
+  when: not ansible_check_mode
+
+- name: Create config directory
+  ansible.builtin.file:
+    path: "{{ gxadmin_config_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Copy local file if the destination does not exist.
+  ansible.builtin.copy:
+    content: '# Gxadmin local function'
+    dest: "{{ gxadmin_config_dir }}/gxadmin-local.sh"
+    force: false
+    mode: 0755
+
+- name: Insert configuration using a local file
+  ansible.builtin.blockinfile:
+    block: "{{ lookup('file', 'gxadmin_local') }}"
+    path: "{{ gxadmin_config_dir }}/gxadmin-local.sh"

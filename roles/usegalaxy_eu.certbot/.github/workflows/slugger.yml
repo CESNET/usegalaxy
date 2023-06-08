@@ -58,6 +58,7 @@ jobs:
           git config user.email github-actions@github.com
           git tag "$NEW_TAG"
           git push --tags
+          echo "Creating new tag $NEW_TAG" >> $GITHUB_STEP_SUMMARY
         if: env.changed_files > 0
 
       # We have to do this step as GHA prevents triggering it's own actions, to

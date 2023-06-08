@@ -1,32 +1,70 @@
 ---
+- hosts: dbservers
+  become: true
+  become_user: root
+  pre_tasks:
+    - name: Install Dependencies
+      package:
+        name: 'acl'
+  roles:
+    - galaxyproject.postgresql
+    - role: galaxyproject.postgresql_objects
+      become: true
+      become_user: postgres
+
 - hosts: galaxyservers
   become: true
   become_user: root
   vars_files:
     - group_vars/secret.yml
   pre_tasks:
+    - pip:
+        name: passlib
+    - htpasswd:
+        path: /etc/nginx/passwd
+        name: admin        # Pick a username
+        password: "{{ vault_reports_admin_password }}" # and a password
+        owner: www-data    # nginx on centos
+        group: root
+        mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'python3-psycopg2', 'tar', 'virtualenv']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-venv', 'python3-setuptools']
+    - name: Install RHEL/CentOS/Rocky specific dependencies
+      package:
+        name: ['tmpwatch']
+      when: ansible_os_family == 'RedHat'
+    - name: Install Debian/Ubuntu specific dependencies
+      package:
+        name: ['tmpreaper']
+      when: ansible_os_family == 'Debian'
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
   roles:
-    - galaxyproject.postgresql
-    - role: galaxyproject.postgresql_objects
-      become: true
-      become_user: postgres
-    - geerlingguy.pip
-    - gantsign.golang
-    - cyverse-ansible.singularity
+    - galaxyproject.tusd
+    - usegalaxy_eu.apptainer
     - galaxyproject.galaxy
-    - role: copy.files
+    - usegalaxy_eu.tpv_auto_lint
+    - role: galaxyproject.miniconda
       become: true
-    - role: uchida.miniconda
-      become: true
-      become_user: "{{ galaxy_user.name }}"
+      become_user: "{{ galaxy_user_name }}"
+    - geerlingguy.redis
+    - usegalaxy_eu.flower
+    - galaxyproject.nginx
+    - galaxyproject.proftpd
     - geerlingguy.docker
     - usegalaxy_eu.rabbitmqserver
-    - galaxyproject.nginx
-    - galaxyproject.tusd
+    - galaxyproject.tiaas2
+    - galaxyproject.gxadmin
     - galaxyproject.cvmfs
+    - dj-wasabi.telegraf
+  post_tasks:
+    - name: Setup gxadmin cleanup task
+      ansible.builtin.cron:
+        name: "Cleanup Old User Data"
+        user: galaxy # Run as the Galaxy user
+        minute: "0"
+        hour: "0"
+        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
+

@@ -15,4 +15,5 @@ cluster_formation.classic_config.nodes.{{ loop.index }} = {{ member }}
 {% endfor %}
 {% endif %}
 management_agent.disable_metrics_collector = {{ rabbitmq_config.management_agent.disable_metrics_collector }}
+management.disable_stats = {{ rabbitmq_config.management.disable_stats }}
 consumer_timeout = {{ rabbitmq_config.consumer_timeout }}

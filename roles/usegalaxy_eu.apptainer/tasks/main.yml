@@ -1,0 +1,9 @@
+- name: Add apptainer ppa (Ubuntu)
+  ansible.builtin.apt_repository:
+    repo: ppa:apptainer/ppa
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install apptainer
+  ansible.builtin.package:
+    name: apptainer
+  when: ansible_distribution == "Ubuntu" or ansible_os_family == "RedHat"
