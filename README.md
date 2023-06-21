@@ -76,7 +76,7 @@ Later we should use this [role](https://github.com/galaxyproject/ansible-galaxy-
 ## Notes
 
 On ubuntu < 22.04 and Debian < 12 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therfore playbook ends in error.
-- in `roles/galaxyproject.tusd/defaults/main.yml` you have to set the `tusd_version:` to 'v1.6.0' (tested, possibly higher)
+- in `roles/galaxyproject.tusd/defaults/main.yml` you have to set the `tusd_version:` to 'v1.8.0' (tested, possibly higher)
 
 # Debian 11
 
