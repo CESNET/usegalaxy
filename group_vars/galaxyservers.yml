@@ -21,14 +21,34 @@ galaxy_job_config:
       workers: 4
     pulsar_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ inventory_hostname }}"
-      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.galaxy }}@{{ inventory_hostname }}:5671/pulsar?ssl=1"
+      galaxy_url: "https://{{ rabbitmq_hostname }}"
+      amqp_url: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy_gpu }}@{{ rabbitmq_hostname }}:5671/galaxy_gpu?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
       amqp_consumer_timeout: 2
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: _default_
+    pulsar_gpu_runner:
+      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+      galaxy_url: "https://{{ rabbitmq_hostname }}"
+      amqp_url: "pyamqp://galaxy_gpu:{{ rabbitmq_users_password.galaxy_gpu }}@{{ rabbitmq_hostname }}:5671/galaxy_gpu?ssl=1"
+      amqp_acknowledge: true
+      amqp_ack_republish_time: 1200
+      amqp_consumer_timeout: 2
+      amqp_publish_retry: true
+      amqp_publish_retry_max_retries: 60
+      manager: drmaa_gpu
+    # pulsar_runner:
+      # load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+      # galaxy_url: "https://{{ inventory_hostname }}"
+      # amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.galaxy }}@{{ inventory_hostname }}:5671/pulsar?ssl=1"
+      # amqp_acknowledge: true
+      # amqp_ack_republish_time: 1200
+      # amqp_consumer_timeout: 2
+      # amqp_publish_retry: true
+      # amqp_publish_retry_max_retries: 60
+      # manager: _default_
   handling:
     assign: ['db-skip-locked']
   execution:
@@ -303,6 +323,7 @@ nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/p
 pip_install_packages:
   - name: docker
 # RabbitMQ
+rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
   image: rabbitmq:3.11-management
