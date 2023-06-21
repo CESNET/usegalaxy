@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <OIDC>
     <provider name="Keycloak">
-	<client_id>0740f7cc-4573-4a5f-9810-6fd9e57cf6be</client_id>
-        <client_secret>42effa24-73ba-4c05-b3f9-6e75bb3438c171c54b5d-eb9b-441a-8fdf-ab14d5caac9e</client_secret>
+	<client_id>{{ e_infra_client_id }}</client_id>
+        <client_secret>{{ e_infra_client_secret }}</client_secret>
 	<redirect_uri>https://usegalaxy-test.cerit-sc.cz/authnz/keycloak/callback</redirect_uri>
 	<url>https://login.e-infra.cz/oidc</url>
 	<icon>https://www.e-infra.cz/img/logo.svg</icon>

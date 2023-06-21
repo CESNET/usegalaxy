@@ -1,9 +1,9 @@
 [galaxyservers]
-usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
+galaxy-cz.grid.cesnet.cz ansible_connection=local ansible_user=debian
 [dbservers:children]
 galaxyservers
 [monitoring]
-usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
+galaxy-cz.grid.cesnet.cz ansible_connection=local ansible_user=debian
 [sentryservers]
-usegalaxy-test.cerit-sc.cz ansible_connection=local ansible_user=debian
+galaxy-cz.grid.cesnet.cz ansible_connection=local ansible_user=debian
 
