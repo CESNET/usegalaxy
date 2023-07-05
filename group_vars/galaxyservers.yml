@@ -7,7 +7,7 @@ galaxy_manage_cleanup: true
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: release_23.0 # 7a9ba0c6529d72517c7627422eac16eadff15b46
+galaxy_commit_id: dde02a8 # release_23.0 # 7a9ba0c6529d72517c7627422eac16eadff15b46
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 4.12.0
@@ -22,7 +22,7 @@ galaxy_job_config:
     pulsar_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy_gpu }}@{{ rabbitmq_hostname }}:5671/galaxy_gpu?ssl=1"
+      amqp_url: "pyamqp://galaxy_gpu:{{ rabbitmq_users_password.galaxy_gpu }}@{{ rabbitmq_hostname }}:5671/galaxy_gpu?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
       amqp_consumer_timeout: 2
@@ -38,7 +38,7 @@ galaxy_job_config:
       amqp_consumer_timeout: 2
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
-      manager: drmaa_gpu
+      manager: gpu
     # pulsar_runner:
       # load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       # galaxy_url: "https://{{ inventory_hostname }}"
@@ -74,8 +74,8 @@ galaxy_job_config:
         runner: pulsar_runner
         default_file_action: remote_transfer
         dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-test/files/staging"
-        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-test/files/persistent"
+        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging"
+        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent"
         remote_metadata: false
         rewrite_parameters: true
         transport: curl
@@ -98,6 +98,44 @@ galaxy_job_config:
           value: "$SCRATCHDIR"
         - name: TEMP
           value: "$SCRATCHDIR"
+      pulsar_gpu:
+        runner: pulsar_gpu_runner
+        default_file_action: remote_transfer
+        transport: curl
+        dependency_resolution: remote
+        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging" 
+        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent" 
+        remote_metadata: false 
+        rewrite_parameters: true
+        outputs_to_working_directory: false
+        singularity_enabled: true
+        singularity_run_extra_arguments: '--nv'
+        singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data:ro'
+        env:
+        # The cache directory holds the docker containers that get converted
+        - name: SINGULARITY_CACHEDIR
+        #  value: "/tmp/singularity"
+          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
+        - name: APPTAINER_CACHEDIR
+          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
+        # Singularity uses a temporary directory to build the squashfs filesystem
+        - name: SINGULARITY_TMPDIR
+          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
+        - name: APPTAINER_TMPDIR
+          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
+        # Alphafold specific variables
+        - name: ALPHAFOLD_DB
+          value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
+        # Default variables
+        - name: TMPDIR
+          value: "$SCRATCHDIR"
+        - name: TMP
+          value: "$SCRATCHDIR"
+        - name: TEMP
+          value: "$SCRATCHDIR"
+        # Ensuring a consistent collation environment is good for reproducibility.
+        - name: LC_ALL
+          value: C
       tpv_dispatcher:
         runner: dynamic
         type: python
@@ -121,6 +159,7 @@ galaxy_job_config:
 galaxy_config:
   galaxy:
     # Main Configuration
+    object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: true
     oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
     oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
@@ -131,6 +170,7 @@ galaxy_config:
     - 499542@muni.cz
     - 325073@mail.muni.cz
     - demko@cesnet.cz
+    smtp_server: "https://galaxy-cz.grid.cesnet.cz/:587"
     allow_user_creation: False
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: /mnt/data/datasets
@@ -139,6 +179,7 @@ galaxy_config:
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
     job_resource_params_file: "{{ galaxy_config_dir }}/job_resource_params_conf.xml"
+    sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # SQL Performance
     slow_query_log_threshold: 5
     enable_per_request_sql_debugging: true
@@ -249,6 +290,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
   - src: templates/galaxy/config/oidc_backends_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+  - src: templates/galaxy/config/object_store_conf.xml.j2
+    dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
 
 galaxy_extra_dirs:
   - /mnt/data

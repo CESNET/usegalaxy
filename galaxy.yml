@@ -41,6 +41,13 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
+    - name: Create the second storage directory
+      file:
+        owner: galaxy
+        group: galaxy
+        path: /rbd/data2
+        state: directory
+        mode: '0755'
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer

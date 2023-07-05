@@ -38,6 +38,10 @@ tools:
 #    scheduling:
 #      require:
 #        - pulsar
+  .*/alphafold/.*:
+    scheduling:
+      require:
+        - gpu
 
 roles:
   training.*:
@@ -77,15 +81,78 @@ destinations:
     params:
       default_file_action: remote_transfer
       dependency_resolution: remote
-      jobs_directory: /storage/praha5-elixir/home/galaxyeu/pulsar-test/files/staging
-      persistence_directory: /storage/praha5-elixir/home/galaxyeu/pulsar-test/files/persisted_data
+      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging"
+      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent"
       remote_metadata: false
       rewrite_parameters: true
       transport: curl
       outputs_to_working_directory: false
+      singularity_enabled: true  
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
+      container_resolvers:
+        - type: explicit_singularity
+        - type: mulled_singularity
+    env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+      - name: LC_ALL
+        value: C
+      - name: TMPDIR
+        value: "$SCRATCHDIR"
+      - name: TMP
+        value: "$SCRATCHDIR"
+      - name: TEMP
+        value: "$SCRATCHDIR"
     scheduling:
       require:
         - pulsar
+  pulsar_gpu:
+    runner: pulsar_gpu_runner
+    max_accepted_cores: 128
+    max_accepted_mem: 512
+    max_accepted_gpus: 2
+    max_cores: 16
+    max_mem: 64
+    max_gpus: 1
+    params:
+      default_file_action: remote_transfer
+      transport: curl
+      dependency_resolution: remote
+      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging"
+      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent"
+      remote_metadata: false
+      rewrite_parameters: true
+      outputs_to_working_directory: false
+      singularity_enabled: true
+      singularity_run_extra_arguments: '--nv'
+      singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
+    env:
+      # The cache directory holds the docker containers that get converted
+      - name: SINGULARITY_CACHEDIR
+        value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
+      - name: APPTAINER_CACHEDIR
+        value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
+      # Singularity uses a temporary directory to build the squashfs filesystem
+      - name: SINGULARITY_TMPDIR
+        value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp" 
+      - name: APPTAINER_TMPDIR
+        value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
+      # Alphafold specific variables
+      - name: ALPHAFOLD_DB
+        value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
+      # Default variables
+      - name: TMPDIR
+        value: "$SCRATCHDIR"
+      - name: TMP
+        value: "$SCRATCHDIR"
+      - name: TEMP
+        value: "$SCRATCHDIR"
+      # Ensuring a consistent collation environment is good for reproducibility.
+      - name: LC_ALL
+        value: C
+    scheduling:
+      require:
+        - pulsar
+        - gpu
   pulsar-training:
     inherits: pulsar
     runner: pulsar_runner
