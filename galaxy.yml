@@ -41,6 +41,27 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
+    - name: Create the RBD storage directory
+      file:
+        owner: galaxy
+        group: galaxy
+        path: /rbd/data
+        state: directory
+        mode: '0755'
+    - name: Create the nginx upload job files store
+      file:
+        owner: www-data
+        group: galaxy
+        path: /rbd/data/_upload_job_files
+        state: directory
+        mode: '0775'
+    - name: Create the client body temp path   
+      file:
+        owner: www-data
+        group: galaxy
+        path: /rbd/data/nginx_upload_store
+        state: directory
+        mode: '0775'
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
