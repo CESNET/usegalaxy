@@ -7,8 +7,8 @@ galaxy_manage_cleanup: true
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
-#galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
+  # galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
+galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
@@ -176,6 +176,7 @@ galaxy_config:
     - demko@cesnet.cz
       #    cleanup_job: never
     smtp_server: "rs.cesnet.cz:25"
+    error_email_to: "regalaxy@rt.cesnet.cz"
     allow_user_creation: False
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: /mnt/data/datasets
