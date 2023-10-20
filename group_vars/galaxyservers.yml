@@ -7,10 +7,11 @@ galaxy_manage_cleanup: true
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: dde02a8 # release_23.0 # 7a9ba0c6529d72517c7627422eac16eadff15b46
+  # galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
+galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 4.12.0
+miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'defaults']
 
 # Galaxy Job Configuration
@@ -22,7 +23,7 @@ galaxy_job_config:
     pulsar_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://galaxy_gpu:{{ rabbitmq_users_password.galaxy_gpu }}@{{ rabbitmq_hostname }}:5671/galaxy_gpu?ssl=1"
+      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
       amqp_consumer_timeout: 2
@@ -32,7 +33,7 @@ galaxy_job_config:
     pulsar_gpu_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://galaxy_gpu:{{ rabbitmq_users_password.galaxy_gpu }}@{{ rabbitmq_hostname }}:5671/galaxy_gpu?ssl=1"
+      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
       amqp_consumer_timeout: 2
@@ -74,13 +75,13 @@ galaxy_job_config:
         runner: pulsar_runner
         default_file_action: remote_transfer
         dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging"
-        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent"
+        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
+        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
         remote_metadata: false
         rewrite_parameters: true
         transport: curl
         outputs_to_working_directory: false
-        submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
+        # submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
         singularity_enabled: true
         singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
         ## Following configuration works!
@@ -103,8 +104,8 @@ galaxy_job_config:
         default_file_action: remote_transfer
         transport: curl
         dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging" 
-        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent" 
+        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging" 
+        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent" 
         remote_metadata: false 
         rewrite_parameters: true
         outputs_to_working_directory: false
@@ -114,7 +115,6 @@ galaxy_job_config:
         env:
         # The cache directory holds the docker containers that get converted
         - name: SINGULARITY_CACHEDIR
-        #  value: "/tmp/singularity"
           value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
         - name: APPTAINER_CACHEDIR
           value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
@@ -159,6 +159,10 @@ galaxy_job_config:
 galaxy_config:
   galaxy:
     # Main Configuration
+    # To not bother the main disk
+    new_file_path: "/rbd/data/tmp"
+    nginx_upload_job_files_store: "/rbd/data/_upload_job_files"
+    nginx_upload_job_files_path: "/_job_files"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: true
     oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
@@ -170,7 +174,9 @@ galaxy_config:
     - 499542@muni.cz
     - 325073@mail.muni.cz
     - demko@cesnet.cz
-    smtp_server: "https://galaxy-cz.grid.cesnet.cz/:587"
+      #    cleanup_job: never
+    smtp_server: "rs.cesnet.cz:25"
+    error_email_to: "regalaxy@rt.cesnet.cz"
     allow_user_creation: False
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: /mnt/data/datasets
@@ -270,6 +276,12 @@ galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 galaxy_config_files_public:
   - src: files/galaxy/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
+  - src: files/galaxy/usegalaxy-cz.png
+    dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
+  - src: files/galaxy/elixir_logo.png
+    dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
+  - src: files/galaxy/e-infra_logo.svg
+    dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
 
 galaxy_config_files:
   - src: files/galaxy/themes.yml
@@ -292,6 +304,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
   - src: templates/galaxy/config/object_store_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
+  - src: templates/galaxy/config/tool_conf.xml.j2
+    dest: "{{ galaxy_config_dir }}/tool_conf.xml"
 
 galaxy_extra_dirs:
   - /mnt/data
@@ -403,11 +417,8 @@ rabbitmq_users:
     tags: administrator
     vhost: /
   - user: pulsar
-    password: "{{ rabbitmq_users_password.galaxy }}"
+    password: "{{ rabbitmq_users_password.pulsar }}"
     vhost: pulsar
-  - user: galaxy_gpu
-    password: "{{ rabbitmq_users_password.galaxy_gpu }}"
-    vhost: galaxy_gpu
   - user: galaxy
     password: "{{ vault_rabbitmq_password_galaxy }}"
     vhost: galaxy_internal
@@ -418,7 +429,7 @@ rabbitmq_users:
 
 # TUS
 galaxy_tusd_port: 1080
-galaxy_tus_upload_store: /mnt/data/tus
+galaxy_tus_upload_store: /rbd/data/tus # /mnt/data/tus
 
 #Redis
 galaxy_additional_venv_packages:

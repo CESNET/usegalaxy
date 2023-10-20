@@ -30,6 +30,12 @@ tools:
         cores: int(job.get_param_values(app)['__job_resource']['cores'])
         params:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
+#  .*sra_tools.*:
+#    scheduling:
+#      require:
+#        - local_env
+#      reject:
+#        - pulsar
 #  .*/bwa/.*:
 #    scheduling:
 #      require:
@@ -41,7 +47,7 @@ tools:
   .*/alphafold/.*:
     scheduling:
       require:
-        - gpu
+        - pulsar_gpu
 
 roles:
   training.*:
@@ -58,6 +64,9 @@ destinations:
     max_accepted_cores: 1
     params:
       tmp_dir: true
+    scheduling:
+      require:
+        - local_env
   singularity:
     runner: local_runner
     max_accepted_cores: 1
@@ -81,8 +90,8 @@ destinations:
     params:
       default_file_action: remote_transfer
       dependency_resolution: remote
-      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging"
-      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent"
+      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
+      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
       remote_metadata: false
       rewrite_parameters: true
       transport: curl
@@ -117,8 +126,8 @@ destinations:
       default_file_action: remote_transfer
       transport: curl
       dependency_resolution: remote
-      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/staging"
-      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz-test/files/persistent"
+      jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
+      persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
       remote_metadata: false
       rewrite_parameters: true
       outputs_to_working_directory: false

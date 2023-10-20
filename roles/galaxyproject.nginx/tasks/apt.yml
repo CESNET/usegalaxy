@@ -1,10 +1,10 @@
 ---
 
-- name: Install nginx (APT)
-  apt:
-    pkg: nginx-{{ nginx_flavor }}
-  notify:
-    - restart nginx
+# - name: Install nginx (APT)
+#   apt:
+#     pkg: nginx-{{ nginx_flavor }}
+#   notify:
+#     - restart nginx
 
 - name: Disable default vhost
   file:

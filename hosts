@@ -1,9 +1,9 @@
 [galaxyservers]
-galaxy-cz.grid.cesnet.cz ansible_connection=local ansible_user=debian
+usegalaxy.cz ansible_connection=local ansible_user=debian
 [dbservers:children]
 galaxyservers
 [monitoring]
-galaxy-cz.grid.cesnet.cz ansible_connection=local ansible_user=debian
+usegalaxy.cz ansible_connection=local ansible_user=debian
 [sentryservers]
-galaxy-cz.grid.cesnet.cz ansible_connection=local ansible_user=debian
+usegalaxy.cz ansible_connection=local ansible_user=debian
 

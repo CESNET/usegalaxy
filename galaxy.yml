@@ -29,7 +29,7 @@
         mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-venv', 'python3-setuptools']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools']
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -41,13 +41,27 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
-    - name: Create the second storage directory
+    - name: Create the RBD storage directory
       file:
         owner: galaxy
         group: galaxy
-        path: /rbd/data2
+        path: /rbd/data
         state: directory
         mode: '0755'
+    - name: Create the nginx upload job files store
+      file:
+        owner: www-data
+        group: galaxy
+        path: /rbd/data/_upload_job_files
+        state: directory
+        mode: '0775'
+    - name: Create the client body temp path   
+      file:
+        owner: www-data
+        group: galaxy
+        path: /rbd/data/nginx_upload_store
+        state: directory
+        mode: '0775'
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
@@ -74,4 +88,10 @@
         minute: "0"
         hour: "0"
         job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
-
+    - name: Setup user - group association rutine
+      ansible.builtin.cron:
+        name: "Add E-infra users to E-infra group"
+        user: postgres # Run as the postgres user
+        minute: "0"
+        hour: "*"
+        job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"

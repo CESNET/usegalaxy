@@ -3,8 +3,15 @@
     <provider name="Keycloak">
 	<client_id>{{ e_infra_client_id }}</client_id>
         <client_secret>{{ e_infra_client_secret }}</client_secret>
-	<redirect_uri>https://galaxy-cz.grid.cesnet.cz/authnz/keycloak/callback</redirect_uri>
+	<redirect_uri>https://{{ inventory_hostname }}/authnz/keycloak/callback</redirect_uri>
 	<url>https://login.e-infra.cz/oidc</url>
 	<icon>https://www.e-infra.cz/img/logo.svg</icon>
+    </provider>
+    <provider name="Elixir">
+	<client_id>{{ elixir_client_id }}</client_id>
+        <client_secret>{{ elixir_client_secret }}</client_secret>
+	<redirect_uri>https://{{ inventory_hostname }}/authnz/elixir/callback</redirect_uri>
+	<url>https://login.e-infra.cz/oidc</url>
+	<icon>https://lifescience-ri.eu/fileadmin/lifescience-ri/media/Images/login-grey-wide.jpg.png</icon>
     </provider>
 </OIDC>
