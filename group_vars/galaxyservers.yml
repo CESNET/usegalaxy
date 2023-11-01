@@ -276,6 +276,12 @@ galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 galaxy_config_files_public:
   - src: files/galaxy/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
+  - src: files/galaxy/usegalaxy-cz.png
+    dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
+  - src: files/galaxy/elixir_logo.png
+    dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
+  - src: files/galaxy/e-infra_logo.svg
+    dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
 
 galaxy_config_files:
   - src: files/galaxy/themes.yml
@@ -298,6 +304,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
   - src: templates/galaxy/config/object_store_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
+  - src: templates/galaxy/config/tool_conf.xml.j2
+    dest: "{{ galaxy_config_dir }}/tool_conf.xml"
 
 galaxy_extra_dirs:
   - /mnt/data
