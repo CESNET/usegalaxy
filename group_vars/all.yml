@@ -3,36 +3,6 @@
 pip_virtualenv_command: /usr/bin/python3 -m venv  # usegalaxy_eu.certbot, usegalaxy_eu.tiaas2, galaxyproject.galaxy
 
 # Common variables needed by all hosts
-galaxy_user_name: galaxy
-galaxy_db_name: galaxy
-
-# CVMFS vars
-cvmfs_role: client
-galaxy_cvmfs_repos_enabled: config-repo
-cvmfs_quota_limit: 500
-
-# Telegraf
-telegraf_agent_package_state: latest
-
-# Configure the output to point to an InfluxDB
-# running on localhost, and # place data in the
-# database "telegraf" which will be created if need be.
-telegraf_agent_output:
-  - type: influxdb
-    config:
-    - urls = ["http://127.0.0.1:8086"]
-    - database = "telegraf"
-
-# The default plugins, applied to any telegraf-configured host
-telegraf_plugins_default:
-  - plugin: cpu
-  - plugin: disk
-  - plugin: kernel
-  - plugin: processes
-  - plugin: io
-  - plugin: mem
-  - plugin: system
-  - plugin: swap
-  - plugin: net
-  - plugin: netstat
-
+galaxy_user_name: galaxyelixir
+galaxy_db_name: galaxyelixir
+galaxy_data_dir: "/mnt/galaxy-re"

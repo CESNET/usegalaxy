@@ -1,10 +1,10 @@
 #!/bin/bash
 # Script that copies files to TPV config dir, only if linting is successful
 
-PYTHONPATH="/srv/galaxy/server/lib"
-VENV="/srv/galaxy/venv"
-TPV_DIR="/srv/galaxy/config/total_perspective_vortex"
-GALAXY_CONF_DIR="/srv/galaxy/config"
+PYTHONPATH="/opt/galaxy/server/lib"
+VENV="/opt/galaxy/venv"
+TPV_DIR="/opt/galaxy/config/total_perspective_vortex"
+GALAXY_CONF_DIR="/opt/galaxy/config"
 
 . $VENV/bin/activate
 

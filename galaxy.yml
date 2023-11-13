@@ -5,12 +5,31 @@
   pre_tasks:
     - name: Install Dependencies
       package:
-        name: 'acl'
+        name: ['acl', 'logrotate']
   roles:
     - galaxyproject.postgresql
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
+  post_tasks:
+    - name: Set-up Galaxy DB backup using pg_dump and logrotate
+      ansible.builtin.blockinfile:
+        path: "/etc/logrotate.d/{{ postgresql_pg_dump_prefix }}"
+        create: true
+        block: |
+          {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz {
+            daily
+            missingok
+            rotate 14
+            nocompress
+            nocreate
+            postrotate
+            echo `date` >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
+            sudo -u {{ galaxy_user_name }} pg_dump {{ galaxy_db_name }} --file={{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql --verbose &2>> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
+            sudo chmod 664 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql
+            sudo -u {{ galaxy_user_name }} gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql
+            endscript
+          }
 
 - hosts: galaxyservers
   become: true
@@ -29,7 +48,7 @@
         mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-venv', 'python3-setuptools']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'nginx-full']
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -38,33 +57,45 @@
       package:
         name: ['tmpreaper']
       when: ansible_os_family == 'Debian'
-    - git:
-        repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
-        dest: /libraries/
+    - name: Ensure the python command exists
+      ansible.builtin.shell: which python
+      register: python_path
+    - name: Register python3 path
+      ansible.builtin.shell: which python3
+      register: python3_path
+    - name: Link python to python3 if missing
+      ansible.builtin.file:
+        src: python3_path.stdout
+        dest: python3_path.stdout[:-1]
+        state: link
+      when: python_path.stdout == ""
+  post_tasks:
+    - name: Setup gxadmin cleanup task
+      ansible.builtin.cron:
+        name: "Cleanup Old User Data"
+        user: "{{ galaxy_user_name }}" # Run as the Galaxy user
+        minute: "0"
+        hour: "0"
+        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"  
+    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
+      replace:
+        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
+#        after: '^\s*?try:'
+        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
+        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
+        validate: 'python -m py_compile %s'
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
   roles:
     - galaxyproject.tusd
-    - usegalaxy_eu.apptainer
     - galaxyproject.galaxy
     - usegalaxy_eu.tpv_auto_lint
     - role: galaxyproject.miniconda
       become: true
       become_user: "{{ galaxy_user_name }}"
     - geerlingguy.redis
-    - usegalaxy_eu.flower
     - galaxyproject.nginx
+    - usegalaxy_eu.flower
     - galaxyproject.proftpd
     - geerlingguy.docker
     - usegalaxy_eu.rabbitmqserver
-    - galaxyproject.tiaas2
     - galaxyproject.gxadmin
-    - galaxyproject.cvmfs
-    - dj-wasabi.telegraf
-  post_tasks:
-    - name: Setup gxadmin cleanup task
-      ansible.builtin.cron:
-        name: "Cleanup Old User Data"
-        user: galaxy # Run as the Galaxy user
-        minute: "0"
-        hour: "0"
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
-

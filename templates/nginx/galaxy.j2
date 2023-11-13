@@ -1,3 +1,7 @@
+map $remote_user $remote_user_clean {
+    "~(?<name>[^ \t]+)" $name;
+}
+
 upstream galaxy {
 	server {{ galaxy_config.gravity.gunicorn.bind }};
 
@@ -11,6 +15,21 @@ server {
 	listen        *:443 ssl default_server;
 	# The virtualhost is our domain name
 	server_name   "{{ inventory_hostname }}";
+
+	#allow 147.251.157.70; # desktop v CEITECu
+	#allow 95.82.133.104; # IP doma
+	#allow 84.47.11.106; # IP SE 11
+	#allow 147.251.3.130; # skirit IP
+	#allow 147.251.17.249; # desktop v Gotexe
+	#allow 2001:718:801:168:56bf:64ff:fe7c:a3f1; # desktop v Gotexe IPv6
+	#allow 147.251.17.150; # desktop Zdenek Salvet
+	#allow 147.251.212.83; # notebook IP v Gotexe
+	#allow 147.231.252.253; # Petr Novak PC
+	#allow 78.128.247.102; # VM pulsar-re 
+	#allow 2001:718:ff05:209::102; # VM pulsar-re IPv6
+	#deny all;
+
+	client_max_body_size 30G;
 
 	# Our log files will go to journalctl
 	access_log  syslog:server=unix:/dev/log;
@@ -26,6 +45,11 @@ server {
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		proxy_set_header X-Forwarded-Proto $scheme;
 		proxy_set_header Upgrade $http_upgrade;
+
+		#proxy_set_header REMOTE_USER $remote_user_clean;
+		#proxy_set_header GX_SECRET "{{ vault_id_secret }}";
+		#auth_ldap "LDAP Protected -- Galaxy instance of RepeatExplorer tool";
+		#auth_ldap_servers ad_1;
 	}
 
 	location /api/upload/resumable_upload {
@@ -80,21 +104,6 @@ server {
 		alias /;
 	}
 
-	# Support click-to-run in the GTN-in-Galaxy Webhook
-	location /training-material/ {
-		proxy_pass https://training.galaxyproject.org/training-material/;
-	}
-
-	location ~* /rabbitmq/(.*) {
-		rewrite ^/rabbitmq/(.*)$ /$1 break;
-		proxy_pass http://127.0.0.1:15672;
-		proxy_buffering                    off;
-		proxy_set_header Host              $http_host;
-		proxy_set_header X-Real-IP         $remote_addr;
-		proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-		proxy_set_header X-Forwarded-Proto $scheme;
-	}
-
 	location /flower {
 		proxy_pass http://localhost:5555;
 		proxy_set_header Host $host;
@@ -104,18 +113,15 @@ server {
 		proxy_set_header Connection "upgrade";
 	}
 
-	location /reports/ {
-		auth_basic           galaxy;
-                auth_basic_user_file /etc/nginx/passwd;
-		proxy_pass http://{{ galaxy_config.gravity.reports.bind }}:/;
-	}
-
-	location /grafana/ {
-		proxy_pass http://127.0.0.1:3000/;
-		proxy_set_header Host $http_host;
-	}
-
-	{{ tiaas_nginx_routes }}
+#	location ~* /rabbitmq/(.*) {
+#		rewrite ^/rabbitmq/(.*)$ /$1 break;
+#		proxy_pass http://127.0.0.1:15672;
+#		proxy_buffering                    off;
+#		proxy_set_header Host              $http_host;
+#		proxy_set_header X-Real-IP         $remote_addr;
+#		proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+#		proxy_set_header X-Forwarded-Proto $scheme;
+#	}
 
 }
   
