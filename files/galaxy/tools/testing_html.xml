@@ -1,0 +1,17 @@
+<tool id="testing_html" name="HTML Testing Tool">
+    <command>
+        <![CDATA[
+mkdir -p "${output1.extra_files_path}" 
+&& cp "$input1" "${output1.extra_files_path}/file.txt" 
+&& echo "<html><body>" > "$output1" 
+&& echo "<p><a href='file.txt'>This is the input</a></p>" >> "$output1" 
+&& echo "</body></html>" >> "$output1"
+    ]]></command>
+    <inputs>
+        <param name="input1" type="data" format="txt" label="Input Dataset"/>
+    </inputs>
+    <outputs>
+        <data name="output1" format="html" />
+    </outputs>
+</tool>
+

@@ -1,0 +1,4 @@
+toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc
+toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2
+toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean
+toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster

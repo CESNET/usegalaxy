@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<object_store type="hierarchical">
+    <backends>
+        <backend id="new" type="disk" order="0">
+            <files_dir path="{{ galaxy_data_dir }}/datasets"/>
+            <extra_dir type="temp" path="{{ galaxy_data_dir }}/tmp"/>
+            <extra_dir type="job_work" path="{{ galaxy_data_dir }}/jobs"/>
+        </backend>
+        <backend id="old" type="disk" order="1">
+            <files_dir path="/data/datasets"/>
+            <extra_dir type="temp" path="/data/tmp"/>
+            <extra_dir type="job_work" path="/data/jobs"/>
+        </backend>
+    </backends>
+</object_store>
