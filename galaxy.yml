@@ -12,6 +12,22 @@
       become: true
       become_user: postgres
   post_tasks:
+    - name: Create pg_dump backup folder if needed
+      file:
+        path:  "{{ postgresql_backup_dir }}/pg_dump"
+        state: directory
+        owner: postgres
+        group: "{{ galaxy_user_name }}"
+        mode:  0750
+      tags: test
+    - name: Create initial empty pg_dump file if needed # otherwise the following logrotate conf will not work
+      file:
+        path:  "{{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz"
+        state: touch
+        owner: postgres
+        group: "{{ galaxy_user_name }}"
+        mode:  0640
+      tags: test
     - name: Set-up Galaxy DB backup using pg_dump and logrotate
       ansible.builtin.blockinfile:
         path: "/etc/logrotate.d/{{ postgresql_pg_dump_prefix }}"
@@ -24,12 +40,14 @@
             nocompress
             nocreate
             postrotate
-            echo `date` >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
-            sudo -u {{ galaxy_user_name }} pg_dump {{ galaxy_db_name }} --file={{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql --verbose &2>> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
-            sudo chmod 664 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql
-            sudo -u {{ galaxy_user_name }} gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql
+              echo "### Start backup at `date` ###" >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
+              sudo -u postgres pg_dump {{ galaxy_db_name }} --file={{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql --verbose >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log 2>&1
+              sudo chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log 2>&1
+              sudo -u postgres gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log 2>&1
+              echo "### Finished backup at `date` ###" >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
             endscript
           }
+      tags: test
 
 - hosts: galaxyservers
   become: true
