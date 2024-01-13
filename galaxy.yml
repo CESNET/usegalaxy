@@ -19,7 +19,6 @@
         owner: postgres
         group: "{{ galaxy_user_name }}"
         mode:  0750
-      tags: test
     - name: Create initial empty pg_dump file if needed # otherwise the following logrotate conf will not work
       file:
         path:  "{{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz"
@@ -27,7 +26,6 @@
         owner: postgres
         group: "{{ galaxy_user_name }}"
         mode:  0640
-      tags: test
     - name: Set-up Galaxy DB backup using pg_dump and logrotate
       ansible.builtin.blockinfile:
         path: "/etc/logrotate.d/{{ postgresql_pg_dump_prefix }}"
@@ -47,7 +45,6 @@
               echo "### Finished backup at `date` ###" >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
             endscript
           }
-      tags: test
 
 - hosts: galaxyservers
   become: true
@@ -87,6 +84,36 @@
         dest: python3_path.stdout[:-1]
         state: link
       when: python_path.stdout == ""
+      ## pre tasks specific for galaxy-re
+    - name: Install NBD client
+      package:
+        name: ['nbd-client']
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
+    - name: Setup NBD client
+      ansible.builtin.lineinfile:
+        path: /etc/nbdtab
+        #regexp: "^nbd0"
+        line: "nbd0 147.251.11.11 0f2aaea1-55a4-4c15-840d-8f60cefc3f1a conns=20,port=55810"
+        create: yes
+        insertafter: EOF
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
+      # nemusi byt dostatocne, existuje totiz aj maskovana sluzba nbd-client.service (pozret: https://github.com/NetworkBlockDevice/nbd/issues/91)
+    - name: Restart NBD client
+      ansible.builtin.systemd:
+        name: nbd-client.service
+#        name: nbd@nbd0.service
+        state: reloaded
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
+    - name: Mount up NBD
+      ansible.posix.mount:
+        #line: "/dev/nbd0       /mnt    xfs     rw,_netdev      0       0"
+        src: /dev/nbd0
+        path: /mnt
+        fstype: xfs
+        opts: rw,_netdev
+        state: mounted
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
+
   post_tasks:
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:

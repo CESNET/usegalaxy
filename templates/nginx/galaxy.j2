@@ -29,7 +29,10 @@ server {
 	#allow 2001:718:ff05:209::102; # VM pulsar-re IPv6
 	#deny all;
 
+	# allows to send/receive big files to/from pulsar
 	client_max_body_size 30G;
+	# smaller timeout interrupted transimition of bigger files
+	send_timeout 600s;
 
 	# Our log files will go to journalctl
 	access_log  syslog:server=unix:/dev/log;

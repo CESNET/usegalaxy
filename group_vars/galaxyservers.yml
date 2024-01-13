@@ -197,6 +197,10 @@ galaxy_job_config:
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local
+    - id: cat1
+      environment: local
+    - id: __DATA_FETCH__
+      environment: local
     - id: testing_html
       environment: tpv_dispatcher
 
@@ -237,7 +241,7 @@ galaxy_config:
     # File serving Performance
     nginx_x_accel_redirect_base: /_x_accel_redirect
     # Automation / Ease of Use / User-facing features
-    watch_job_rules: 'auto'
+    watch_job_rules: 'polling' # used to be auto
     allow_path_paste: true
     enable_quotas: true
     allow_user_deletion: true
