@@ -85,10 +85,6 @@
         state: link
       when: python_path.stdout == ""
       ## pre tasks specific for galaxy-re
-    - name: Install NBD client
-      package:
-        name: ['nbd-client']
-      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
     - name: Setup NBD client
       ansible.builtin.lineinfile:
         path: /etc/nbdtab
@@ -97,12 +93,16 @@
         create: yes
         insertafter: EOF
       when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
+    - name: Install NBD client
+      package:
+        name: ['nbd-client']
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
       # nemusi byt dostatocne, existuje totiz aj maskovana sluzba nbd-client.service (pozret: https://github.com/NetworkBlockDevice/nbd/issues/91)
     - name: Restart NBD client
-      ansible.builtin.systemd:
-        name: nbd-client.service
-#        name: nbd@nbd0.service
-        state: reloaded
+      systemd:
+#        name: nbd-client.service
+        name: nbd@nbd0.service
+        state: started
       when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
     - name: Mount up NBD
       ansible.posix.mount:
