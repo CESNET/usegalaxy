@@ -23,6 +23,7 @@ jobs:
       - name: Copy files to test instance and preserve secrets and hosts
         run: |
           rsync -rav * debian@usegalaxy-test.cerit-sc.cz:~/usegalaxy-${{ steps.date.outputs.date }}
+          ssh debian@usegalaxy-test.cerit-sc.cz 'cp ~/usegalaxy/group_vars/secret.yml ~/usegalaxy-${{ steps.date.outputs.date }}/group_vars'
           ssh debian@usegalaxy-test.cerit-sc.cz 'cp ~/usegalaxy/hosts ~/usegalaxy-${{ steps.date.outputs.date }}'
           ssh debian@usegalaxy-test.cerit-sc.cz 'cp ~/usegalaxy/.vault-password.txt ~/usegalaxy-${{ steps.date.outputs.date }}'
       - name: Run playbook

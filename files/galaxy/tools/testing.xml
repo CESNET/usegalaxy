@@ -1,12 +1,15 @@
-<tool id="testing" name="Testing Tool">
+<tool id="testing" name="Big upload test">
     <command>
-        <![CDATA[echo "Running with '\${GALAXY_SLOTS:-1}' threads" > "$output1"]]>
+        <![CDATA[mv "$input1" "$output1" &&
+	         mv "$input2" "$output2"]]>
     </command>
     <inputs>
-        <param name="input1" type="data" format="txt" label="Input Dataset"/>
+	    <param name="input1" type="text" label="Input Text1"/>
+            <param name="input2" type="text" label="Input Text2"/>
     </inputs>
     <outputs>
-        <data name="output1" format="txt" />
+	    <data name="output1" format="fastq.gz" />
+	    <data name="output2" format="fastq.gz" />
     </outputs>
 </tool>
 

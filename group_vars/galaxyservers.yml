@@ -6,20 +6,21 @@ galaxy_manage_paths: true # False by default as your administrator might e.g. ha
 galaxy_manage_cleanup: true
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
-#galaxy_data_dir: /data
-#galaxy_data_dir: /mnt/galaxy-re   # defined in all.yml
 galaxy_tool_dependency_dir: "{{ galaxy_mutable_data_dir }}/dependencies"
-galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
+galaxy_user:
+  name: "{{ galaxy_user_name }}"
+  uid: "{{ galaxy_user_id }}"
+  group: "{{ galaxy_user_group }}"
+  shell: /bin/bash
 # 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 commit_id z galaxy-cz
 # 7a9ba0c6529d72517c7627422eac16eadff15b46 commit_id posledne, ktore fungovalo
 #galaxy_commit_id: release_23.0 # 7a9ba0c6529d72517c7627422eac16eadff15b46 # release_23.0
 galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 #galaxy_force_checkout: true
-
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/conda"
-miniconda_version: 4.12.0
-miniconda_base_env_packages: ['mamba']
+miniconda_version: 'latest' # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'bioconda', 'iuc', 'r', 'anaconda', 'petrnovak', 'defaults']
+miniconda_base_env_packages: ['mamba']
 
 singularity_local_cache_dir: "{{ galaxy_mutable_data_dir }}/cache/singularity"
 
@@ -63,7 +64,6 @@ galaxy_job_config:
     assign: ['db-skip-locked']
   execution:
     default: tpv_dispatcher
-#    default: pulsar
     environments:
       local:
         runner: local_runner
@@ -189,11 +189,6 @@ galaxy_job_config:
         tpv_config_files:
 #          - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
           - "{{ tpv_config_dir }}/tpv_rules_local.yml"
-#  resources:
-#    default: default
-#    groups:
-#      default: []
-#      testing: [cores, time]
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local
@@ -286,7 +281,7 @@ galaxy_config:
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
-    galaxy_user: "{{ galaxy_user_name }}"
+    galaxy_user: "{{ galaxy_user.name }}"
     virtualenv: "{{ galaxy_venv_dir }}"
     umask: 022
     gunicorn:
@@ -437,6 +432,7 @@ pip_install_packages:
   - python-ldap
 
 # RabbitMQ
+rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
   image: rabbitmq:3.11-management
@@ -504,35 +500,14 @@ flower_broker_api: "https://flower:{{ rabbitmq_users_password.flower }}@localhos
 flower_broker_url: "pyamqp://flower:{{ rabbitmq_users_password.flower }}@localhost:5671/galaxy_internal?ssl=1"
 #flower_broker_url: "pyamqp://flower:{{ rabbitmq_users_password.flower }}@{{ inventory_hostname }}:5671/galaxy_internal?ssl=1"
 flower_proxy_prefix: /flower
-flower_user: "{{ galaxy_user_name }}"
-flower_group: "{{ galaxy_user_name }}"
+flower_user: "{{ galaxy_user.name }}"
+flower_group: "{{ galaxy_user.group }}"
 flower_ui_users:
   - name: admin
     password: "{{ flower_admin_password }}"
 
 flower_environment_variables:
   GALAXY_CONFIG_FILE: "{{ galaxy_config_file }}"
-
-# Telegraf
-telegraf_plugins_extra:
-  listen_galaxy_routes:
-    plugin: "statsd"
-    config:
-      - service_address = ":8125"
-      - metric_separator = "."
-      - allowed_pending_messages = 10000
-  monitor_galaxy_queue:
-    plugin: "exec"
-    config:
-      - commands = ["/usr/bin/env PGDATABASE=galaxy /usr/local/bin/gxadmin iquery queue-overview --short-tool-id"]
-      - timeout = "10s"
-      - data_format = "influx"
-      - interval = "15s"
-
-# TIaaS setup
-tiaas_dir: /srv/tiaas
-tiaas_admin_user: admin
-tiaas_admin_pass: changeme
 
 # Proftpd:
 proftpd_galaxy_auth: yes
@@ -543,12 +518,12 @@ proftpd_display_connect: |
   Unauthorized access is prohibited
 proftpd_create_ftp_upload_dir: yes
 proftpd_options:
-  - User: "{{ galaxy_user_name }}"
-  - Group: "{{ galaxy_user_name }}"
+  - User: "{{ galaxy_user.name }}"
+  - Group: "{{ galaxy_user.group }}"
   - Port: 21
 #proftpd_sql_db: "{{ galaxy_db_name }}?host=/var/run/postgresql" #galaxy@/var/run/postgresql
 proftpd_sql_db: "{{ galaxy_db_name }}@/var/run/postgresql"
-proftpd_sql_user: "{{ galaxy_user_name }}"
+proftpd_sql_user: "{{ galaxy_user.name }}"
 #proftpd_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
 #proftpd_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
 proftpd_conf_ssl_certificate: /etc/ssl/certs/cert.pem
@@ -557,4 +532,3 @@ proftpd_global_options:
   - PassivePorts: 56000 60000
 proftpd_use_mod_tls_shmcache: false
 proftpd_tls_options: NoSessionReuseRequired
-

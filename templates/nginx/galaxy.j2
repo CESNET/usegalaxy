@@ -37,13 +37,15 @@ server {
 	# Our log files will go to journalctl
 	access_log  syslog:server=unix:/dev/log;
 	error_log   syslog:server=unix:/dev/log;
+	# client_body_temp_path  {{ galaxy_data_prefix }}/nginx_upload_store;
+	client_body_buffer_size 1024m;
+        client_max_body_size        20G;
 
 	# The most important location block, by default all requests are sent to gunicorn
 	# If you serve galaxy at a path like /galaxy, change that below (and all other locations!)
 	location / {
 		# This is the backend to send the requests to.
 		proxy_pass http://galaxy;
-
 		proxy_set_header Host $http_host;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		proxy_set_header X-Forwarded-Proto $scheme;
@@ -53,22 +55,6 @@ server {
 		#proxy_set_header GX_SECRET "{{ vault_id_secret }}";
 		#auth_ldap "LDAP Protected -- Galaxy instance of RepeatExplorer tool";
 		#auth_ldap_servers ad_1;
-	}
-
-	location /api/upload/resumable_upload {
-		# Disable request and response buffering
-		proxy_request_buffering     off;
-		proxy_buffering             off;
-		proxy_http_version          1.1;
-
-		# Add X-Forwarded-* headers
-		proxy_set_header X-Forwarded-Host   $host;
-		proxy_set_header X-Forwarded-Proto  $scheme;
-
-		proxy_set_header Upgrade            $http_upgrade;
-		proxy_set_header Connection         "upgrade";
-		client_max_body_size        0;
-		proxy_pass http://localhost:{{ galaxy_tusd_port }}/files;
 	}
 
 	# Static files can be more efficiently served by Nginx. Why send the

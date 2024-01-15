@@ -13,6 +13,17 @@
     - reload nginx
     - supervisorctl restart nginx
 
+#- name: Disable ssl_protocols in nginx.conf if set
+#  lineinfile:
+#    name: "{{ nginx_conf_file }}"
+#    regexp: '^(\s*ssl_protocols\s.*)'
+#    backrefs: yes
+#    line: '#\1 # commented by Ansible'
+#    backup: yes
+#  notify:
+#    - reload nginx
+#    - supervisorctl restart nginx
+
 - name: Configure server-wide SSL
   template:
     src: ssl.conf.j2

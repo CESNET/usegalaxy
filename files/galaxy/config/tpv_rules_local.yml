@@ -327,14 +327,10 @@ tools:
 #        params:
 #           walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
-#  .*/bwa/.*:
-#    scheduling:
-#      require:
-#        - pulsar
-#  .*/bwa_mem/.*:
-#    scheduling:
-#      require:
-#        - pulsar
+  .*/alphafold/.*:
+    scheduling:
+      require:
+        - pulsar_gpu
 
 #roles:
 #  training.*:
@@ -353,7 +349,7 @@ destinations:
     params:
       tmp_dir: true
     scheduling:
-      rejecVCt:
+      reject:
       - pulsar
       - singularity
   tpv_local_singularity:

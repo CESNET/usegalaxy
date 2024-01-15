@@ -17,14 +17,14 @@
         path:  "{{ postgresql_backup_dir }}/pg_dump"
         state: directory
         owner: postgres
-        group: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group }}"
         mode:  0750
     - name: Create initial empty pg_dump file if needed # otherwise the following logrotate conf will not work
       file:
         path:  "{{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz"
         state: touch
         owner: postgres
-        group: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group }}"
         mode:  0640
     - name: Set-up Galaxy DB backup using pg_dump and logrotate
       ansible.builtin.blockinfile:
@@ -52,7 +52,11 @@
   vars_files:
     - group_vars/secret.yml
   pre_tasks:
-    - pip:
+    - name: Install Dependencies
+      ansible.builtin.package:
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full']
+    - name: Install additional pip packages
+      ansible.builtin.pip:
         name: passlib
     - htpasswd:
         path: /etc/nginx/passwd
@@ -61,9 +65,6 @@
         owner: www-data    # nginx on centos
         group: root
         mode: 0640
-    - name: Install Dependencies
-      package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'nginx-full']
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -73,17 +74,56 @@
         name: ['tmpreaper']
       when: ansible_os_family == 'Debian'
     - name: Ensure the python command exists
-      ansible.builtin.shell: which python
+      ansible.builtin.shell: 
+        cmd: which python||exit 0
       register: python_path
     - name: Register python3 path
-      ansible.builtin.shell: which python3
+      ansible.builtin.command: which python3
       register: python3_path
+      when: python_path.stdout == ""
     - name: Link python to python3 if missing
       ansible.builtin.file:
         src: python3_path.stdout
         dest: python3_path.stdout[:-1]
         state: link
+        force: yes
       when: python_path.stdout == ""
+    - git:
+        repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
+        dest: /libraries/
+      when: "'usegalaxy' in inventory_hostname"
+#    - name: Create data storage for UMSA
+#      file:
+#        owner: "{{ galaxy_user_name }}"
+#        group: "{{ galaxy_user_group }}"
+#        path:  "{{ galaxy_data_prefix }}"
+#        state: directory
+#        mode:  "0755"
+#      when: "'umsa' in inventory_hostname"
+    - name: Create the RBD storage directory
+      file:
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group }}"
+        path: /rbd/data
+        state: directory
+        mode: '0755'
+      when: "'usegalaxy' in inventory_hostname"
+    - name: Create the nginx upload job files store
+      file:
+        owner: www-data
+        group: "{{ galaxy_user_group }}"
+        path: /rbd/data/_upload_job_files
+        state: directory
+        mode: '0775'
+      when: "'usegalaxy' in inventory_hostname"
+    - name: Create the client body temp path   
+      file:
+        owner: www-data
+        group: "{{ galaxy_user_group }}"
+        path: /rbd/data/nginx_upload_store
+        state: directory
+        mode: '0775'
+      when: "'usegalaxy' in inventory_hostname"
       ## pre tasks specific for galaxy-re
     - name: Setup NBD client
       ansible.builtin.lineinfile:
@@ -113,23 +153,6 @@
         opts: rw,_netdev
         state: mounted
       when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
-
-  post_tasks:
-    - name: Setup gxadmin cleanup task
-      ansible.builtin.cron:
-        name: "Cleanup Old User Data"
-        user: "{{ galaxy_user_name }}" # Run as the Galaxy user
-        minute: "0"
-        hour: "0"
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"  
-    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
-      replace:
-        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
-#        after: '^\s*?try:'
-        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
-        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
-        validate: 'python -m py_compile %s'
-      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
   roles:
     - galaxyproject.tusd
     - galaxyproject.galaxy
@@ -143,4 +166,30 @@
     - galaxyproject.proftpd
     - geerlingguy.docker
     - usegalaxy_eu.rabbitmqserver
+#    - galaxyproject.tiaas2
     - galaxyproject.gxadmin
+#    - galaxyproject.cvmfs
+#    - dj-wasabi.telegraf
+  post_tasks:
+    - name: Setup gxadmin cleanup task
+      ansible.builtin.cron:
+        name: "Cleanup Old User Data"
+        user: "{{ galaxy_user_name }}" # Run as the Galaxy user
+        minute: "0"
+        hour: "0"
+        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
+    - name: Setup user - group association rutine
+      ansible.builtin.cron:
+        name: "Add E-infra users to E-infra group"
+        user: postgres # Run as the postgres user
+        minute: "0"
+        hour: "*"
+        job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+      when: "'usegalaxy' in inventory_hostname"
+    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
+      replace:
+        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
+        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
+        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
+        validate: 'python -m py_compile %s'
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
