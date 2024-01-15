@@ -301,7 +301,7 @@ galaxy_config:
       enable: true
       queues: celery,galaxy.internal,galaxy.external
       pool: threads
-      memory_limit: 2
+      memory_limit: 4
       concurrency: 2
       loglevel: DEBUG
     tusd:

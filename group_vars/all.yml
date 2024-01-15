@@ -4,8 +4,9 @@ pip_virtualenv_command: /usr/bin/python3 -m venv  # usegalaxy_eu.certbot, usegal
 
 # Common variables needed by all hosts
 galaxy_user_name: galaxyelixir
-galaxy_user_id: 10145
+galaxy_user_id: 2469
 galaxy_user_group: galaxyelixir
+galaxy_user_gid: 10145
 galaxy_db_name: galaxyelixir
 galaxy_data_dir: "/mnt/galaxy-re"
 #galaxy_data_prefix: "/mnt/data"
