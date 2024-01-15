@@ -2,12 +2,9 @@
 <object_store type="hierarchical">
     <backends>
         <backend id="newdata" type="disk" order="0">
-	    <files_dir path="/rbd/data" />
-	    <extra_dir type="job_work" path="/rbd/data/job_work_dir" />
-        </backend>
-        <backend id="olddata" type="disk" order="1">
-	    <files_dir path="/mnt/database" />
-	    <extra_dir type="job_work" path="/mnt/database/job_work_dir" />
+	    <files_dir path="{{ galaxy_data_prefix }}/datasets" />
+            <extra_dir type="temp" path="{{ galaxy_data_prefix }}/tmp"/>
+	    <extra_dir type="job_work" path="{{ galaxy_data_prefix }}/jobs" />
         </backend>
     </backends>
 </object_store>
