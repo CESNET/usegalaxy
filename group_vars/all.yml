@@ -9,7 +9,6 @@ galaxy_user_group: galaxyelixir
 galaxy_user_gid: 10145
 galaxy_db_name: galaxyelixir
 galaxy_data_dir: "/mnt/galaxy-re"
-#galaxy_data_prefix: "/mnt/data"
 
 # CVMFS vars
 cvmfs_role: client
