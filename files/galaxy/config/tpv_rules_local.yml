@@ -256,76 +256,37 @@ tools:
             import re
             int(re.search(r'walltime=(\d)+', job.get_param_values(app)['queue_definition']['queue_specification']).group(0).split('=')[1])
       - id: basic_fast_queue_selected
-        #if: job.get_param_values(app).get('queue_definition', {}).get('queue_select', {}) == 'basic_fast_queue'
         if: |
           param_dict = job.get_param_values(app) # get job input parameters as dictionary
-          'queue_definition' in param_dict and 'queue_select' in param_dict['queue_definition'] and param_dict['queue_definition']['queue_select'].startswith('basic_fast_queue')
+          'queue_select' in param_dict and param_dict['queue_select'].startswith('basic_fast_queue')
         cores: 10
         mem: 32
         context:
           scratch: 50
           walltime: 48
       - id: long_slow_queue_selected
-        #if: job.get_param_values(app).get('queue_definition', {}).get('queue_select', {}) == 'long_slow_queue'
         if: |
           param_dict = job.get_param_values(app) # get job input parameters as dictionary
-          'queue_definition' in param_dict and 'queue_select' in param_dict['queue_definition'] and param_dict['queue_definition']['queue_select'].startswith('long_slow_queue')
+          'queue_select' in param_dict and param_dict['queue_select'].startswith('long_slow_queue')
         cores: 16
         mem: 64
         context:
           scratch: 50
           walltime: 336
       - id: extra_long_slow_queue_selected
-        #if: job.get_param_values(app).get('queue_definition', {}).get('queue_select', {}) == 'extra_long_slow_queue'
         if: |
           param_dict = job.get_param_values(app) # get job input parameters as dictionary
-          'queue_definition' in param_dict and 'queue_select' in param_dict['queue_definition'] and param_dict['queue_definition']['queue_select'].startswith('extra_long_slow_queue')
+          'queue_select' in param_dict and param_dict['queue_select'].startswith('extra_long_slow_queue')
         cores: 16
         mem: 64
         context:
           scratch: 50
           walltime: 720
+
+
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/.*:
     inherits: toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*
-#    cores: 10
-#    mem: 32
-#    context:
-#      scratch: 50
-#      walltime: 48
-#    scheduling:
-#      require:
-#      - pulsar
-#      - singularity
 
-#    rules:
-#      - id: resource_params_definition
-#        if: |
-#          param_dict = dict( [ ( p.name, p.value ) for p in job.parameters ] ) #get params
-#          param_dict = tool.params_from_strings( param_dict, app ) #to string
-#          if 'queue_definition' in param_dict: #check if we support queue selection
-#            if 'queue_specification' in param_dict['queue_definition']: #check that specification is provided
-#              queue_text = param_dict['queue_definition']['queue_specification']
-#              #!!!IF YOU WANT TO DO CHECKING OF SPECIFIED QUEUE, DO IT HERE!!!#
-#              params={}
-#              params["nativeSpecification"] = queue_text
-#              return JobDestination(runner="drmaa", params=params)
-#          raise JobMappingException("Not supported yet!")
-
-#    rules:
-#      - id: admin_only_testing_tool
-#        if: |
-#          # Only allow the tool to be executed if the user is an admin
-#          admin_users = app.config.admin_users
-#          # last line in block must evaluate to a value - which determines whether the TPV if conditional matches or not
-#          not user or user.email not in admin_users
-#        fail: Unauthorized. Only admins can execute this tool.
-#      - id: resource_params_defined
-#        if: |
-#          param_dict = job.get_param_values(app)
-#          param_dict.get('__job_resource', {}).get('__job_resource__select') == 'yes'
-#        cores: int(job.get_param_values(app)['__job_resource']['cores'])
-#        params:
-#           walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
   .*/alphafold/.*:
     scheduling:
