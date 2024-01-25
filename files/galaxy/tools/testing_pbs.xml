@@ -1,0 +1,13 @@
+<tool id="testing_pbs" name="PBS via Pulsar test">
+    <command>
+        <![CDATA[hostname > "$output1" &&
+                 date >> "$output1"]]>
+    </command>
+    <inputs>
+        <param name="input1" type="text" value="" label="Input Text1"/>
+    </inputs>
+    <outputs>
+        <data name="output1" format="txt" />
+    </outputs>
+</tool>
+
