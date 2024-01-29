@@ -36,3 +36,4 @@ postgresql_objects_databases:
 postgresql_backup_dir: "{{ galaxy_data_dir }}/backups"
 postgresql_backup_local_dir: "{{ galaxy_data_dir }}/backups/scripts"
 postgresql_pg_dump_prefix: galaxy_db_backup
+galaxy_db_restore_version: latest
