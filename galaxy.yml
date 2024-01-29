@@ -299,3 +299,17 @@
               echo "### Finished backup at `date` ###" >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
             endscript
           }
+
+    ## Install required Galaxy tools
+    - name: Install required tools - create Ephemeris venv
+      ansible.builtin.shell:
+        cmd: python3 -m venv ~/ephemeris_venv
+      tags: tools
+    - name: Install required tools - install Ephemeris
+      ansible.builtin.shell:
+        cmd: source ~/ephemeris_venv/bin/activate && pip install ephemeris
+      tags: tools
+    - name: Install required tools - install Galaxy tools
+      ansible.builtin.shell:
+        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ admin_apikey }} -t regalaxy_tool_list.yaml
+      tags: tools
