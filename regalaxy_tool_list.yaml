@@ -1,0 +1,61 @@
+tools:
+- name: repeatexplorer2_testing
+  owner: petr-novak
+  revisions:
+  - 20ef42e81eeb
+  tool_panel_section_label: RepeatExplorer
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: dante
+  owner: petr-novak
+  revisions:
+  - 8f2bd3cae2de
+  tool_panel_section_label: DANTE
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: dante_ltr
+  owner: petr-novak
+  revisions:
+  - 27e5f58763f2
+  tool_panel_section_label: DANTE_LTR
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: long_reads_sampling
+  owner: petr-novak
+  revisions:
+  - 060fc04af21c
+  tool_panel_section_label: RepeatExplorer utilities
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: re_utils
+  owner: petr-novak
+  revisions:
+  - f1738f8649b0
+  tool_panel_section_label: RepeatExplorer utilities
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: repeat_annotation_pipeline3
+  owner: petr-novak
+  revisions:
+  - 755a4d643184
+  tool_panel_section_label: Assembly annotation tools
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: tidecluster
+  owner: petr-novak
+  revisions:
+  - 440796be7576
+  tool_panel_section_label: TideCluster
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: jbrowse
+  owner: iuc
+  revisions:
+  - a6e57ff585c0
+  tool_panel_section_label: Jbrowse
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: seqtk
+  owner: iuc
+  revisions:
+  - 4b494533146a
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastqc
+  owner: devteam
+  revisions:
+  - 5ec9f6bceaee
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
