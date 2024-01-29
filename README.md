@@ -9,17 +9,22 @@ sudo apt-get upgrade -y
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y software-properties-common
-sudo apt-add-repository --yes --update ppa:ansible/ansible
+# sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main" >> /etc/apt/sources.list.d/ansible_ubuntu_focal_main.list
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
 sudo apt install -y ansible
 ```
 
-Clone the repo and instal required galaxy roles.
+Clone the repo and instal required galaxy roles. (Optional: add public ssh key from machine to your git account)
 ```
 git clone https://github.com/CESNET/usegalaxy.git
 cd usegalaxy
+git check galaxy-re
+```
+Note that the roles are already present in this repo. If not run:
+```
 ansible-galaxy install -p roles -r requirements.yml
 ```
-Note that the roles are already present in this repo.
 
 After the instalation, you should configure your [inventory file](https://training.galaxyproject.org/training-material/topics/admin/tutorials/ansible/tutorial.html#inventory-file) ([hosts](https://github.com/CESNET/usegalaxy/blob/main/hosts)) and set up a vault:
 ```
@@ -28,13 +33,20 @@ ansible-vault create group_vars/secret.yml
 ```
 The second command opens an editor wherein you should define variables eg.:
 ```
-vault_id_secret: "a-long-random-value"
+vault_id_secret: "pass"
 rabbitmq_users_password:
-  mqadmin: "a-long-random-value"
-  galaxy: "a-long-random-value"
-  galaxy_gpu: "a-long-random-value"
+  mqadmin: "pass"
+  pulsar: "pass"
+  galaxy: "pass"
+  flower: "pass"
+vault_reports_admin_password: "pass"
+flower_admin_password: "pass"
+elixir_client_id: "elixir_id"
+elixir_client_secret: "elixir_secret"
+ldap_user_password: "galaxy_user_pass"
+admin_apikey: "apikey"
 ```
-The value should be a long random value, which can be obtained by command `openssl rand -base64 24`, though you should avoid having a `/` or `\` in your password as galaxy will interpret this as a path.
+The value should be a long random value, which can be obtained by command `openssl rand -base64 24`, though you should avoid having a `/` or `\` in your password as galaxy will interpret this as a path. The safest is to avoid anything else than numbers, letters, underscore and dash.
 
 Make sure you have these ports enabled on your machine:
 ```
