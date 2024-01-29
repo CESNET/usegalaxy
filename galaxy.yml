@@ -169,38 +169,54 @@
       become: true
       become_user: postgres
       tags: gal_db
-    - name: Restore Galaxy DB backup - pick the latest backup version
+
+    - name: Restore Galaxy DB backup - pick proper backup version
       ansible.builtin.shell:
-        cmd: "ls -dt {{ postgresql_backup_dir }}/20*Z | head -1 "
-      register: galaxy_db_restore_dir_latest
-      ignore_errors: true
-      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_version == 'latest'
-      become: true
-      become_user: postgres
-      tags: gal_db
-    - name: Restore Galaxy DB backup - pick the user-defined backup version
-      ansible.builtin.shell:
-        cmd: "ls -d {{ postgresql_backup_dir }}/{{ galaxy_db_restore_version }} "
+        cmd: "if [ '{{ galaxy_db_restore_version }}' = 'latest' ]; then ls -dt {{ postgresql_backup_dir }}/20*Z | head -1; else ls -d {{ postgresql_backup_dir }}/{{ galaxy_db_restore_version }}; fi "
       register: galaxy_db_restore_dir
-      ignore_errors: true
-      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_version != 'latest'
+      when: galaxy_db_in_psql.rc == 1
       become: true
       become_user: postgres
       tags: gal_db
-    - name: Restore Galaxy DB backup - copy latest backup version
-      ansible.builtin.shell:
-        cmd: "rsync -a {{ galaxy_db_restore_dir_latest.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
-      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_dir_latest.stdout != '' and psql_data_dir.stdout != ''
-      become: true
-      become_user: postgres
-      tags: gal_db
-    - name: Restore Galaxy DB backup - copy user-defined backup version
+    - name: Restore Galaxy DB backup - copy proper backup version
       ansible.builtin.shell:
         cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
       when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
       become: true
       become_user: postgres
       tags: gal_db
+#    - name: Restore Galaxy DB backup - pick the latest backup version
+#      ansible.builtin.shell:
+#        cmd: "ls -dt {{ postgresql_backup_dir }}/20*Z | head -1 "
+#      register: galaxy_db_restore_dir_latest
+#      ignore_errors: true
+#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_version == 'latest'
+#      become: true
+#      become_user: postgres
+#      tags: gal_db
+#    - name: Restore Galaxy DB backup - pick the user-defined backup version
+#      ansible.builtin.shell:
+#        cmd: "ls -d {{ postgresql_backup_dir }}/{{ galaxy_db_restore_version }} "
+#      register: galaxy_db_restore_dir
+#      ignore_errors: true
+#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_version != 'latest'
+#      become: true
+#      become_user: postgres
+#      tags: gal_db
+#    - name: Restore Galaxy DB backup - copy latest backup version
+#      ansible.builtin.shell:
+#        cmd: "rsync -a {{ galaxy_db_restore_dir_latest.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
+#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_dir_latest.stdout != '' and psql_data_dir.stdout != ''
+#      become: true
+#      become_user: postgres
+#      tags: gal_db
+#    - name: Restore Galaxy DB backup - copy user-defined backup version
+#      ansible.builtin.shell:
+#        cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
+#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
+#      become: true
+#      become_user: postgres
+#      tags: gal_db
     - name: Restore Galaxy DB backup - fill postgresql.auto.conf
       ansible.builtin.lineinfile:
         path: "{{ psql_data_dir.stdout }}/postgresql.auto.conf"
