@@ -229,7 +229,7 @@ tools:
   # ReapeatExplorer tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*:
     cores: 10
-    mem: 32
+    mem: 4
     context:
       scratch: 50
       walltime: 48
@@ -260,7 +260,7 @@ tools:
           param_dict = job.get_param_values(app) # get job input parameters as dictionary
           'queue_select' in param_dict and param_dict['queue_select'].startswith('basic_fast_queue')
         cores: 10
-        mem: 32
+        mem: 4
         context:
           scratch: 50
           walltime: 48
