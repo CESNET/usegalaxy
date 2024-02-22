@@ -7,7 +7,7 @@ galaxy_user_name: galaxyumsa
 galaxy_user_id: 10456
 galaxy_user_group: galaxyumsa
 galaxy_db_name: galaxy
-galaxy_data_prefix: "/mnt/data"
+galaxy_data_prefix: "/rbd/galaxy-umsa_data"
 
 # CVMFS vars
 cvmfs_role: client

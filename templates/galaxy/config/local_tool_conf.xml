@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<toolbox monitor="true" tool_path="/srv/galaxy/local_tools">
+    <tool file="testing.xml" />
+    <!--tool file="testing_html.xml" /-->
+    <tool file="testing_pbs.xml" />
+</toolbox>
