@@ -422,6 +422,7 @@
     <tool file="meme/fimo.xml" hidden="True" />
     </section>
   <section id="test_tools" name="Test Tools">
+    <tool file="/opt/galaxy/custom-tools/test/zarr/xarray_netcdf2zarr.xml" />
     <tool file="/opt/galaxy/custom-tools/test/interactivetool_zeppelin.xml" labels="alpha" />
     <tool file="/data/db/galaxy_user_data/climate_science/icenet/icenet_concatenate.xml" labels="alpha" />
     <tool file="/data/db/galaxy_user_data/climate_science/icenet/icenet_forecast.xml" labels="alpha" />
@@ -600,7 +601,42 @@
 	<tool file="interactive/interactivetool_vrm_editor.xml" />
 	<tool file="interactive/interactivetool_simtext_app.xml" />
 	<tool file="interactive/interactivetool_isee.xml" />
-	<tool file="interactive/interactivetool_metashark.xml" />
+	<tool file="interactive/interactivetool_metashark.xml" labels="beta" />
 	<tool file="interactive/interactivetool_audiolabeler.xml" />
+ 	<tool file="interactive/interactivetool_genenotebook.xml" />
+  </section>
+  
+<!-- Earth-system subdomain -->
+<label id="earth-system-label-interactive-tools" text="General interactive tools" />  
+  <section id="earth-system-section-interactivetools" name="Interactive tools">
+    <tool file="interactive/interactivetool_jupyter_notebook.xml" />
+    <tool file="interactive/interactivetool_jupyter_notebook_1.0.0.xml" />
+    <tool file="interactive/interactivetool_rstudio.xml" />
+    <tool file="interactive/interactivetool_rstudio_0_3.xml" />
+    <tool file="interactive/interactivetool_climate_notebook.xml" />
+    <tool file="interactive/interactivetool_pangeo_notebook.xml" />
+    <tool file="interactive/interactivetool_pangeo_ml_notebook.xml" />
+  </section>
+  <label id="earth-system-label-dynamics" text="Earth and Environmental dynamics" />
+  <section id="earth-system-section-watercoastal" name="Water Coastal Dynamics">
+    <tool file="interactive/interactivetool_divand.xml" />
+    <tool file="interactive/interactivetool_source.xml" />
+    <tool file="interactive/interactivetool_odv.xml" />
+  </section>
+  <section id="earth-system-section-earthcritical" name="Earth Critical Zone">
+    <tool file="interactive/interactivetool_qgis.xml" />
+  </section>
+  <section id="earth-system-section-volcano" name="Volcano">
+    <tool file="interactive/interactivetool_hdfview.xml" />
+  </section>
+  <label id="earth-system-label-biogeo" text="Environmental Bio-geochemical assets" />
+  <section id="earth-system-section-biogeo" name="Bio-geochemical">
+    <tool file="interactive/interactivetool_scoop3.xml" />
+  </section>
+  <label id="earth-system-label-biodiv" text="Biodiversity observation" />
+  <section id="earth-system-section-marineomics" name="Marine Omics">
+    <tool file="interactive/interactivetool_pampa.xml" />
+    <tool file="interactive/interactivetool_mgnify_notebook.xml" />
+    <tool file="interactive/interactivetool_mgnify_notebook_1.2.2.xml" />
   </section>
 </toolbox>

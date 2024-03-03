@@ -7,7 +7,7 @@ galaxy_manage_cleanup: true
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-  # galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
+# galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
 galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
@@ -40,16 +40,16 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: gpu
-    # pulsar_runner:
-      # load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      # galaxy_url: "https://{{ inventory_hostname }}"
-      # amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.galaxy }}@{{ inventory_hostname }}:5671/pulsar?ssl=1"
-      # amqp_acknowledge: true
-      # amqp_ack_republish_time: 1200
-      # amqp_consumer_timeout: 2
-      # amqp_publish_retry: true
-      # amqp_publish_retry_max_retries: 60
-      # manager: _default_
+    pulsar_tpv_runner:
+      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+      galaxy_url: "https://{{ rabbitmq_hostname }}"
+      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
+      amqp_acknowledge: true
+      amqp_ack_republish_time: 1200
+      amqp_consumer_timeout: 2
+      amqp_publish_retry: true
+      amqp_publish_retry_max_retries: 60
+      manager: tpv
   handling:
     assign: ['db-skip-locked']
   execution:
@@ -76,7 +76,8 @@ galaxy_job_config:
         default_file_action: remote_transfer
         dependency_resolution: remote
         jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
-        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
+        persistence_directory: "/opt/pulsar/files/persistent"
+#        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
         remote_metadata: false
         rewrite_parameters: true
         transport: curl
@@ -105,7 +106,8 @@ galaxy_job_config:
         transport: curl
         dependency_resolution: remote
         jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging" 
-        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent" 
+        persistence_directory: "/opt/pulsar/files/persistent"
+#        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent" 
         remote_metadata: false 
         rewrite_parameters: true
         outputs_to_working_directory: false
@@ -161,8 +163,8 @@ galaxy_config:
     # Main Configuration
     # To not bother the main disk
     new_file_path: "/rbd/data/tmp"
-    nginx_upload_job_files_store: "/rbd/data/_upload_job_files"
-    nginx_upload_job_files_path: "/_job_files"
+    # nginx_upload_job_files_store: "/rbd/data/_upload_job_files"
+    # nginx_upload_job_files_path: "/_job_files"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: true
     oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
@@ -184,6 +186,10 @@ galaxy_config:
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
+    tool_config_file: 
+#    - "{{ galaxy_root }}/server/config/tool_conf.xml.sample"
+    - "{{ galaxy_config_dir }}/tool_conf.xml"
+    - "{{ galaxy_config_dir }}/local_tool_conf.xml"
     job_resource_params_file: "{{ galaxy_config_dir }}/job_resource_params_conf.xml"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # SQL Performance
@@ -274,14 +280,18 @@ galaxy_config:
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
 galaxy_config_files_public:
-  - src: files/galaxy/welcome.html
+  - src: files/galaxy/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
-  - src: files/galaxy/usegalaxy-cz.png
+  - src: files/galaxy/static/usegalaxy-cz.png
     dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
-  - src: files/galaxy/elixir_logo.png
+  - src: files/galaxy/static/elixir_logo.png
     dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
-  - src: files/galaxy/e-infra_logo.svg
+  - src: files/galaxy/static/e-infra_logo.svg
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
+  - src: files/galaxy/static/gcc2024-banner-3.png
+    dest: "{{ galaxy_server_dir }}/static/gcc2024-banner-3.png"
+  - src: files/galaxy/static/style/additional_styles.css
+    dest: "{{ galaxy_server_dir }}/static/style/additional_styles.css"
 
 galaxy_config_files:
   - src: files/galaxy/themes.yml
@@ -305,7 +315,11 @@ galaxy_config_templates:
   - src: templates/galaxy/config/object_store_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
   - src: templates/galaxy/config/tool_conf.xml.j2
-    dest: "{{ galaxy_config_dir }}/tool_conf.xml"
+    dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
+#    dest: "{{ galaxy_config_dir }}/tool_conf.xml"
+  - src: templates/galaxy/config/local_tool_conf.xml.j2
+    dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
+
 
 galaxy_extra_dirs:
   - /mnt/data
@@ -317,6 +331,7 @@ tpv_privsep: true
 
 galaxy_local_tools:
 - testing.xml
+- testing_pbs.xml
 
 # Certbot
 certbot_auto_renew_hour: "{{ 23 |random(seed=inventory_hostname)  }}"
@@ -337,7 +352,9 @@ certbot_post_renewal: |
     docker restart rabbit_hole || true
     systemctl restart proftpd || true
 certbot_domains:
+ - "galaxy-cz.grid.cesnet.cz"
  - "{{ inventory_hostname }}"
+certbot_expand: true
 certbot_agree_tos: --agree-tos
 
 # NGINX
