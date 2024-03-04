@@ -9,6 +9,9 @@ jobs:
     steps:
       - name: check out repository
         uses: actions/checkout@v2
+        
+      - name: Remove entry from known_hosts
+        run: ssh-keygen -f "/home/runner/.ssh/known_hosts" -R "usegalaxy-test.cerit-sc.cz"
 
       - name: Get current date
         id: date
