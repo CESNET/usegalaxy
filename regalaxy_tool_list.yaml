@@ -2,6 +2,9 @@ tools:
 - name: repeatexplorer2_testing
   owner: petr-novak
   revisions:
+  - 3d0ba5734776
+  - 4308d3e572ee
+  - 5cca2c9aa4ad
   - 20ef42e81eeb
   tool_panel_section_label: RepeatExplorer
   tool_shed_url: toolshed.g2.bx.psu.edu
@@ -15,6 +18,8 @@ tools:
   owner: petr-novak
   revisions:
   - 27e5f58763f2
+  - d5508ce50c49
+  - 08b5e23859ed
   tool_panel_section_label: DANTE_LTR
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: long_reads_sampling
@@ -26,13 +31,14 @@ tools:
 - name: re_utils
   owner: petr-novak
   revisions:
-  - f1738f8649b0
+  - 91996b991991
   tool_panel_section_label: RepeatExplorer utilities
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: repeat_annotation_pipeline3
   owner: petr-novak
   revisions:
   - 755a4d643184
+  - 5366d5ea04bc
   tool_panel_section_label: Assembly annotation tools
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: tidecluster
@@ -58,4 +64,46 @@ tools:
   revisions:
   - 5ec9f6bceaee
   tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: bedtools
+  owner: iuc
+  revisions:
+  - a1a923cd89e8
+  tool_panel_section_label: 'BED'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: krona_text
+  owner: petr-novak
+  revisions:
+  - 04021cfd5170
+  tool_panel_section_label: Visualisation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: multiqc
+  owner: iuc
+  revisions:
+  - abfd8a6544d7
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: seqkit_stats
+  owner: iuc
+  revisions:
+  - 54a954ee64d4
+  tool_panel_section_label: 'FASTA/FASTQ manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: text_processing
+  owner: bgruening
+  revisions:
+  - d698c222f354
+  tool_panel_section_label: 'Text manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: trim_galore
+  owner: bgruening
+  revisions:
+  - cd7e644cae1d
+  tool_panel_section_label: 'FASTA/FASTQ manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: trimmomatic
+  owner: pjbriggs
+  revisions:
+  - 32f1f56bd970
+  tool_panel_section_label: 'FASTA/FASTQ manipulation'
   tool_shed_url: toolshed.g2.bx.psu.edu
