@@ -1,26 +1,117 @@
 tools:
-- name: repeatexplorer2_testing
+- name: repeat_annotation_pipeline3
   owner: petr-novak
   revisions:
-  - 3d0ba5734776
-  - 4308d3e572ee
-  - 5cca2c9aa4ad
-  - 20ef42e81eeb
-  tool_panel_section_label: RepeatExplorer
+  - 755a4d643184
+  tool_panel_section_label: Assembly annotation tools
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: dante
-  owner: petr-novak
+- name: fasta_compute_length
+  owner: devteam
   revisions:
-  - 8f2bd3cae2de
-  tool_panel_section_label: DANTE
+  - 7d37cfda8e00
+  tool_panel_section_label: FASTA/FASTQ manipulation
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: dante_ltr
-  owner: petr-novak
+- name: fasta_to_tabular
+  owner: devteam
   revisions:
-  - 27e5f58763f2
-  - d5508ce50c49
-  - 08b5e23859ed
-  tool_panel_section_label: DANTE_LTR
+  - e7ed3c310b74
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fasta_formatter
+  owner: devteam
+  revisions:
+  - 516b97a23d7e
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastx_reverse_complement
+  owner: devteam
+  revisions:
+  - 177f0621c266
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastx_trimmer
+  owner: devteam
+  revisions:
+  - 73194cdd4f57
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastx_renamer
+  owner: devteam
+  revisions:
+  - f984bb114520
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: tabular_to_fasta
+  owner: devteam
+  revisions:
+  - 0a7799698fe5
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: tabular_to_fastq
+  owner: devteam
+  revisions:
+  - 2dcfbbf9071a
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastq_to_tabular
+  owner: devteam
+  revisions:
+  - 4b347702c4aa
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastqtofasta
+  owner: devteam
+  revisions:
+  - 297962e79f39
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastq_paired_end_deinterlacer
+  owner: devteam
+  revisions:
+  - f3936d0632cb
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastq_paired_end_interlacer
+  owner: devteam
+  revisions:
+  - 2ccb8dcabddc
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fasta_filter_by_length
+  owner: devteam
+  revisions:
+  - 8cacfcf96a52
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: ucsc_fasplit
+  owner: iuc
+  revisions:
+  - bf04bd405d5b
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: trimmomatic
+  owner: pjbriggs
+  revisions:
+  - 32f1f56bd970
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: trim_galore
+  owner: bgruening
+  revisions:
+  - cd7e644cae1d
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: seqkit_stats
+  owner: iuc
+  revisions:
+  - 54a954ee64d4
+  tool_panel_section_label: FASTA/FASTQ manipulation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: seqtk
+  owner: iuc
+  revisions:
+  - 4b494533146a
+  tool_panel_section_label: FASTA/FASTQ manipulation
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: long_reads_sampling
   owner: petr-novak
@@ -34,12 +125,23 @@ tools:
   - 91996b991991
   tool_panel_section_label: RepeatExplorer utilities
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: repeat_annotation_pipeline3
+- name: repeatexplorer2_testing
   owner: petr-novak
   revisions:
-  - 755a4d643184
-  - 5366d5ea04bc
-  tool_panel_section_label: Assembly annotation tools
+  - 84106349d4b1
+  tool_panel_section_label: RepeatExplorer
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: dante
+  owner: petr-novak
+  revisions:
+  - 8f2bd3cae2de
+  tool_panel_section_label: DANTE
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: dante_ltr
+  owner: petr-novak
+  revisions:
+  - 27e5f58763f2
+  tool_panel_section_label: DANTE_LTR
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: tidecluster
   owner: petr-novak
@@ -53,29 +155,65 @@ tools:
   - a6e57ff585c0
   tool_panel_section_label: Jbrowse
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: seqtk
-  owner: iuc
-  revisions:
-  - 4b494533146a
-  tool_panel_section_label: FASTA/FASTQ manipulation
-  tool_shed_url: toolshed.g2.bx.psu.edu
-- name: fastqc
+- name: fastq_groomer
   owner: devteam
   revisions:
-  - 5ec9f6bceaee
+  - 47e5dbc3e790
   tool_panel_section_label: 'NGS: QC and manipulation'
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: bedtools
-  owner: iuc
+- name: fastq_paired_end_splitter
+  owner: devteam
   revisions:
-  - a1a923cd89e8
-  tool_panel_section_label: 'BED'
+  - e39cc71d3ed6
+  tool_panel_section_label: 'NGS: QC and manipulation'
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: krona_text
-  owner: petr-novak
+- name: fastq_stats
+  owner: devteam
   revisions:
-  - 04021cfd5170
-  tool_panel_section_label: Visualisation
+  - f0e7deab6518
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastx_barcode_splitter
+  owner: devteam
+  revisions:
+  - 0b7ec11b3c7c
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastx_artifacts_filter
+  owner: devteam
+  revisions:
+  - 529bccd5e4a1
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastx_nucleotides_distribution
+  owner: devteam
+  revisions:
+  - b6b54ba71bd8
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastx_quality_statistics
+  owner: devteam
+  revisions:
+  - cc0fd298cc17
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastq_quality_boxplot
+  owner: devteam
+  revisions:
+  - 867ab348287d
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastq_quality_converter
+  owner: devteam
+  revisions:
+  - 045f0e1043f7
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastq_quality_filter
+  owner: devteam
+  revisions:
+  - 64e9a6afdd0c
+  tool_panel_section_label: 'NGS: QC and manipulation'
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: multiqc
   owner: iuc
@@ -83,27 +221,69 @@ tools:
   - abfd8a6544d7
   tool_panel_section_label: 'NGS: QC and manipulation'
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: seqkit_stats
+- name: fastqc
+  owner: devteam
+  revisions:
+  - 5ec9f6bceaee
+  tool_panel_section_label: 'NGS: QC and manipulation'
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: gffread
+  owner: devteam
+  revisions:
+  - 3e436657dcd0
+  tool_panel_section_label: BED
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: bedtools
   owner: iuc
   revisions:
-  - 54a954ee64d4
-  tool_panel_section_label: 'FASTA/FASTQ manipulation'
+  - a1a923cd89e8
+  tool_panel_section_label: BED
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: krona_text
+  owner: petr-novak
+  revisions:
+  - 04021cfd5170
+  tool_panel_section_label: Visualisation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: histogram
+  owner: devteam
+  revisions:
+  - 6f134426c2b0
+  tool_panel_section_label: Visualisation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: ggplot2_point
+  owner: iuc
+  revisions:
+  - 3b12bf9b4b87
+  tool_panel_section_label: Visualisation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: ggplot2_histogram
+  owner: iuc
+  revisions:
+  - b0d96516e6a5
+  tool_panel_section_label: Visualisation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: ggplot2_violin
+  owner: iuc
+  revisions:
+  - 0e7290688b50
+  tool_panel_section_label: Visualisation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: ggplot2_pca
+  owner: iuc
+  revisions:
+  - b1268b7544d3
+  tool_panel_section_label: Visualisation
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: ggplot2_heatmap
+  owner: iuc
+  revisions:
+  - 10515715c940
+  tool_panel_section_label: Visualisation
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: text_processing
   owner: bgruening
   revisions:
   - d698c222f354
-  tool_panel_section_label: 'Text manipulation'
-  tool_shed_url: toolshed.g2.bx.psu.edu
-- name: trim_galore
-  owner: bgruening
-  revisions:
-  - cd7e644cae1d
-  tool_panel_section_label: 'FASTA/FASTQ manipulation'
-  tool_shed_url: toolshed.g2.bx.psu.edu
-- name: trimmomatic
-  owner: pjbriggs
-  revisions:
-  - 32f1f56bd970
-  tool_panel_section_label: 'FASTA/FASTQ manipulation'
+  tool_panel_section_label: Text manipulation
   tool_shed_url: toolshed.g2.bx.psu.edu

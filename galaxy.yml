@@ -20,7 +20,7 @@
   pre_tasks:
     - name: Install Dependencies
       ansible.builtin.package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full', 'logrotate', 'proftpd-mod-ldap']
     - name: Install additional pip packages
       ansible.builtin.pip:
         name: passlib
@@ -72,7 +72,7 @@
 #    - name: Create data storage for UMSA
 #      file:
 #        owner: "{{ galaxy_user_name }}"
-#        group: "{{ galaxy_user_group }}"
+#        group: "{{ galaxy_user_group_name }}"
 #        path:  "{{ galaxy_data_dir }}"
 #        state: directory
 #        mode:  "0755"
@@ -80,7 +80,7 @@
     - name: Create the RBD storage directory
       file:
         owner: "{{ galaxy_user_name }}"
-        group: "{{ galaxy_user_group }}"
+        group: "{{ galaxy_user_group_name }}"
         path: /rbd/data
         state: directory
         mode: '0755'
@@ -88,7 +88,7 @@
     - name: Create the nginx upload job files store
       file:
         owner: www-data
-        group: "{{ galaxy_user_group }}"
+        group: "{{ galaxy_user_group_name }}"
         path: /rbd/data/_upload_job_files
         state: directory
         mode: '0775'
@@ -96,7 +96,7 @@
     - name: Create the client body temp path   
       file:
         owner: www-data
-        group: "{{ galaxy_user_group }}"
+        group: "{{ galaxy_user_group_name }}"
         path: /rbd/data/nginx_upload_store
         state: directory
         mode: '0775'
@@ -287,14 +287,14 @@
         path:  "{{ postgresql_backup_dir }}/pg_dump"
         state: directory
         owner: postgres
-        group: "{{ galaxy_user_group }}"
+        group: "{{ galaxy_user_group_name }}"
         mode:  0750
     - name: Create initial empty pg_dump file if needed # otherwise the following logrotate conf will not work
       file:
         path:  "{{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz"
         state: touch
         owner: postgres
-        group: "{{ galaxy_user_group }}"
+        group: "{{ galaxy_user_group_name }}"
         mode:  0640
     - name: Set-up Galaxy DB backup using pg_dump and logrotate
       ansible.builtin.blockinfile:
@@ -315,6 +315,8 @@
               echo "### Finished backup at `date` ###" >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
             endscript
           }
+    ## Add rule to change owner on sanitize_allowlist in /srv/galaxy/var/config
+#    - name: Set-up correct owner on sanitize_allowlist to Galaxy user
 
     ## Install required Galaxy tools
     - name: Install required tools - create Ephemeris venv
@@ -327,5 +329,6 @@
       tags: tools
     - name: Install required tools - install Galaxy tools
       ansible.builtin.shell:
-        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ admin_apikey }} -t regalaxy_tool_list.yaml
+        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }}{{ galaxy_prefix }} -a {{ admin_apikey }} -t regalaxy_tool_list.yaml
+      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
       tags: tools

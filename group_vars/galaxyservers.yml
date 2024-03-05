@@ -7,10 +7,13 @@ galaxy_manage_cleanup: true
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_tool_dependency_dir: "{{ galaxy_mutable_data_dir }}/dependencies"
+galaxy_user_group:
+  name: "{{ galaxy_user_group_name }}"
+  gid: "{{ galaxy_user_group_gid }}"
 galaxy_user:
   name: "{{ galaxy_user_name }}"
   uid: "{{ galaxy_user_id }}"
-  group: "{{ galaxy_user_group }}"
+  group: "{{ galaxy_user_group.name }}"
   shell: /bin/bash
 # 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 commit_id z galaxy-cz
 # 7a9ba0c6529d72517c7627422eac16eadff15b46 commit_id posledne, ktore fungovalo
@@ -32,7 +35,7 @@ galaxy_job_config:
       workers: 4
     pulsar_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ inventory_hostname }}"
+      galaxy_url: "https://{{ inventory_hostname }}{{ galaxy_prefix }}"
       amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ inventory_hostname }}:5671//pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
@@ -42,7 +45,7 @@ galaxy_job_config:
       manager: _default_
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ inventory_hostname }}"
+      galaxy_url: "https://{{ inventory_hostname }}{{ galaxy_prefix }}"
       amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ inventory_hostname }}:5671//pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
@@ -52,7 +55,7 @@ galaxy_job_config:
       manager: test
     pulsar_long_and_big_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: https://{{ inventory_hostname }}
+      galaxy_url: "https://{{ inventory_hostname }}{{ galaxy_prefix }}"
       amqp_url: pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ inventory_hostname }}:5671//pulsar?ssl=1
       amqp_ack_republish_time: 1200
       amqp_acknowledge: true
@@ -196,6 +199,12 @@ galaxy_job_config:
       environment: local
     - id: __DATA_FETCH__
       environment: local
+    - id: gff2bed1
+      environment: local
+#    - id: bed2gff1
+#      environment: local
+    - id: Extract_features1
+      environment: local
     - id: testing_html
       environment: tpv_dispatcher
 
@@ -207,12 +216,13 @@ galaxy_config:
     #oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
     #logo_src: "https://www.e-infra.cz/img/logo.svg"
     #themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
+    galaxy_url_prefix: "{{ galaxy_prefix }}"
     admin_users:
     - xdemko@repeatexplorer-elixir.cerit-sc.cz
     - kavonrtep@repeatexplorer-elixir.cerit-sc.cz
     - salvet@repeatexplorer-elixir.cerit-sc.cz
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
-    umask: 022
+    #umask: 022
     file_path: "{{ galaxy_data_dir }}/datasets"
     new_file_path: "{{ galaxy_data_dir }}/tmp"
     job_working_directory: "{{ galaxy_data_dir }}/jobs"
@@ -283,7 +293,7 @@ galaxy_config:
     galaxy_root: "{{ galaxy_root }}/server"
     galaxy_user: "{{ galaxy_user.name }}"
     virtualenv: "{{ galaxy_venv_dir }}"
-    umask: 022
+    #umask: 022
     gunicorn:
       # listening options
       bind: "unix:{{ galaxy_mutable_config_dir }}/gunicorn.sock"
@@ -322,9 +332,17 @@ galaxy_config:
 
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
-#galaxy_config_files_public:
-#  - src: files/galaxy/welcome.html
-#    dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
+galaxy_config_files_public:
+  - src: files/galaxy/static/welcome.html
+    dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
+  - src: files/galaxy/static/style/base.css
+    dest: "{{ galaxy_server_dir }}/static/style/base.css"
+  - src: files/galaxy/static/images/umbr_programs_icons/RE_header.png
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/RE_header.png"
+  - src: files/galaxy/static/images/umbr_programs_icons/ELIXIR_CZECHREPUBLIC_white_background_small.png
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/ELIXIR_CZECHREPUBLIC_white_background_small.png"
+  - src: files/galaxy/static/images/umbr_programs_icons/RE_logo.png
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/RE_logo.png"
 
 galaxy_config_files:
 #  - src: files/galaxy/themes.yml
@@ -387,6 +405,8 @@ certbot_post_renewal: |
     systemctl restart proftpd || true
 certbot_domains:
  - "{{ inventory_hostname }}"
+# - "repeatexplorer-elixir.cerit-sc.cz"
+#certbot_expand: true
 certbot_agree_tos: --agree-tos
 
 # NGINX
@@ -395,6 +415,7 @@ nginx_servers:
   - redirect-ssl
 nginx_ssl_servers:
   - galaxy
+#  - galaxy_with_prefix
 #  - sentry
 nginx_enable_default_server: false
 nginx_conf_http:
@@ -528,7 +549,7 @@ proftpd_sql_user: "{{ galaxy_user.name }}"
 #proftpd_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
 #proftpd_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
 proftpd_conf_ssl_certificate: /etc/ssl/certs/cert.pem
-proftpd_conf_ssl_certificate_key: /etc/ssl/user/privkey-999:999.pem
+proftpd_conf_ssl_certificate_key: /etc/ssl/user/privkey-proftpd.pem
 proftpd_global_options:
   - PassivePorts: 56000 60000
 proftpd_use_mod_tls_shmcache: false
