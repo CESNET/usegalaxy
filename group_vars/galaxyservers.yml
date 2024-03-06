@@ -491,6 +491,12 @@ telegraf_plugins_extra:
 tiaas_dir: /srv/tiaas
 tiaas_admin_user: admin
 tiaas_admin_pass: "{{ tiaas_password }}"
+tiaas_info:
+  owner: "Metacentrum"
+  domain: "{{ inventory_hostname }}"
+  owner_email: "regalaxy@rt.cesnet.cz"
+  owner_site: "http://{{ inventory_hostname }}"
+tiaas_send_email_to_requester: true
 
 # Proftpd:
 proftpd_galaxy_auth: yes

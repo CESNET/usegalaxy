@@ -157,8 +157,8 @@ destinations:
       singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
       submit_native_specification: ""
     env:
-      - ALPHAFOLD_DB: "/auto/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
-      - ALPHAFOLD_USE_GPU: True
+      ALPHAFOLD_DB: "/auto/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
+      ALPHAFOLD_USE_GPU: True
     scheduling:
       require:
         - pulsar
