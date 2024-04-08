@@ -2,6 +2,8 @@
 
 name: deploy-test
 
+on: [ workflow_dispatch ]
+
 jobs:
   call-common:
     runs-on: ubuntu-latest
