@@ -3,9 +3,9 @@
 name: deploy-test
 
 jobs:
-  runs-on: ubuntu-latest
   call-common:
-    uses: deploy-common
+    runs-on: ubuntu-latest
+    uses: deploy-common@main
     with:
       destination: 'usegalaxy-test.blablabla'
 

@@ -1,11 +1,11 @@
-#! vim: ts=2:
+#! vim: ts=2 expandtab:
 
 name: deploy-common
 
 jobs:
-	deploy:
-		runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-	steps:
-		- name: Install Ansible
-		  run: echo {{ destination }}
+    steps:
+      - name: Install Ansible
+        run: echo {{ destination }}
