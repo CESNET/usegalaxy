@@ -1,0 +1,11 @@
+#! vim: ts=2:
+
+name: deploy-common
+
+jobs:
+	deploy:
+		runs-on: ubuntu-latest
+
+	steps:
+		- name: Install Ansible
+		  run: echo {{ destination }}

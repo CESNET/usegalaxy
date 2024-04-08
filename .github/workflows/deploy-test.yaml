@@ -1,0 +1,11 @@
+#! vim: ts=2:
+
+name: deploy-test
+
+jobs:
+	call-common:
+		uses: deploy-common
+		with:
+			destination: 'usegalaxy-test.blablabla'
+
+
