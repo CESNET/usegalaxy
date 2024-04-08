@@ -2,9 +2,12 @@
 
 name: deploy-common
 
-on: [ workflow_call ]
+inputs:
+  destination:
+    description: 'Ansible host'
+    required: true
 
-jobs:
+runs:
   deploy:
     runs-on: ubuntu-latest
 
