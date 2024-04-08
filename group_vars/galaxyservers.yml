@@ -13,7 +13,8 @@ galaxy_user:
   group: "{{ galaxy_user_group }}"
   shell: /bin/bash
 # galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
-galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
+#galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
+galaxy_commit_id: release_23.2
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 'latest' # 23.5.2 # 23.5.0 # 4.12.0
@@ -40,6 +41,8 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: _default_
+    tes_runner:
+      load: galaxy.jobs.runners.tes:TESJobRunner
   handling:
     assign: ['db-skip-locked']
   execution:
@@ -132,11 +135,19 @@ galaxy_job_config:
         tpv_config_files:
           - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
           - "{{ tpv_config_dir }}/tpv_rules_local.yml"
+      tesp:
+        runner: tes_runner
+        tes_master_addr: http://195.113.167.47:8080
+        rewrite_parameters: true
+        docker_enabled: true
+        default_docker_image: hub.cerit.io/josef_handl/tesp-test-image
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local
     - id: testing
       environment: tpv_dispatcher
+    - id: fastqc
+      environment: tesp
 
 galaxy_config:
   galaxy:
@@ -156,6 +167,7 @@ galaxy_config:
     - 499542@muni.cz
     - 325073@mail.muni.cz
     - demko@cesnet.cz
+    - galaxy@galaxy-umsa.grid.cesnet.cz
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
     allow_user_creation: False
@@ -267,8 +279,8 @@ galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 #    dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
 
 galaxy_config_files:
-#  - src: files/galaxy/themes.yml
-#    dest: "{{ galaxy_config.galaxy.themes_config_file }}"
+  - src: files/galaxy/tes.py
+    dest: "{{ galaxy_root }}/server/lib/galaxy/jobs/runners/tes.py"
 
 galaxy_config_templates:
   - src: templates/galaxy/config/tpv_rules_local.yml.j2

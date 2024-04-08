@@ -283,6 +283,13 @@
             endscript
           }
 
+    - name: Add galaxy user to docker group
+      ansible.builtin.user:
+        name: "{{ galaxy_user.name }}"
+        groups: docker
+        append: yes
+      ignore_errors: true
+
     ## Install required Galaxy tools
     - name: Install required tools - create Ephemeris venv
       ansible.builtin.shell:

@@ -69,9 +69,9 @@ destinations:
       # Ensuring a consistent collation environment is good for reproducibility.
       LC_ALL: C
       # The cache directory holds the docker containers that get converted
-      SINGULARITY_CACHEDIR: /tmp/singularity
+      SINGULARITY_CACHEDIR: "/tmp/singularity"
       # Singularity uses a temporary directory to build the squashfs filesystem
-      SINGULARITY_TMPDIR: /tmp
+      SINGULARITY_TMPDIR: "/tmp"
     container_resolvers:
     - type: explicit_singularity
     - type: cached_mulled_singularity
@@ -96,7 +96,7 @@ destinations:
       default_file_action: remote_transfer
       transport: curl
       dependency_resolution: remote
-      jobs_directory: "{{ /opt/pulsar/files/persistent }}"
+      jobs_directory: "{{ pulsar_staging_dir }}"
       persistence_directory: "{{ pulsar_persistence_dir }}"
       remote_metadata: false
       rewrite_parameters: true
