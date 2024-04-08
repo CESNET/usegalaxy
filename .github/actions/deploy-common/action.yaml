@@ -11,14 +11,9 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
     - name: Test Ansible
       shell: bash
       run: ansible-playbook --help
-
-
 #    - 
 #      run: echo ${{ inputs.destination }}
 #      shell: bash
