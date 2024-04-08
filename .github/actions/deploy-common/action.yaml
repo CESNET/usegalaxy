@@ -27,7 +27,7 @@ runs:
 
     - name: Pick secret.yml
       shell: bash
-      run: cp group_var/secret-${{ inputs.destination }}.yml group_var/secret.yml
+      run: cp group_vars/secret-${{ inputs.destination }}.yml group_vars/secret.yml
 
     - name: Install requirements
       shell: bash
