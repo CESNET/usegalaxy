@@ -1,4 +1,4 @@
-#! vim: ts=2:
+#! vim: ts=2 expandtab:
 
 name: deploy-test
 
@@ -7,8 +7,10 @@ on: [ workflow_dispatch ]
 jobs:
   call-common:
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/deploy-common.yaml
-    with:
-      destination: 'usegalaxy-test.blablabla'
+    steps:
+      - name: Call common
+        uses: ./.github/workflows/deploy-common.yaml
+        with:
+          destination: 'usegalaxy-test.blablabla'
 
 
