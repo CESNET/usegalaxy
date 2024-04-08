@@ -21,7 +21,7 @@ runs:
       shell: bash
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "::add-mask::${{ inputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ inputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         echo "${{ inputs.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         ssh debian@${{ inputs.destination }} hostname -f
 
@@ -35,7 +35,7 @@ runs:
 
     - name: Vault password
       shell: bash
-      run: echo "::add-mask::${{ inputs.VAULT_PASSWORD }}" >.vault-password.txt
+      run: echo "${{ inputs.VAULT_PASSWORD }}" >.vault-password.txt
 
     - name: Hosts file
       shell: bash
