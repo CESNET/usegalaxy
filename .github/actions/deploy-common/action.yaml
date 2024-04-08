@@ -11,6 +11,14 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install Ansible
-      run: echo ${{ inputs.destination }}
+    - name: Checkout
+      use: actions/checkout@v2
+
+    - name: Test Ansible
       shell: bash
+      run: ansible-playbook --help
+
+
+#    - 
+#      run: echo ${{ inputs.destination }}
+#      shell: bash
