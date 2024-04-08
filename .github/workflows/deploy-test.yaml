@@ -14,5 +14,8 @@ jobs:
         uses: ./.github/actions/deploy-common
         with:
           destination: 'usegalaxy-test.cerit-sc.cz'
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
 
 

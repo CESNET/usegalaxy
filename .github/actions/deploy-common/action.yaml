@@ -7,6 +7,12 @@ inputs:
   destination:
     description: 'Ansible host'
     required: true
+  SSH_PRIVATE_KEY:
+    required: true
+  SSH_KNOWN_HOSTS:
+    required: true
+  VAULT_PASSWORD:
+    required: true
 
 runs:
   using: 'composite'
@@ -15,8 +21,8 @@ runs:
       shell: bash
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+        echo "::add-mask::${{ inputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ inputs.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         ssh ${{ inputs.destination }} hostname -f
 
     - name: Pick secret.yml
@@ -26,10 +32,8 @@ runs:
     - name: Install requirements
       shell: bash
       run: ansible-galaxy install -p roles -r requirements.yml
-
-    - name: Vault password
-      shell: bash
-      run: echo "${{ secrets.VAULT_PASSWORD }}" >.vault-password.txt
+- name: Vault password shell: bash
+      run: echo "::add-mask::${{ inputs.VAULT_PASSWORD }}" >.vault-password.txt
 
     - name: Hosts file
       shell: bash
