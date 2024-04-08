@@ -8,12 +8,7 @@ inputs:
     required: true
 
 runs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-
-      - name: Install Ansible
-        run: echo {{ destination }}
+  using: 'composite'
+  steps:
+    - name: Install Ansible
+      run: echo ${{ inputs.destination }}
