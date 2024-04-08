@@ -2,6 +2,7 @@
 
 name: deploy-common
 
+
 inputs:
   destination:
     description: 'Ansible host'
@@ -9,6 +10,7 @@ inputs:
 
 runs:
   using: 'composite'
+  shell: bash
   steps:
     - name: Install Ansible
       run: echo ${{ inputs.destination }}
