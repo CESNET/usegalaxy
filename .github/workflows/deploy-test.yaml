@@ -5,7 +5,7 @@ name: deploy-test
 jobs:
   call-common:
     runs-on: ubuntu-latest
-    uses: .github/workflows/deploy-common@main
+    uses: .github/workflows/deploy-common.yaml@main
     with:
       destination: 'usegalaxy-test.blablabla'
 
