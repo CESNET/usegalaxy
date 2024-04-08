@@ -23,7 +23,7 @@ runs:
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "::add-mask::${{ inputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         echo "${{ inputs.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-        ssh ${{ inputs.destination }} hostname -f
+        ssh debian@${{ inputs.destination }} hostname -f
 
     - name: Pick secret.yml
       shell: bash
