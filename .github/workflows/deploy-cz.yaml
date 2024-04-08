@@ -1,6 +1,6 @@
 #! vim: ts=2 expandtab:
 
-name: deploy-test
+name: deploy-cz
 
 on: [ workflow_dispatch ]
 
