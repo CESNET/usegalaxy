@@ -11,9 +11,26 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Test Ansible
+    - name: Create SSH key
       shell: bash
-      run: ansible-playbook --help
-#    - 
-#      run: echo ${{ inputs.destination }}
-#      shell: bash
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+        ssh ${{ inputs.destination }} hostname -f
+
+    - name: Pick secret.yml
+      shell: bash
+      run: cp group_var/secret-${{ inputs.destination }}.yml group_var/secret.yml
+
+    - name: Install requirements
+      shell: bash
+      run: ansible-galaxy install -p roles -r requirements.yml
+
+    - name: Vault password
+      shell: bash
+      run: echo "${{ secrets.VAULT_PASSWORD }}" >.vault-password.txt
+
+    - name: Run playbook
+      shell: bash
+      run ansible-playbook 

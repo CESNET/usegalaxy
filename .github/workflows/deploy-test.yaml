@@ -13,6 +13,6 @@ jobs:
       - name: Call common
         uses: ./.github/actions/deploy-common
         with:
-          destination: 'usegalaxy-test.blablabla'
+          destination: 'usegalaxy-test.cerit-sc.cz'
 
 
