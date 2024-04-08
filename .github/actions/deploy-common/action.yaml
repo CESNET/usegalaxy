@@ -40,7 +40,7 @@ runs:
     - name: Hosts file
       shell: bash
       run: |
-        cat <<EOF
+        cat <<EOF >hosts
         [galaxyservers]
         ${{ inputs.destination }} ansible_user=debian
         [dbservers:children]
