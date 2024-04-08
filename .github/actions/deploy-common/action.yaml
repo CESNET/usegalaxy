@@ -7,9 +7,9 @@ inputs:
   destination:
     description: 'Ansible host'
     required: true
-  SSH_PRIVATE_KEY:
+  user:
     required: true
-  SSH_KNOWN_HOSTS:
+  SSH_PRIVATE_KEY:
     required: true
   VAULT_PASSWORD:
     required: true
@@ -22,8 +22,8 @@ runs:
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ inputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        echo "${{ inputs.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-        ssh debian@${{ inputs.destination }} hostname -f
+        cp known_hosts ~/.ssh/known_hosts
+        ssh ${{ inputs.user }}@${{ inputs.destination }} hostname -f
 
     - name: Pick secret.yml
       shell: bash
@@ -42,13 +42,13 @@ runs:
       run: |
         cat <<EOF >hosts
         [galaxyservers]
-        ${{ inputs.destination }} ansible_user=debian
+        ${{ inputs.destination }} ansible_user=${{ inputs.user }}
         [dbservers:children]
         galaxyservers
         [monitoring:children]
-        ${{ inputs.destination }} ansible_user=debian
+        ${{ inputs.destination }} ansible_user=${{ inputs.user }}
         [sentryservers:children]
-        ${{ inputs.destination }} ansible_user=debian
+        ${{ inputs.destination }} ansible_user=${{ inputs.user }}
         EOF
 
     - name: Run playbook
