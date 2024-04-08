@@ -1,0 +1,21 @@
+#! vim: ts=2 expandtab:
+
+name: deploy-test
+
+on: [ workflow_dispatch ]
+
+jobs:
+  call-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Call common
+        uses: ./.github/actions/deploy-common
+        with:
+          destination: 'usegalaxy.cz'
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+
+
