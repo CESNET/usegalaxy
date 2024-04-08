@@ -53,4 +53,4 @@ runs:
 
     - name: Run playbook
       shell: bash
-      run ansible-playbook galaxy.yml
+      run: ansible-playbook galaxy.yml
