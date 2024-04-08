@@ -31,6 +31,20 @@ runs:
       shell: bash
       run: echo "${{ secrets.VAULT_PASSWORD }}" >.vault-password.txt
 
+    - name: Hosts file
+      shell: bash
+      run: |
+        cat <<EOF
+        [galaxyservers]
+        ${{ inputs.destination }} ansible_user=debian
+        [dbservers:children]
+        galaxyservers
+        [monitoring:children]
+        ${{ inputs.destination }} ansible_user=debian
+        [sentryservers:children]
+        ${{ inputs.destination }} ansible_user=debian
+        EOF
+
     - name: Run playbook
       shell: bash
-      run ansible-playbook 
+      run ansible-playbook galaxy.yml
