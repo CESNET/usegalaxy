@@ -3,10 +3,10 @@
 name: deploy-test
 
 jobs:
-	runs-on: ubuntu-latest
-	call-common:
-		uses: deploy-common
-		with:
-			destination: 'usegalaxy-test.blablabla'
+  runs-on: ubuntu-latest
+  call-common:
+    uses: deploy-common
+    with:
+      destination: 'usegalaxy-test.blablabla'
 
 
