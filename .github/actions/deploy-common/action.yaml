@@ -32,7 +32,8 @@ runs:
     - name: Install requirements
       shell: bash
       run: ansible-galaxy install -p roles -r requirements.yml
-- name: Vault password shell: bash
+
+    - name: Vault password shell: bash
       run: echo "::add-mask::${{ inputs.VAULT_PASSWORD }}" >.vault-password.txt
 
     - name: Hosts file
