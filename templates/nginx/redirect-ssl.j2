@@ -12,3 +12,26 @@ server {
 		return 302 https://$host$request_uri;
 	}
 }
+
+server {
+        listen 80;
+        listen [::]:80;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        server_name "galaxy.metacentrum.cz";
+
+        return 308 "https://{{ inventory_hostname }}$request_uri";
+}
+
+server {
+        listen 80;
+        listen [::]:80;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        server_name "galaxy-cz.grid.cesnet.cz";
+
+        return 308 "https://{{ inventory_hostname }}$request_uri";
+}
+
