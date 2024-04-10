@@ -15,7 +15,7 @@ tools:
       require:
         - pulsar
       reject:
-      - offline
+        - offline
     rules: []
     rank: |
       helpers.weighted_random_sampling(candidate_destinations)
@@ -43,11 +43,19 @@ tools:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
   .*/alphafold/.*:
+    cores: 1
     scheduling:
       require:
         - pulsar
         - singularity
         - gpu
+
+  toolshed.g2.bx.psu.edu/repos/iuc/megahit/megahit/.*:
+    cores: 16
+    mem: 256
+    context:
+      walltime: 96
+      scratch: 100
 
 roles:
   training.*:
@@ -100,7 +108,7 @@ destinations:
     max_accepted_mem: 512
     max_accepted_gpus: 2
     max_cores: 16
-    max_mem: 64
+    max_mem: 256
     max_gpus: 1
     params:
       default_file_action: remote_transfer
@@ -165,16 +173,10 @@ destinations:
         - singularity
         - gpu
       reject:
-#  pulsar-training:
-#    inherits: tpv_pulsar
-#    runner: pulsar_tpv_runner
-#    max_accepted_cores: 12
-#    max_accepted_mem: 120
-#    max_cores: 2 # Limit the cores
-#    max_mem: 8 # Limit the memory
-#    params:
-#      native_specification: --nodes=1 --ntasks=1 --mem={round(mem*1024)} --cpus-per-task={cores} --time=00:30:00
-#    scheduling:
-#      require:
-#        - pulsar
-#        - training
+  pulsar-training:
+    inherits: tpv_pulsar_singularity
+    runner: pulsar_tpv_runner
+    scheduling:
+      require:
+        - pulsar
+        - training
