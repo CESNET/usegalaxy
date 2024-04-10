@@ -95,3 +95,8 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
+      replace:
+        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
+        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
+        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
