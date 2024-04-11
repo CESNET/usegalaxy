@@ -119,7 +119,7 @@ destinations:
       rewrite_parameters: true
       transport: curl
       outputs_to_working_directory: false
-      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username}"
+      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
     env:
       LC_ALL: C
       TMPDIR: $SCRATCHDIR
