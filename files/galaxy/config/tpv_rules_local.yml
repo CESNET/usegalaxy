@@ -356,7 +356,7 @@ destinations:
       outputs_to_working_directory: false
       #Resource_List: "select=1:ncpus={cores}:mem={mem}gb:scratch_local=50gb,walltime=23:59:59"
       #submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={self.params.get('scratch')}gb -l walltime={self.params.get('walltime')}:00:00 -q elixirre@elixir-pbs.elixir-czech.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username}"
-      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q elixirre@elixir-pbs.elixir-czech.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username}"
+      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q elixirre@elixir-pbs.elixir-czech.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
     env:
       LC_ALL: C
       TMPDIR: $SCRATCHDIR
