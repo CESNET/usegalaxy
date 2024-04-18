@@ -233,10 +233,12 @@ galaxy_config:
     job_resource_params_file: "{{ galaxy_config_dir }}/job_resource_params_conf.xml"
     auth_config_file: "{{ galaxy_config_dir }}/auth_conf.xml"
     tool_config_file: 
-    - "{{ galaxy_root }}/server/config/tool_conf.xml.sample"
     - "{{ galaxy_config_dir }}/local_tool_conf.xml"
+    - "{{ galaxy_root }}/server/config/tool_conf.xml.sample"
     tool_sheds_config_file: "{{ galaxy_config_dir }}/tool_sheds_conf.xml"
-    sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"    
+    sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
+    # This allows to do custom ordering of tools in sections, default was true, but Petr Novak wants specific orderring of tools
+    toolbox_auto_sort: false
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
     email_from: "regalaxy@rt.cesnet.cz"
@@ -288,6 +290,22 @@ galaxy_config:
     # FTP
     ftp_upload_dir: "{{ galaxy_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
+#    default_panel_view: general_tool_panel
+#    panel_views:
+#    - name: General Tool Panel
+#      type: generic
+#      id: general_tool_panel
+#      items:
+#      - type: section
+#        name: "Test section"
+#        id: test_section
+#        items:
+#        - type: tool
+#          id: testing_pbs
+#        - type: tool
+#          id: testing_html
+#        - type: tool
+#          id: testing
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
@@ -335,8 +353,8 @@ galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 galaxy_config_files_public:
   - src: files/galaxy/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
-  - src: files/galaxy/static/style/base.css
-    dest: "{{ galaxy_server_dir }}/static/style/base.css"
+#  - src: files/galaxy/static/style/base.css
+#    dest: "{{ galaxy_server_dir }}/static/style/base.css"
   - src: files/galaxy/static/images/umbr_programs_icons/RE_header.png
     dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/RE_header.png"
   - src: files/galaxy/static/images/umbr_programs_icons/ELIXIR_CZECHREPUBLIC_white_background_small.png
@@ -355,8 +373,12 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.auth_config_file }}"
   - src: templates/galaxy/config/tool_sheds_conf.xml
     dest: "{{ galaxy_config.galaxy.tool_sheds_config_file }}"
+
   - src: templates/galaxy/config/local_tool_conf.xml
-    dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
+    dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
+  - src: regalaxy_integrated_tool_panel.xml
+    dest: "{{ galaxy_mutable_config_dir }}/integrated_tool_panel.xml"
+
   - src: templates/galaxy/config/container_resolvers_conf.yml.j2
     dest: "{{ galaxy_config.galaxy.containers_resolvers_config_file }}"
   - src: templates/galaxy/config/dependency_resolvers_conf.xml
