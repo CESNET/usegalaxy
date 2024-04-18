@@ -1,3 +1,5 @@
+TES job submission and streamlined data transfers
+
 Task Execution Service (TES, https://www.ga4gh.org/product/task-execution-service-tes/) is an emerging standard mechanism for remote batch job submission, designed for use in complex workflows, and focused on containerized software. 
 
 We introduce our TES over Pulsar (TESP) implementation of a lightweight TES interface layer which leverages on the unifying functionality of Pulsar that hides the diversity of underlying job execution environments (batch systems, file staging etc.). The TES implementation is complemented with improved TES job runner in Galaxy. The runner follows the standard specification strictly, therefore it could be used with another TES implementation too.
