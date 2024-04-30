@@ -239,6 +239,8 @@ galaxy_config:
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # This allows to do custom ordering of tools in sections, default was true, but Petr Novak wants specific orderring of tools
     toolbox_auto_sort: false
+    # This hide specified tools for non-admin users
+    tool_filters: 'examples:restrict_testing_tools_to_admins'
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
     email_from: "regalaxy@rt.cesnet.cz"
@@ -367,6 +369,8 @@ galaxy_config_files:
 #    dest: "{{ galaxy_config.galaxy.themes_config_file }}"
   - src: files/galaxy/config/tpv_rules_local.yml
     dest: "{{ tpv_mutable_dir }}/tpv_rules_local.yml"
+  - src: files/galaxy/lib/examples.py
+    dest: "{{ galaxy_server_dir }}/lib/galaxy/tool_util/toolbox/filters/examples.py"
 
 galaxy_config_templates:
   - src: templates/galaxy/config/auth_conf.xml.j2
