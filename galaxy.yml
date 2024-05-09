@@ -290,6 +290,17 @@
         append: yes
       ignore_errors: true
 
+    - name: Fix OIDC authnz/xsd error
+      ansible.builtin.file:
+        path: "{{ galaxy_root}}/server/lib/galaxy/authnz/xsd/__init__.py"
+        state: touch
+        mode: u=rw,g=r,o=r
+      when: "'umsa' in inventory_hostname"
+
+    - name: restart galaxy at the end
+      ansible.builtin.shell:
+        cmd: galaxyctl restart
+
     ## Install required Galaxy tools
     - name: Install required tools - create Ephemeris venv
       ansible.builtin.shell:
@@ -309,3 +320,17 @@
         cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ admin_apikey }} -t umsa_tool_list.yaml
       when: "'umsa' in inventory_hostname or 'umsa' in ansible_hostname"
       tags: tools
+
+#    ## Setup Galaxy libraries if needed
+#    - name: Set up RCX-data library for UMSA Galaxy
+#      ansible.builtin.shell:
+#        cmd: "~/ephemeris_venv/bin/python create_libraries.py {{ inventory_hostname }} {{ admin_apikey }} RCX-data 'Recetox data from Sally' '/mnt/sally/000020-Shares/rcx-da/umsa_test'"
+#      when: "'umsa' in inventory_hostname and 'umsa' in ansible_hostname"
+#      tags: libs
+#
+#    - name: Set up PARC library for UMSA Galaxy
+#      ansible.builtin.shell:
+#        cmd: "~/ephemeris_venv/bin/python create_libraries.py {{ inventory_hostname }} {{ admin_apikey }} PARC 'external data' '/mnt/sally/000020-Shares/external/PARC'"
+#      when: "'umsa' in inventory_hostname and 'umsa' in ansible_hostname"
+#      tags: libs
+
