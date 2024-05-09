@@ -35,6 +35,16 @@ tools:
         context:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
+  toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.74+galaxy0:
+    cores: 1 
+    context:
+      walltime: 2
+    scheduling:
+      require:
+      - tesp
+      reject:
+      - pulsar
+
 #roles:
 #  training.*:
 #    max_cores: 2
@@ -102,7 +112,7 @@ destinations:
       rewrite_parameters: true
       outputs_to_working_directory: false
       #Resource_List: "select=1:ncpus={cores}:mem={mem}gb:scratch_local=50gb,walltime=23:59:59"
-      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyumsa@elixir-pbs.elixir-czech.cz -N pulsar_umsa_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username}"
+      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyumsa@elixir-pbs.elixir-czech.cz -N pulsar_umsa_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
     env:
       LC_ALL: C
       TMPDIR: $SCRATCHDIR
@@ -138,6 +148,44 @@ destinations:
       - pulsar
       - singularity
       reject:
+  tpv_tesp:
+    runner: tes_runner
+    max_accepted_cores: 128
+    max_accepted_mem: 512
+    max_accepted_gpus: 0
+    max_cores: 16
+    max_mem: 64
+    max_gpus: 0
+    params:
+      tes_master_addr: http://pulsar-umsa.grid.cesnet.cz:8080
+      rewrite_parameters: true
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyumsa@elixir-pbs.elixir-czech.cz -N pulsar_umsa_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      SINGULARITY_CACHEDIR: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
+      SINGULARITY_TMPDIR: "$SCRATCHDIR"
+      XDG_CACHE_HOME: "$SCRATCHDIR"
+      LC_ALL: C
+      TMPDIR: $SCRATCHDIR
+      TMP: $SCRATCHDIR
+      TEMP: $SCRATCHDIR 
+      GALAXY_SLOTS: "{cores}"
+      GALAXY_MEMORY_MB: "{int(mem)*1000}"
+    container_resolvers:  
+    - type: explicit_singularity
+#      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
+    - type: cached_mulled_singularity
+      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
+    - type: mulled_singularity
+#      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
+    scheduling:
+      require:
+      - tesp
+      reject:
+      - pulsar
+    
 #  pulsar_gpu:
 #    runner: pulsar_gpu_runner
 #    max_accepted_cores: 128
