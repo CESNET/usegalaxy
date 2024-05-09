@@ -135,6 +135,15 @@ tools:
   owner: recetox
   revisions:
   - c702620c22b1
+  - af25aa61c611
+  tool_panel_section_label: RECETOX
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: assign_ri_from_comment
+  owner: recetox
+  revisions:
+  - 6975af39ba79
+  - 7226eba9c09d
+  - 97ccdb1ba47c
   tool_panel_section_label: RECETOX
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: ramclustr_define_experiment
