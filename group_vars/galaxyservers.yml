@@ -160,9 +160,9 @@ galaxy_config:
   galaxy:
     # Main Configuration
     # To not bother the main disk
-    new_file_path: "/rbd/data/tmp"
-    nginx_upload_job_files_store: "/rbd/data/_upload_job_files"
-    nginx_upload_job_files_path: "/_job_files"
+    new_file_path: "{{ datastore }}/data/tmp"
+#    nginx_upload_job_files_store: "{{ datastore }}/data/_upload_job_files"
+#    nginx_upload_job_files_path: "/_job_files"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: true
     oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
@@ -179,8 +179,8 @@ galaxy_config:
     error_email_to: "regalaxy@rt.cesnet.cz"
     allow_user_creation: False
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
-    file_path: /mnt/data/datasets
-    job_working_directory: /mnt/data/jobs
+    file_path: "{{ datastore }}/data/datasets"
+    job_working_directory: "{{ datastore }}/data/jobs"
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
@@ -228,7 +228,7 @@ galaxy_config:
     statsd_host: localhost
     statsd_influxdb: true
     # FTP
-    ftp_upload_dir: /mnt/data/uploads
+    ftp_upload_dir: "{{ datastore }}/data/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
   gravity:
     process_manager: systemd
@@ -308,7 +308,7 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
 
 galaxy_extra_dirs:
-  - /mnt/data
+  - "{{ datastore }}/data"
   - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
 
 galaxy_extra_privsep_dirs:
@@ -372,9 +372,11 @@ nginx_conf_http:
       image/png
       image/svg+xml
       image/x-icon
-nginx_ssl_role: usegalaxy_eu.certbot
-nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+
+# default Let's encrypt, override in host_vars eventually
+#nginx_ssl_role: usegalaxy_eu.certbot
+#nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+#nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
 
 #Install pip docker package for ansible
 pip_install_packages:
@@ -389,6 +391,9 @@ rabbitmq_container:
 rabbitmq_plugins:
   - rabbitmq_management
 
+rabbitmq_conf_ssl_certificate: /etc/ssl/certs/cert.pem
+rabbitmq_conf_ssl_certificate_key: /etc/ssl/user/privkey-999:999.pem
+
 rabbitmq_config:
   listeners:
     tcp: none
@@ -396,9 +401,9 @@ rabbitmq_config:
     default: 5671
   ssl_options:
     verify: verify_peer
-    cacertfile: /etc/ssl/certs/fullchain.pem
-    certfile: /etc/ssl/certs/cert.pem
-    keyfile: /etc/ssl/user/privkey-999:999.pem
+#    cacertfile: /etc/ssl/certs/fullchain.pem
+    certfile: "{{ rabbitmq_conf_ssl_certificate }}"
+    keyfile: "{{ rabbitmq_conf_ssl_certificate_key }}"
     fail_if_no_peer_cert: 'false'
   management_agent:
     disable_metrics_collector: "false"
@@ -429,7 +434,7 @@ rabbitmq_users:
 
 # TUS
 galaxy_tusd_port: 1080
-galaxy_tus_upload_store: /rbd/data/tus # /mnt/data/tus
+galaxy_tus_upload_store: "{{ datastore }}/data/tus" # /mnt/data/tus
 
 #Redis
 galaxy_additional_venv_packages:

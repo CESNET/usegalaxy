@@ -1,0 +1,18 @@
+postgresql_objects_privileges: []
+
+nginx_ssl_role: "{{ undef() }}"
+nginx_ssl_src_dir: files/{{ inventory_hostname }}
+nginx_conf_ssl_certificate: cert.pem
+nginx_conf_ssl_certificate_key: key.pem
+
+# where to put most of the data; we use RBD or NBD volumes
+datastore: /data
+
+# override group_vars/galaxyservers.yml
+
+rabbitmq_conf_ssl_certificate: /etc/nginx/ssl/cert.pem 
+rabbitmq_conf_ssl_certificate_key: /etc/nginx/ssl/key.pem
+
+proftpd_conf_ssl_certificate: /etc/nginx/ssl/cert.pem
+proftpd_conf_ssl_certificate_key: /etc/nginx/ssl/key.pem
+

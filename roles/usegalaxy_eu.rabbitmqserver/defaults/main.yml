@@ -56,6 +56,7 @@ rabbitmq_container_standalone_setup_details:
     - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
     - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
     - /etc/ssl:/etc/ssl:ro
+    - /etc/nginx/ssl:/etc/nginx/ssl:ro
     - /etc/pki:/etc/pki:ro
   ports:
     - 15672:15672
@@ -66,6 +67,7 @@ rabbitmq_container_cluster_setup_details:
     - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
     - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
     - /etc/ssl:/etc/ssl:ro
+    - /etc/nginx/ssl:/etc/nginx/ssl:ro
     - /etc/pki:/etc/pki:ro
   ports:
     - 15672:15672
