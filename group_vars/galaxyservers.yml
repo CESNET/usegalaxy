@@ -401,7 +401,7 @@ rabbitmq_config:
     default: 5671
   ssl_options:
     verify: verify_peer
-#    cacertfile: /etc/ssl/certs/fullchain.pem
+    cacertfile: /dev/null
     certfile: "{{ rabbitmq_conf_ssl_certificate }}"
     keyfile: "{{ rabbitmq_conf_ssl_certificate_key }}"
     fail_if_no_peer_cert: 'false'

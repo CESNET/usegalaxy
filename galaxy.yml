@@ -12,6 +12,22 @@
       become: true
       become_user: postgres
 
+- hosts: noletsencrypt
+  become: true
+  become_user: root
+  tasks:
+    - name: Certificate
+      copy:
+        src: "{{ nginx_ssl_src_dir }}/{{ nginx_conf_ssl_certificate | basename }}"
+        dest: "/etc/ssl/cert.pem"
+        mode: "0644"
+    - name: RabbitMQ key
+      copy:
+        content: "{{ sslkeys[nginx_conf_ssl_certificate_key | basename] }}"
+        dest: "{{ rabbitmq_conf_ssl_certificate_key }}"
+        owner: "999"
+        mode: "0400"
+
 - hosts: galaxyservers
   become: true
   become_user: root
@@ -95,3 +111,4 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+
