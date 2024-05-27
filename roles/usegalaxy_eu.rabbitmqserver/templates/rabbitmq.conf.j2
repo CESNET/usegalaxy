@@ -1,10 +1,13 @@
 # disables non-TLS listeners, only TLS-enabled clients will be able to connect
 listeners.tcp = {{ rabbitmq_config.listeners.tcp }}
 listeners.ssl.default  = {{ rabbitmq_config.ssl_listeners.default }}
-# XXX ljocha: ssl_options.cacertfile = {{ rabbitmq_config.ssl_options.cacertfile }}
+ssl_options.cacertfile = {{ rabbitmq_config.ssl_options.cacertfile }}
 ssl_options.certfile   = {{ rabbitmq_config.ssl_options.certfile }}
 ssl_options.keyfile    = {{ rabbitmq_config.ssl_options.keyfile }}
 ssl_options.verify     = {{ rabbitmq_config.ssl_options.verify}}
+{% for version in rabbitmq_config.ssl_options.versions %}
+ssl_options.versions.{{ loop.index }} = {{ version }}
+{% endfor %}
 ssl_options.fail_if_no_peer_cert = {{ rabbitmq_config.ssl_options.fail_if_no_peer_cert }}
 
 {% if rabbitmq_setup == "cluster" %}

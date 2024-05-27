@@ -386,7 +386,7 @@ pip_install_packages:
 rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.11-management
+  image: rabbitmq:3.13-management
   hostname: "{{ inventory_hostname }}"
 
 rabbitmq_plugins:
@@ -402,12 +402,13 @@ rabbitmq_config:
     default: 5671
   ssl_options:
     verify: verify_peer
-    cacertfile: /dev/null
+    cacertfile: /etc/ssl/certs/ca-certificates.crt
     certfile: "{{ rabbitmq_conf_ssl_certificate }}"
     keyfile: "{{ rabbitmq_conf_ssl_certificate_key }}"
     fail_if_no_peer_cert: 'false'
     versions:
       - tlsv1.3
+      - tlsv1.2
   management_agent:
     disable_metrics_collector: "false"
   management:
