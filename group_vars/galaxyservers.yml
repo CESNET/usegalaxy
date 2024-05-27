@@ -406,6 +406,8 @@ rabbitmq_config:
     certfile: "{{ rabbitmq_conf_ssl_certificate }}"
     keyfile: "{{ rabbitmq_conf_ssl_certificate_key }}"
     fail_if_no_peer_cert: 'false'
+    versions:
+      - tlsv1.3
   management_agent:
     disable_metrics_collector: "false"
   management:
