@@ -1,4 +1,14 @@
 ---
+- hosts: all
+  name: apt update & pip
+  become: true
+  become_user: root
+  tasks:
+    - ansible.builtin.apt:
+        name: python3-pip
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
 - hosts: dbservers
   become: true
   become_user: root
@@ -57,6 +67,12 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
+    - ansible.builtin.group:
+        name: galaxy
+    - ansible.builtin.user:
+        name: galaxy
+        group: galaxy
+        comment: Galaxy system user
     - name: Create the data storage directory
       file:
         owner: galaxy
