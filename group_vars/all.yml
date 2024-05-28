@@ -40,4 +40,4 @@ telegraf_plugins_default:
 # where to put most of the data; we use RBD or NBD volumes
 # to be overriden in host_vars typically
 
-datastore: /data
+galaxy_mutable_data_dir: /data/galaxy

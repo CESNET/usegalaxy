@@ -12,7 +12,7 @@ galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
+miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'defaults']
 
 # Galaxy Job Configuration
@@ -161,9 +161,7 @@ galaxy_config:
   galaxy:
     # Main Configuration
     # To not bother the main disk
-    new_file_path: "{{ datastore }}/data/tmp"
-#    nginx_upload_job_files_store: "{{ datastore }}/data/_upload_job_files"
-#    nginx_upload_job_files_path: "/_job_files"
+    new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: true
     oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
@@ -175,13 +173,14 @@ galaxy_config:
     - 499542@muni.cz
     - 325073@mail.muni.cz
     - demko@cesnet.cz
+    - ljocha@ics.muni.cz
       #    cleanup_job: never
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
     allow_user_creation: False
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
-    file_path: "{{ datastore }}/data/datasets"
-    job_working_directory: "{{ datastore }}/data/jobs"
+    file_path: "{{ galaxy_mutable_data_dir }}/datasets"
+    job_working_directory: "{{ galaxy_mutable_data_dir }}/jobs"
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
@@ -229,7 +228,7 @@ galaxy_config:
     statsd_host: localhost
     statsd_influxdb: true
     # FTP
-    ftp_upload_dir: "{{ datastore }}/data/uploads"
+    ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
   gravity:
     process_manager: systemd
@@ -309,7 +308,7 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
 
 galaxy_extra_dirs:
-  - "{{ datastore }}/data"
+  - "{{ galaxy_mutable_data_dir }}/data"
   - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
 
 galaxy_extra_privsep_dirs:
@@ -438,7 +437,7 @@ rabbitmq_users:
 
 # TUS
 galaxy_tusd_port: 1080
-galaxy_tus_upload_store: "{{ datastore }}/data/tus" # /mnt/data/tus
+galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus" # /mnt/data/tus
 
 #Redis
 galaxy_additional_venv_packages:

@@ -2,8 +2,8 @@
 <object_store type="hierarchical">
     <backends>
         <backend id="newdata" type="disk" order="0">
-	    <files_dir path="{{ datastore }}/data" />
-	    <extra_dir type="job_work" path="{{ datastore }}/data/job_work_dir" />
+	    <files_dir path="{{ galaxy_mutable_data_dir }}/datasets" />
+	    <extra_dir type="job_work" path="{{ galaxy_mutable_data_dir }}/jobs" />
         </backend>
 <!-- FIXME: hardcoded /mnt 
         <backend id="olddata" type="disk" order="1">

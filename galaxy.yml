@@ -77,7 +77,7 @@
       file:
         owner: galaxy
         group: galaxy
-        path: "{{ datastore }}/data"
+        path: "{{ galaxy_mutable_data_dir }}"
         state: directory
         mode: '0755'
 #    - name: Create the nginx upload job files store
