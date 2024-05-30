@@ -67,19 +67,19 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
-    - ansible.builtin.group:
-        name: galaxy
-    - ansible.builtin.user:
-        name: galaxy
-        group: galaxy
-        comment: Galaxy system user
-    - name: Create the data storage directory
-      file:
-        owner: galaxy
-        group: galaxy
-        path: "{{ galaxy_mutable_data_dir }}"
-        state: directory
-        mode: '0755'
+#    - ansible.builtin.group:
+#        name: galaxy
+#    - ansible.builtin.user:
+#        name: galaxy
+#        group: galaxy
+#        comment: Galaxy system user
+#    - name: Create the data storage directory
+#      file:
+#        owner: galaxy
+#        group: galaxy
+#        path: "{{ galaxy_mutable_data_dir }}"
+#        state: directory
+#        mode: '0755'
 #    - name: Create the nginx upload job files store
 #      file:
 #        owner: www-data
@@ -127,4 +127,9 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+    - name: Restart galaxy
+      become: true
+      become_user: root
+      ansible.builtin.command: galaxyctl restart
+      
 
