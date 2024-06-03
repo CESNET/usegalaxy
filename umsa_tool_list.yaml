@@ -51,6 +51,7 @@ tools:
   owner: iuc
   revisions:
   - 22c2a1ac7ae3
+  - a513e3fbb4c5
   tool_panel_section_label: Text Manipulation
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: diff
@@ -63,6 +64,7 @@ tools:
   owner: bgruening
   revisions:
   - ddf54b12c295
+  - fbf99087e067
   tool_panel_section_label: Text Manipulation
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: split_file_on_column

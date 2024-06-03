@@ -22,7 +22,9 @@ miniconda_version: 'latest' # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'bioconda', 'iuc', 'r', 'anaconda', 'defaults']
 miniconda_base_env_packages: ['mamba']
 
-singularity_local_cache_dir: "{{ galaxy_mutable_data_dir }}/cache/singularity"
+#singularity_local_cache_dir: "{{ galaxy_data_prefix }}/singularity"
+singularity_local_cache_dir: "/cvmfs/singularity.galaxyproject.org/all"
+pulsar_singularity_cache_dir: "/auto/brno11-elixir/home/{{ galaxy_user.name }}/.singularity"
 pulsar_staging_dir: "/auto/brno11-elixir/home/{{ galaxy_user.name }}/pulsar-umsa/files/staging"
 pulsar_persistence_dir: "/opt/pulsar/files/persistent"
 
@@ -52,24 +54,6 @@ galaxy_job_config:
       local:
         runner: local_runner
         tmp_dir: true
-      local_singularity:
-        runner: local_runner
-        singularity_enabled: true
-        container_resolvers: 
-          - type: explicit_singularity
-          - type: cached_mulled_singularity
-            cache_directory: "{{ singularity_local_cache_dir }}/mulled"
-          - type: mulled_singularity
-        env:
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
-        # The cache directory holds the docker containers that get converted
-        - name: SINGULARITY_CACHEDIR
-          value: "{{ singularity_local_cache_dir }}"
-        # Apptainer uses a temporary directory to build the squashfs filesystem
-        - name: SINGULARITY_TMPDIR
-          value: /tmp
       pulsar:
         runner: pulsar_runner
         default_file_action: remote_transfer
@@ -80,7 +64,7 @@ galaxy_job_config:
         rewrite_parameters: true
         transport: curl
         outputs_to_working_directory: false
-        submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyumsa@elixir-pbs.elixir-czech.cz' 
+        submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyumsa@pbs-m1.metacentrum.cz' 
         env:
         # Ensuring a consistent collation environment is good for reproducibility.
         - name: LC_ALL
@@ -91,43 +75,6 @@ galaxy_job_config:
           value: "$SCRATCHDIR"
         - name: TEMP
           value: "$SCRATCHDIR"
-#      pulsar_gpu:
-#        runner: pulsar_gpu_runner
-#        default_file_action: remote_transfer
-#        transport: curl
-#        dependency_resolution: remote
-#        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging" 
-#        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent" 
-#        remote_metadata: false 
-#        rewrite_parameters: true
-#        outputs_to_working_directory: false
-#        singularity_enabled: true
-#        singularity_run_extra_arguments: '--nv'
-#        singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data:ro'
-#        env:
-#        # The cache directory holds the docker containers that get converted
-#        - name: SINGULARITY_CACHEDIR
-#          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-#        - name: APPTAINER_CACHEDIR
-#          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-#        # Singularity uses a temporary directory to build the squashfs filesystem
-#        - name: SINGULARITY_TMPDIR
-#          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
-#        - name: APPTAINER_TMPDIR
-#          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
-#        # Alphafold specific variables
-#        - name: ALPHAFOLD_DB
-#          value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
-#        # Default variables
-#        - name: TMPDIR
-#          value: "$SCRATCHDIR"
-#        - name: TMP
-#          value: "$SCRATCHDIR"
-#        - name: TEMP
-#          value: "$SCRATCHDIR"
-#        # Ensuring a consistent collation environment is good for reproducibility.
-#        - name: LC_ALL
-#          value: C
       tpv_dispatcher:
         runner: dynamic
         type: python
@@ -147,7 +94,7 @@ galaxy_job_config:
         singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
         env:
         - name: SINGULARITY_CACHEDIR
-          value: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
+          value: "{{ pulsar_singularity_cache_dir }}"
         - name: SINGULARITY_TMPDIR
           value: "$SCRATCHDIR"
         - name: XDG_CACHE_HOME
@@ -160,20 +107,9 @@ galaxy_job_config:
           value: $SCRATCHDIR
         - name: TEMP
           value: $SCRATCHDIR          
-        container_resolvers:
-        - type: explicit_singularity
-#          cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
-        - type: cached_mulled_singularity
-#          cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
-        - type: mulled_singularity
-#          cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local
-    - id: testing
-      environment: tpv_dispatcher
-    - id: fastqc
-      environment: tesp
 
 galaxy_config:
   galaxy:
@@ -242,7 +178,27 @@ galaxy_config:
 #    conda_ensure_channels: conda-forge,bioconda,iuc,r,anaconda,defaults
     conda_ensure_channels: "{{ miniconda_channels }}"
     dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
-    containers_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.yml"
+    container_resolvers:
+    -   type: explicit_singularity
+    -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+        type: cached_mulled_singularity
+    -   auto_install: true
+        type: mulled_singularity
+    -   auto_install: false
+        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+        type: build_mulled_singularity
+#    - type: cached_explicit_singularity
+#      cache_directory: "{{ singularity_local_cache_dir }}"
+#    - type: explicit_singularity
+#      cache_directory: "{{ singularity_local_cache_dir }}"
+#    - type: cached_mulled_singularity
+#      cache_directory: "{{ singularity_local_cache_dir }}"
+#    - type: mulled_singularity
+#      auto_install: False
+#      cache_directory: "{{ singularity_local_cache_dir }}"
+#    - type: build_mulled_singularity
+#      auto_install: False  
+#      cache_directory: "{{ singularity_local_cache_dir }}"
     # Data Library Directories
     library_import_dir: /mnt/sally
 #    user_library_import_dir: /libraries/user
@@ -315,8 +271,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.tool_sheds_config_file }}"
   - src: templates/galaxy/config/local_tool_conf.xml
     dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
-  - src: templates/galaxy/config/container_resolvers_conf.yml.j2
-    dest: "{{ galaxy_config.galaxy.containers_resolvers_config_file }}"
+#  - src: templates/galaxy/config/container_resolvers_conf.yml.j2
+#    dest: "{{ galaxy_config.galaxy.container_resolvers_config_file }}"
   - src: templates/galaxy/config/dependency_resolvers_conf.xml
     dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
   - src: templates/galaxy/config/job_resource_params_conf.xml.j2

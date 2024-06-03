@@ -3,15 +3,27 @@ global:
 
 tools:
   default:
-    abstract: true
+#    abstract: true
     cores: 1
     mem: cores * 4
+    env:
+    - name: GALAXY_SLOTS
+      value: "{cores}"
+    - name:  GALAXY_MEMORY_MB
+      value: "{int(mem)*1000}"
+    params: {}
     context:
-      scratch: 15
       walltime: 24
+      scratch: 50
     scheduling:
       require:
-      - pulsar
+        - pulsar
+        - singularity
+      reject:
+        - offline
+    rules: []
+    rank: |
+      helpers.weighted_random_sampling(candidate_destinations)
 
   .*testing.*:
     cores: 1
@@ -35,15 +47,15 @@ tools:
         context:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
-  toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.74+galaxy0:
+  .*/fastqc/.*:
     cores: 1 
     context:
       walltime: 2
     scheduling:
       require:
       - tesp
-      reject:
       - pulsar
+      - singularity
 
 #roles:
 #  training.*:
@@ -74,19 +86,16 @@ destinations:
     max_accepted_mem: 4
     max_accepted_gpus: 0
     params:
+      require_container: true
       singularity_enabled: true
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:
       # Ensuring a consistent collation environment is good for reproducibility.
       LC_ALL: C
       # The cache directory holds the docker containers that get converted
-      SINGULARITY_CACHEDIR: "/tmp/singularity"
+      SINGULARITY_CACHEDIR: "{{ singularity_local_cache_dir }}"
       # Singularity uses a temporary directory to build the squashfs filesystem
       SINGULARITY_TMPDIR: "/tmp"
-    container_resolvers:
-    - type: explicit_singularity
-    - type: cached_mulled_singularity
-      cache_directory: "{{ singularity_local_cache_dir }}/mulled"
-    - type: mulled_singularity
     scheduling:
       require:
         - local
@@ -94,6 +103,7 @@ destinations:
         - singularity
       reject:
         - pulsar
+
   tpv_pulsar:
     runner: pulsar_runner
     max_accepted_cores: 128
@@ -111,43 +121,24 @@ destinations:
       remote_metadata: false
       rewrite_parameters: true
       outputs_to_working_directory: false
-      #Resource_List: "select=1:ncpus={cores}:mem={mem}gb:scratch_local=50gb,walltime=23:59:59"
-      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyumsa@elixir-pbs.elixir-czech.cz -N pulsar_umsa_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyumsa@pbs-m1.metacentrum.cz -N pulsar_umsa_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      require_container: true
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:
       LC_ALL: C
       TMPDIR: $SCRATCHDIR
       TMP: $SCRATCHDIR
       TEMP: $SCRATCHDIR 
-      GALAXY_SLOTS: "{cores}"
-      GALAXY_MEMORY_MB: "{int(mem)*1000}"
-    scheduling:
-      require:
-      - pulsar
-      reject:
-      - singularity
-  tpv_pulsar_singularity:
-    inherits: tpv_pulsar
-    runner: pulsar_runner
-    params:
-      singularity_enabled: true
-      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
-      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
-    env:
-      SINGULARITY_CACHEDIR: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
+      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
       SINGULARITY_TMPDIR: "$SCRATCHDIR"
       XDG_CACHE_HOME: "$SCRATCHDIR"
-    container_resolvers:  
-    - type: explicit_singularity
-#      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
-    - type: cached_mulled_singularity
-      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
-    - type: mulled_singularity
-#      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
     scheduling:
       require:
       - pulsar
       - singularity
-      reject:
+
   tpv_tesp:
     runner: tes_runner
     max_accepted_cores: 128
@@ -159,32 +150,31 @@ destinations:
     params:
       tes_master_addr: http://pulsar-umsa.grid.cesnet.cz:8080
       rewrite_parameters: true
+      require_container: true
       singularity_enabled: true
       singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
-      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyumsa@elixir-pbs.elixir-czech.cz -N pulsar_umsa_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyumsa@pbs-m1.metacentrum.cz -N pulsar_umsa_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
     env:
-      SINGULARITY_CACHEDIR: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
-      SINGULARITY_TMPDIR: "$SCRATCHDIR"
-      XDG_CACHE_HOME: "$SCRATCHDIR"
-      LC_ALL: C
-      TMPDIR: $SCRATCHDIR
-      TMP: $SCRATCHDIR
-      TEMP: $SCRATCHDIR 
-      GALAXY_SLOTS: "{cores}"
-      GALAXY_MEMORY_MB: "{int(mem)*1000}"
-    container_resolvers:  
-    - type: explicit_singularity
-#      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
-    - type: cached_mulled_singularity
-      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/singularity_cache"
-    - type: mulled_singularity
-#      cache_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/singularity"
+    - name:  SINGULARITY_CACHEDIR
+      value: "/auto/brno11-elixir/home/galaxyumsa/.singularity"
+    - name:  SINGULARITY_TMPDIR
+      value: "$SCRATCHDIR"
+    - name:  XDG_CACHE_HOME
+      value: "$SCRATCHDIR"
+    - name:  LC_ALL
+      value: C
+    - name: TMPDIR
+      value: $SCRATCHDIR
+    - name: TMP
+      value: $SCRATCHDIR
+    - name: TEMP
+      value: $SCRATCHDIR
     scheduling:
       require:
-      - tesp
-      reject:
-      - pulsar
+        - tesp
+        - pulsar
+        - singularity
     
 #  pulsar_gpu:
 #    runner: pulsar_gpu_runner

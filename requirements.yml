@@ -19,7 +19,7 @@
   version: 0.0.1
 # CVMFS Support role
 - src: galaxyproject.cvmfs
-  version: 0.2.21
+  version: 0.2.22
 # Singularity/Apptainer
 - src: usegalaxy_eu.apptainer
   version: 0.0.1
