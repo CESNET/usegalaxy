@@ -317,7 +317,7 @@
       tags: tools
     - name: Install required tools - install Galaxy tools
       ansible.builtin.shell:
-        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ admin_apikey }} -t umsa_tool_list.yaml
+        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ admin_apikey }} -t umsa_tool_list.yaml.lock
       when: "'umsa' in inventory_hostname or 'umsa' in ansible_hostname"
       tags: tools
 
