@@ -78,6 +78,7 @@ tools:
   revisions:
   - 1dc9f5a3163d
   - 567327a97ad2
+  - 60db8070a5c3
   - a0e07a0bc047
   tool_panel_section_label: RECETOX
 - name: msmetaenhancer
@@ -89,6 +90,7 @@ tools:
 - name: xtb_molecular_optimization
   owner: recetox
   revisions:
+  - cba7123c2741
   - d5633eaf3552
   tool_panel_section_label: RECETOX
 - name: recetox_xmsannotator_advanced
@@ -101,6 +103,7 @@ tools:
   owner: recetox
   revisions:
   - 071a424241ec
+  - 1a2aeb8137bf
   - 6480c6d5fa36
   tool_panel_section_label: RECETOX
 - name: ramclustr
@@ -178,6 +181,7 @@ tools:
   revisions:
   - 1dc9f5a3163d
   - 567327a97ad2
+  - 60db8070a5c3
   - a0e07a0bc047
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_remions
@@ -851,57 +855,68 @@ tools:
 - name: mspurity_frag4feature
   owner: computational-metabolomics
   revisions:
+  - 174a523cb1da
   - e9fbb65451f6
   tool_panel_section_label: msPurity
 - name: mspurity_spectralmatching
   owner: computational-metabolomics
   revisions:
   - 20f4fdaf36bb
+  - c33b92eeb1fb
   tool_panel_section_label: msPurity
 - name: mspurity_filterfragspectra
   owner: computational-metabolomics
   revisions:
   - 2e10c13085c9
+  - a8842e5e75a7
   tool_panel_section_label: msPurity
 - name: mspurity_puritya
   owner: computational-metabolomics
   revisions:
+  - 10e56e53668c
   - 55f1691db108
   tool_panel_section_label: msPurity
 - name: mspurity_dimspredictpuritysingle
   owner: computational-metabolomics
   revisions:
   - 2ce66d2f6a24
+  - 548fed2ef792
   tool_panel_section_label: msPurity
 - name: mspurity_combineannotations
   owner: computational-metabolomics
   revisions:
   - d7104112fac6
+  - f11c129a4227
   tool_panel_section_label: msPurity
 - name: mspurity_purityx
   owner: computational-metabolomics
   revisions:
+  - 374022b7b469
   - 942e676515fe
   tool_panel_section_label: msPurity
 - name: mspurity_createmsp
   owner: computational-metabolomics
   revisions:
+  - 3d92b95cf6c0
   - 8512923bdd37
   tool_panel_section_label: msPurity
 - name: mspurity_createdatabase
   owner: computational-metabolomics
   revisions:
   - 0cc6b67dccb8
+  - 751b7378a683
   tool_panel_section_label: msPurity
 - name: mspurity_averagefragspectra
   owner: computational-metabolomics
   revisions:
   - 94eb1fcfde88
+  - ac284b969836
   tool_panel_section_label: msPurity
 - name: mspurity_flagremove
   owner: computational-metabolomics
   revisions:
   - 69ed543767b2
+  - da36e8bbcfbd
   tool_panel_section_label: msPurity
 - name: frag_hires_mass
   owner: ljocha
@@ -937,11 +952,13 @@ tools:
   owner: galaxyp
   revisions:
   - 2735db4dd8d9
+  - 748dfbdf2201
   tool_panel_section_label: OpenMS
 - name: openms_featurelinkerunlabeled
   owner: galaxyp
   revisions:
   - b46263c3ee99
+  - fbe41f0cc71e
   tool_panel_section_label: OpenMS
 - name: openms_featurefindersuperhirn
   owner: galaxyp
@@ -952,51 +969,61 @@ tools:
   owner: galaxyp
   revisions:
   - 1a709ba66f2f
+  - d0c5325cb998
   tool_panel_section_label: OpenMS
 - name: openms_featurefindermetabo
   owner: galaxyp
   revisions:
   - 2451315543f9
+  - a49dde5a836e
   tool_panel_section_label: OpenMS
 - name: openms_fileconverter
   owner: galaxyp
   revisions:
   - 2a93a25f0599
+  - 8b6336c903ef
   tool_panel_section_label: OpenMS
 - name: openms_peakpickerwavelet
   owner: galaxyp
   revisions:
   - 2077efa205de
+  - bf0b36140329
   tool_panel_section_label: OpenMS
 - name: openms_peakpickerhires
   owner: galaxyp
   revisions:
+  - 401f500aae50
   - 6b01678ec2fc
   tool_panel_section_label: OpenMS
 - name: openms_noisefiltergaussian
   owner: galaxyp
   revisions:
+  - 464f7877215b
   - 47982606f542
   tool_panel_section_label: OpenMS
 - name: openms_noisefiltersgolay
   owner: galaxyp
   revisions:
+  - 35468667de97
   - cf86c9091cb3
   tool_panel_section_label: OpenMS
 - name: openms_filefilter
   owner: galaxyp
   revisions:
+  - 86a9dd43dd09
   - fe4e4587d265
   tool_panel_section_label: OpenMS
 - name: openms_baselinefilter
   owner: galaxyp
   revisions:
+  - 84bd73e60367
   - ddbae9eb797e
   tool_panel_section_label: OpenMS
 - name: openms_fileinfo
   owner: galaxyp
   revisions:
   - 4af67edd5aef
+  - 5a45e6ac9aae
   tool_panel_section_label: OpenMS
 - name: recetox_aplcms_merge_known_table
   owner: recetox
@@ -1051,17 +1078,20 @@ tools:
   revisions:
   - a598091029ad
   - c4835715c7ac
+  - cab0e4dcf372
   tool_panel_section_label: matchms
 - name: matchms_metadata_merge
   owner: recetox
   revisions:
   - 6e965d099233
   - ec25de0f0c58
+  - fc1a698a71e8
   tool_panel_section_label: matchms
 - name: matchms_add_key
   owner: recetox
   revisions:
   - 51da674b945d
+  - 7c5b86026e57
   - b23b6a640f6a
   tool_panel_section_label: matchms
 - name: matchms_networking
@@ -1069,16 +1099,19 @@ tools:
   revisions:
   - 3cd1cf3034d1
   - 9c12114c7aee
+  - ab8a33c370f5
   tool_panel_section_label: matchms
 - name: matchms_metadata_match
   owner: recetox
   revisions:
   - 05a7fc94e66c
+  - 844d32c59314
   - 86e080d81cfb
   tool_panel_section_label: matchms
 - name: matchms_spectral_similarity
   owner: recetox
   revisions:
+  - 26c92af1bd28
   - 44e7027714d7
   - ee35dcec350a
   tool_panel_section_label: matchms
@@ -1086,23 +1119,27 @@ tools:
   owner: recetox
   revisions:
   - cbadbec49b5d
+  - dd49ef90297c
   - e337075d0aaa
   tool_panel_section_label: matchms
 - name: matchms_fingerprint_similarity
   owner: recetox
   revisions:
   - 1d3ee4f9f63d
+  - ad9d2d1b2b8d
   - c2d546691b7a
   tool_panel_section_label: matchms
 - name: matchms_convert
   owner: recetox
   revisions:
+  - 692471e62c68
   - a3d2f919cb98
   - bff7bfcf975e
   tool_panel_section_label: matchms
 - name: matchms_filtering
   owner: recetox
   revisions:
+  - 07cac38cbd29
   - 86d265d2a334
   - da15e8ea3b28
   tool_panel_section_label: matchms
@@ -1110,22 +1147,26 @@ tools:
   owner: recetox
   revisions:
   - 80df426e7e47
+  - c24ebd41dd53
   tool_panel_section_label: matchms
 - name: matchms_split
   owner: recetox
   revisions:
   - 072c7a101da6
+  - 446fddefcee7
   - fc1bc38ede0b
   tool_panel_section_label: matchms
 - name: matchms_remove_key
   owner: recetox
   revisions:
   - 0a64e2bcce96
+  - 19367db5cf3c
   - 8c98b3cb320e
   tool_panel_section_label: matchms
 - name: matchms_formatter
   owner: recetox
   revisions:
+  - 6501d0287dcd
   - 8bd942dcf1ad
   - f76a397afbe1
   tool_panel_section_label: matchms
