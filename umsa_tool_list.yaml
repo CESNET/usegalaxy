@@ -79,12 +79,6 @@ tools:
   - e7eff0c9baa3
   tool_panel_section_label: RECETOX
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: rem_complex
-  owner: recetox
-  revisions:
-  - 1dc9f5a3163d
-  tool_panel_section_label: RECETOX
-  tool_shed_url: toolshed.g2.bx.psu.edu
 - name: msmetaenhancer
   owner: recetox
   revisions:
@@ -170,6 +164,12 @@ tools:
   owner: galaxyp
   revisions:
   - 19e45916daf9
+  tool_panel_section_label: RECETOX
+  tool_shed_url: toolshed.g2.bx.psu.edu
+- name: rename_annotated_feature
+  owner: recetox
+  revisions:
+  - 268fcec93d9c
   tool_panel_section_label: RECETOX
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: camera_annotate
