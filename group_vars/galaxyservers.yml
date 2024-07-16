@@ -286,7 +286,7 @@ galaxy_config_files_public:
 galaxy_config_files:
   - src: files/galaxy/themes.yml
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
-  - src: files/galaxy/config/tpv_rules_local.yml
+  - src: "files/{{ inventory_hostname }}/tpv_rules_local.yml"
     dest: "{{ tpv_mutable_dir }}/tpv_rules_local.yml"
 
 galaxy_config_templates:
