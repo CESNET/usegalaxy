@@ -1,2 +1,5 @@
 # where to put most of the data; we use RBD or NBD volumes
 galaxy_mutable_data_dir: /data/galaxy
+
+enable_flower: no
+enable_telegraf: no

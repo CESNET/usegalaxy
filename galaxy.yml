@@ -103,7 +103,8 @@
       become: true
       become_user: "{{ galaxy_user_name }}"
     - geerlingguy.redis
-    - usegalaxy_eu.flower
+    - role: usegalaxy_eu.flower
+      when: enable_flower | bool
     - galaxyproject.nginx
     - galaxyproject.proftpd
     - geerlingguy.docker
@@ -111,7 +112,9 @@
     - galaxyproject.tiaas2
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
-    - dj-wasabi.telegraf
+    - role: dj-wasabi.telegraf
+      when: enable_telegraf | bool
+
   post_tasks:
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:

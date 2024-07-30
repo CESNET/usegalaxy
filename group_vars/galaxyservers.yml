@@ -15,6 +15,9 @@ miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'defaults']
 
+enable_flower: yes
+enable_telegraf: yes
+
 # Galaxy Job Configuration
 galaxy_job_config:
   runners:
