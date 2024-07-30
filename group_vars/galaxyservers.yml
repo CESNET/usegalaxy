@@ -62,84 +62,87 @@ galaxy_job_config:
       local_env:
         runner: local_runner
         tmp_dir: true
-      singularity:
-        runner: local_runner
-        singularity_enabled: true
-        env:
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
-        # The cache directory holds the docker containers that get converted
-        - name: APPTAINER_CACHEDIR
-          value: /tmp/singularity
-        # Apptainer uses a temporary directory to build the squashfs filesystem
-        - name: APPTAINER_TMPDIR
-          value: /tmp
-      pulsar:
-        runner: pulsar_runner
-        default_file_action: remote_transfer
-        dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
-        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
-        remote_metadata: false
-        rewrite_parameters: true
-        transport: curl
-        outputs_to_working_directory: false
-        # submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
-        singularity_enabled: true
-        singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
-        ## Following configuration works!
-        # singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro"
-        container_resolvers: 
-          - type: explicit_singularity
-          - type: mulled_singularity
-        env:
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
-        - name: TMPDIR
-          value: "$SCRATCHDIR"
-        - name: TMP
-          value: "$SCRATCHDIR"
-        - name: TEMP
-          value: "$SCRATCHDIR"
-      pulsar_gpu:
-        runner: pulsar_gpu_runner
-        default_file_action: remote_transfer
-        transport: curl
-        dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging" 
-        persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent" 
-        remote_metadata: false 
-        rewrite_parameters: true
-        outputs_to_working_directory: false
-        singularity_enabled: true
-        singularity_run_extra_arguments: '--nv'
-        singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data:ro'
-        env:
-        # The cache directory holds the docker containers that get converted
-        - name: SINGULARITY_CACHEDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-        - name: APPTAINER_CACHEDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-        # Singularity uses a temporary directory to build the squashfs filesystem
-        - name: SINGULARITY_TMPDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
-        - name: APPTAINER_TMPDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
-        # Alphafold specific variables
-        - name: ALPHAFOLD_DB
-          value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
-        # Default variables
-        - name: TMPDIR
-          value: "$SCRATCHDIR"
-        - name: TMP
-          value: "$SCRATCHDIR"
-        - name: TEMP
-          value: "$SCRATCHDIR"
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
+#
+# XXX: only TPV
+# 
+#       singularity:
+#         runner: local_runner
+#         singularity_enabled: true
+#         env:
+#         # Ensuring a consistent collation environment is good for reproducibility.
+#         - name: LC_ALL
+#           value: C
+#         # The cache directory holds the docker containers that get converted
+#         - name: APPTAINER_CACHEDIR
+#           value: /tmp/singularity
+#         # Apptainer uses a temporary directory to build the squashfs filesystem
+#         - name: APPTAINER_TMPDIR
+#           value: /tmp
+#       pulsar:
+#         runner: pulsar_runner
+#         default_file_action: remote_transfer
+#         dependency_resolution: remote
+#         jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
+#         persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent"
+#         remote_metadata: false
+#         rewrite_parameters: true
+#         transport: curl
+#         outputs_to_working_directory: false
+#         # submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
+#         singularity_enabled: true
+#         singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
+#         ## Following configuration works!
+#         # singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro"
+#         container_resolvers: 
+#           - type: explicit_singularity
+#           - type: mulled_singularity
+#         env:
+#         # Ensuring a consistent collation environment is good for reproducibility.
+#         - name: LC_ALL
+#           value: C
+#         - name: TMPDIR
+#           value: "$SCRATCHDIR"
+#         - name: TMP
+#           value: "$SCRATCHDIR"
+#         - name: TEMP
+#           value: "$SCRATCHDIR"
+#       pulsar_gpu:
+#         runner: pulsar_gpu_runner
+#         default_file_action: remote_transfer
+#         transport: curl
+#         dependency_resolution: remote
+#         jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging" 
+#         persistence_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/persistent" 
+#         remote_metadata: false 
+#         rewrite_parameters: true
+#         outputs_to_working_directory: false
+#         singularity_enabled: true
+#         singularity_run_extra_arguments: '--nv'
+#         singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data:ro'
+#         env:
+#         # The cache directory holds the docker containers that get converted
+#         - name: SINGULARITY_CACHEDIR
+#           value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
+#         - name: APPTAINER_CACHEDIR
+#           value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
+#         # Singularity uses a temporary directory to build the squashfs filesystem
+#         - name: SINGULARITY_TMPDIR
+#           value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
+#         - name: APPTAINER_TMPDIR
+#           value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
+#         # Alphafold specific variables
+#         - name: ALPHAFOLD_DB
+#           value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
+#         # Default variables
+#         - name: TMPDIR
+#           value: "$SCRATCHDIR"
+#         - name: TMP
+#           value: "$SCRATCHDIR"
+#         - name: TEMP
+#           value: "$SCRATCHDIR"
+#         # Ensuring a consistent collation environment is good for reproducibility.
+#         - name: LC_ALL
+#           value: C
       tpv_dispatcher:
         runner: dynamic
         type: python
