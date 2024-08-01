@@ -1,4 +1,14 @@
 tools:
+- name: compose_text_param
+  owner: iuc
+  revisions:
+  - e188c9826e0f
+  tool_panel_section_label: Text Manipulation
+- name: split_file_to_collection
+  owner: bgruening
+  revisions:
+  - 6cbe2f30c2d7
+  tool_panel_section_label: Collection Operations
 - name: collapse_collections
   owner: nml
   revisions:
