@@ -3,3 +3,7 @@ galaxy_mutable_data_dir: /data/galaxy
 
 enable_flower: no
 enable_telegraf: no
+
+pulsar_data_dir: /storage/brno11-elixir/home/galaxyelixir/pulsar-gxit
+pulsar_queue: galaxyre
+pulsar_gpu_queue: galaxy_gpu

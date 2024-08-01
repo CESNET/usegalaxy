@@ -55,7 +55,7 @@
         mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'rsync' ]
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -130,6 +130,11 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+    - name: Add pulsar public ssh key
+      ansible.posix.authorized_key:
+        user: galaxy
+        state: present
+        key: "{{ lookup('file','files/{{ inventory_hostname }}/pulsar.pub') }}"
     - name: Restart galaxy
       become: true
       become_user: root
