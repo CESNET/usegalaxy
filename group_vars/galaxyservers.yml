@@ -1,5 +1,6 @@
 ---
 # Galaxy
+galaxy_manage_systemd: no
 galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
 galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
 galaxy_manage_paths: true # False by default as your administrator might e.g. have root_squash enabled on NFS. Here we can create the directories so it's fine.
@@ -11,8 +12,11 @@ galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
+miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'defaults']
+
+enable_flower: yes
+enable_telegraf: yes
 
 # Galaxy Job Configuration
 galaxy_job_config:
@@ -20,16 +24,6 @@ galaxy_job_config:
     local_runner:
       load: galaxy.jobs.runners.local:LocalJobRunner
       workers: 4
-    pulsar_runner:
-      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
-      amqp_acknowledge: true
-      amqp_ack_republish_time: 1200
-      amqp_consumer_timeout: 2
-      amqp_publish_retry: true
-      amqp_publish_retry_max_retries: 60
-      manager: _default_
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
@@ -39,7 +33,7 @@ galaxy_job_config:
       amqp_consumer_timeout: 2
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
-      manager: tpv
+      manager: _default_
   handling:
     assign: ['db-skip-locked']
   execution:
@@ -48,44 +42,6 @@ galaxy_job_config:
       local_env:
         runner: local_runner
         tmp_dir: true
-      singularity:
-        runner: local_runner
-        singularity_enabled: true
-        env:
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
-        # The cache directory holds the docker containers that get converted
-        - name: APPTAINER_CACHEDIR
-          value: /tmp/singularity
-        # Apptainer uses a temporary directory to build the squashfs filesystem
-        - name: APPTAINER_TMPDIR
-          value: /tmp
-      pulsar:
-        runner: pulsar_runner
-        default_file_action: remote_transfer
-        dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
-        persistence_directory: "/opt/pulsar/files/persistent"
-        remote_metadata: false
-        rewrite_parameters: true
-        transport: curl
-        outputs_to_working_directory: false
-        # submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
-        singularity_enabled: true
-        singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
-        ## Following configuration works!
-        # singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro"
-        env:
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
-        - name: TMPDIR
-          value: "$SCRATCHDIR"
-        - name: TMP
-          value: "$SCRATCHDIR"
-        - name: TEMP
-          value: "$SCRATCHDIR"
       tpv_dispatcher:
         runner: dynamic
         type: python
@@ -93,7 +49,8 @@ galaxy_job_config:
         rules_module: tpv.rules
         tpv_config_files:
           - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
-          - "{{ tpv_config_dir }}/tpv_rules_local.yml"
+          - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
+          - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   resources:
     default: default
     groups:
@@ -117,9 +74,7 @@ galaxy_config:
   galaxy:
     # Main Configuration
     # To not bother the main disk
-    new_file_path: "/rbd/data/tmp"
-    # nginx_upload_job_files_store: "/rbd/data/_upload_job_files"
-    # nginx_upload_job_files_path: "/_job_files"
+    new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: true
     oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
@@ -132,6 +87,7 @@ galaxy_config:
     - 325073@mail.muni.cz
     - demko@cesnet.cz
     - galaxy@usegalaxy.cz
+    - ljocha@ics.muni.cz
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
@@ -139,10 +95,11 @@ galaxy_config:
     allow_user_creation: false
     require_login: true
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
-    file_path: /rbd/data/datasets
-    job_working_directory: /rbd/data/jobs
-    cluster_files_directory: "/rbd/data/pbs"
-    short_term_storage_dir: "/rbd/data/short_term_web_storage"
+# XXX: don't know the purpose anymore
+#    cluster_files_directory: "/rbd/data/pbs"
+#    short_term_storage_dir: "/rbd/data/short_term_web_storage"
+    file_path: "{{ galaxy_mutable_data_dir }}/datasets"
+    job_working_directory: "{{ galaxy_mutable_data_dir }}/jobs"
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
@@ -203,7 +160,7 @@ galaxy_config:
     statsd_host: localhost
     statsd_influxdb: true
     # FTP
-    ftp_upload_dir: /rbd/data/uploads
+    ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
   gravity:
     process_manager: systemd
@@ -265,6 +222,8 @@ galaxy_config_files_public:
 galaxy_config_files:
   - src: files/galaxy/themes.yml
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
+  - src: "files/{{ inventory_hostname }}/tpv_rules_local.yml"
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
 
 galaxy_config_templates:
   - src: templates/galaxy/config/dependency_resolvers_conf.xml
@@ -275,9 +234,9 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.gravity.reports.config_file }}"
   - src: templates/galaxy/config/oidc_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
-  - src: templates/galaxy/config/oidc_backends_config.xml
+  - src: "files/{{ inventory_hostname }}/oidc_backends_config.xml"
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
-  - src: templates/galaxy/config/object_store_conf.xml.j2
+  - src: "files/{{ inventory_hostname }}/object_store_conf.xml.j2"
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
   - src: templates/galaxy/config/tool_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
@@ -356,9 +315,11 @@ nginx_conf_http:
       image/png
       image/svg+xml
       image/x-icon
-nginx_ssl_role: usegalaxy_eu.certbot
-nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+
+# default Let's encrypt, override in host_vars eventually
+#nginx_ssl_role: usegalaxy_eu.certbot
+#nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+#nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
 
 #Install pip docker package for ansible
 pip_install_packages:
@@ -367,11 +328,14 @@ pip_install_packages:
 rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.11-management
+  image: rabbitmq:3.13-management
   hostname: "{{ inventory_hostname }}"
 
 rabbitmq_plugins:
   - rabbitmq_management
+
+rabbitmq_conf_ssl_certificate: /etc/ssl/certs/cert.pem
+rabbitmq_conf_ssl_certificate_key: /etc/ssl/user/privkey-999:999.pem
 
 rabbitmq_config:
   listeners:
@@ -380,10 +344,13 @@ rabbitmq_config:
     default: 5671
   ssl_options:
     verify: verify_peer
-    cacertfile: /etc/ssl/certs/fullchain.pem
-    certfile: /etc/ssl/certs/cert.pem
-    keyfile: /etc/ssl/user/privkey-999:999.pem
+    cacertfile: /etc/ssl/certs/ca-certificates.crt
+    certfile: "{{ rabbitmq_conf_ssl_certificate }}"
+    keyfile: "{{ rabbitmq_conf_ssl_certificate_key }}"
     fail_if_no_peer_cert: 'false'
+    versions:
+      - tlsv1.3
+      - tlsv1.2
   management_agent:
     disable_metrics_collector: "false"
   management:
@@ -413,7 +380,7 @@ rabbitmq_users:
 
 # TUS
 galaxy_tusd_port: 1080
-galaxy_tus_upload_store: /rbd/data/tus
+galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus" # /mnt/data/tus
 
 #Redis
 galaxy_additional_venv_packages:

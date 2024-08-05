@@ -1,0 +1,34 @@
+#! vim: ts=2 expandtab:
+
+name: deploy-test
+
+# TODO: run automatically on push to main
+on: [ workflow_dispatch ]
+
+jobs:
+  call-common:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        destination:
+        - test-cz:
+          env:
+            HOSTNAME: usegalaxy-test.cerit-sc.cz
+            USER: debian
+# FIXME: rename to _TEST_CZ
+            VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+# TODO: other test hosts here
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Call common
+        uses: ./.github/actions/deploy-common
+#        with:
+#          destination: 'usegalaxy-test.cerit-sc.cz'
+#          user: 'debian'
+#          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+
+

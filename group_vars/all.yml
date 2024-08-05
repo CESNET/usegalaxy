@@ -29,10 +29,15 @@ telegraf_plugins_default:
   - plugin: disk
   - plugin: kernel
   - plugin: processes
-  - plugin: io
+  - plugin: diskio
   - plugin: mem
   - plugin: system
   - plugin: swap
   - plugin: net
   - plugin: netstat
 
+
+# where to put most of the data; we use RBD or NBD volumes
+# to be overriden in host_vars typically
+
+galaxy_mutable_data_dir: /data/galaxy

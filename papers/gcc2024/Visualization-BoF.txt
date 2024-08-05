@@ -1,0 +1,5 @@
+Galaxy-Pulsar network traffic visualization
+
+The network of Galaxy and Pulsar installations is growing steadily. For both operation oversight and dissemination purposes it is desirable to visualize the flow of jobs and data transfers as a map overlay; several isolated attempts to do so have been already done. 
+
+The BoF goal is to discuss ideas what is the traffic to visualize, how to render it, what data are required to do so, and how these data can be gathered. 

@@ -1,0 +1,62 @@
+#! vim: ts=2 expandtab:
+
+name: deploy-common
+
+
+#inputs:
+#  destination:
+#    description: 'Ansible host'
+#    required: true
+#  user:
+#    required: true
+#  SSH_PRIVATE_KEY:
+#    required: true
+#  VAULT_PASSWORD:
+#    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create SSH key
+      shell: bash
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        cp known_hosts ~/.ssh/known_hosts
+        ssh $USER@$HOSTNAME hostname -f
+
+#      run: |
+#        install -m 600 -D /dev/null ~/.ssh/id_rsa
+#        echo "${{ inputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#        cp known_hosts ~/.ssh/known_hosts
+#        ssh ${{ inputs.user }}@${{ inputs.destination }} hostname -f
+
+    - name: Pick secret.yml
+      shell: bash
+      run: cp group_vars/secret-${{ inputs.destination }}.yml group_vars/secret.yml
+
+    - name: Install requirements
+      shell: bash
+      run: ansible-galaxy install -p roles -r requirements.yml
+
+    - name: Vault password
+      shell: bash
+      run: echo "${{ inputs.VAULT_PASSWORD }}" >.vault-password.txt
+
+    - name: Hosts file
+      shell: bash
+      run: |
+        cat <<EOF >hosts
+        [galaxyservers]
+        ${{ inputs.destination }} ansible_user=${{ inputs.user }}
+        [dbservers:children]
+        galaxyservers
+        [monitoring:children]
+        ${{ inputs.destination }} ansible_user=${{ inputs.user }}
+        [sentryservers:children]
+        ${{ inputs.destination }} ansible_user=${{ inputs.user }}
+        EOF
+
+    - name: Run playbook
+      shell: bash
+      run: ansible-playbook galaxy.yml

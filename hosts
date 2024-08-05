@@ -1,9 +1,0 @@
-[galaxyservers]
-usegalaxy.cz ansible_connection=local ansible_user=debian
-[dbservers:children]
-galaxyservers
-[monitoring]
-usegalaxy.cz ansible_connection=local ansible_user=debian
-[sentryservers]
-usegalaxy.cz ansible_connection=local ansible_user=debian
-
