@@ -30,16 +30,6 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: _default_
-    pulsar_gpu_runner:
-      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
-      amqp_acknowledge: true
-      amqp_ack_republish_time: 1200
-      amqp_consumer_timeout: 2
-      amqp_publish_retry: true
-      amqp_publish_retry_max_retries: 60
-      manager: gpu
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
@@ -86,9 +76,6 @@ galaxy_job_config:
         singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
         ## Following configuration works!
         # singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro"
-        container_resolvers: 
-          - type: explicit_singularity
-          - type: mulled_singularity
         env:
         # Ensuring a consistent collation environment is good for reproducibility.
         - name: LC_ALL
@@ -99,43 +86,6 @@ galaxy_job_config:
           value: "$SCRATCHDIR"
         - name: TEMP
           value: "$SCRATCHDIR"
-      pulsar_gpu:
-        runner: pulsar_gpu_runner
-        default_file_action: remote_transfer
-        transport: curl
-        dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging" 
-        persistence_directory: "/opt/pulsar/files/persistent"
-        remote_metadata: false 
-        rewrite_parameters: true
-        outputs_to_working_directory: false
-        singularity_enabled: true
-        singularity_run_extra_arguments: '--nv'
-        singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data:ro'
-        env:
-        # The cache directory holds the docker containers that get converted
-        - name: SINGULARITY_CACHEDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-        - name: APPTAINER_CACHEDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-        # Singularity uses a temporary directory to build the squashfs filesystem
-        - name: SINGULARITY_TMPDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
-        - name: APPTAINER_TMPDIR
-          value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
-        # Alphafold specific variables
-        - name: ALPHAFOLD_DB
-          value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
-        # Default variables
-        - name: TMPDIR
-          value: "$SCRATCHDIR"
-        - name: TMP
-          value: "$SCRATCHDIR"
-        - name: TEMP
-          value: "$SCRATCHDIR"
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
       tpv_dispatcher:
         runner: dynamic
         type: python
@@ -149,6 +99,13 @@ galaxy_job_config:
     groups:
       default: []
       testing: [cores, time]
+  limits:
+    - type: registered_user_concurrent_jobs
+      value: 10
+    - type: anonymous_user_concurrent_jobs
+      value: 1
+    - type: output_size
+      value: 50GB
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local_env
@@ -178,10 +135,12 @@ galaxy_config:
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
-    allow_user_creation: False
+    email_from: "regalaxy@rt.cesnet.cz"
+    allow_user_creation: false
+    require_login: true
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
-    file_path: /mnt/data/datasets
-    job_working_directory: /mnt/data/jobs
+    file_path: /rbd/data/datasets
+    job_working_directory: /rbd/data/jobs
     cluster_files_directory: "/rbd/data/pbs"
     short_term_storage_dir: "/rbd/data/short_term_web_storage"
     object_store_store_by: uuid
@@ -221,7 +180,16 @@ galaxy_config:
     tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
     dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
-    containers_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.yml"
+    container_resolvers:
+    -   type: explicit_singularity
+#    -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+    -   cache_directory: /rbd/data/singularity
+        type: cached_mulled_singularity
+    -   auto_install: true
+        type: mulled_singularity
+    -   auto_install: false
+        type: build_mulled_singularity   
+        cache_directory: /rbd/data/singularity/mulled
     # Data Library Directories
 #    library_import_dir: "/rbd/data/library_import_dir" # likely to be here
     library_import_dir: /libraries/admin 
@@ -235,7 +203,7 @@ galaxy_config:
     statsd_host: localhost
     statsd_influxdb: true
     # FTP
-    ftp_upload_dir: /mnt/data/uploads
+    ftp_upload_dir: /rbd/data/uploads
     ftp_upload_site: "{{ inventory_hostname }}"
   gravity:
     process_manager: systemd
@@ -297,12 +265,8 @@ galaxy_config_files_public:
 galaxy_config_files:
   - src: files/galaxy/themes.yml
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
-  - src: files/galaxy/config/tpv_rules_local.yml
-    dest: "{{ tpv_mutable_dir }}/tpv_rules_local.yml"
 
 galaxy_config_templates:
-  - src: templates/galaxy/config/container_resolvers_conf.yml.j2
-    dest: "{{ galaxy_config.galaxy.containers_resolvers_config_file }}"
   - src: templates/galaxy/config/dependency_resolvers_conf.xml
     dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
   - src: templates/galaxy/config/job_resource_params_conf.xml.j2
@@ -319,10 +283,11 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
   - src: templates/galaxy/config/local_tool_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
+  - src: templates/galaxy/config/tpv_rules_local.yml.j2
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_local.yml"
 
 
 galaxy_extra_dirs:
-  - /mnt/data
   - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
 
 galaxy_extra_privsep_dirs:
@@ -365,7 +330,7 @@ nginx_servers:
   - redirect-ssl
 nginx_ssl_servers:
   - galaxy
-    #  - sentry
+#  - sentry
 nginx_enable_default_server: false
 nginx_conf_http:
   client_max_body_size: 1g
@@ -448,7 +413,7 @@ rabbitmq_users:
 
 # TUS
 galaxy_tusd_port: 1080
-galaxy_tus_upload_store: /rbd/data/tus # /mnt/data/tus
+galaxy_tus_upload_store: /rbd/data/tus
 
 #Redis
 galaxy_additional_venv_packages:

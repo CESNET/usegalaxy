@@ -293,6 +293,7 @@ tools:
   revisions:
   - f46f0e4f75c4
   - d698c222f354
+  - fbf99087e067
   tool_panel_section_label: Text Manipulation
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: query_tabular
@@ -521,6 +522,7 @@ tools:
   owner: iuc
   revisions:
   - 374cb875d38a
+  - a513e3fbb4c5
   tool_panel_section_label: Join, Subtract and Group
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: datamash_reverse
@@ -5553,12 +5555,12 @@ tools:
   - fd1f57782683
   tool_panel_section_label: Peak Calling
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: jamm
-  owner: messersc
-  revisions:
-  - 243f75d0ed6e
-  tool_panel_section_label: Peak Calling
-  tool_shed_url: testtoolshed.g2.bx.psu.edu
+#- name: jamm
+#  owner: messersc
+#  revisions:
+#  - 243f75d0ed6e
+#  tool_panel_section_label: Peak Calling
+#  tool_shed_url: testtoolshed.g2.bx.psu.edu
 - name: piranha
   owner: rnateam
   revisions:

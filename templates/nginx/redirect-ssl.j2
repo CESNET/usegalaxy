@@ -4,12 +4,12 @@ server {
 
 	server_name "{{ inventory_hostname }}";
 
-	location /.well-known/ {
+	location /.well-known/acme-challenge/ {
 		root {{ certbot_well_known_root }};
 	}
 
 	location / {
-		return 302 https://$host$request_uri;
+		return 302 https://{{ inventory_hostname }}$request_uri;
 	}
 }
 
@@ -21,7 +21,13 @@ server {
 
         server_name "galaxy.metacentrum.cz";
 
-        return 308 "https://{{ inventory_hostname }}$request_uri";
+        location /.well-known/acme-challenge/ {
+                root /srv/nginx/_well-known_root;
+        }
+
+        location / {
+                return 308 "https://{{ inventory_hostname }}$request_uri";
+        }
 }
 
 server {
@@ -32,6 +38,11 @@ server {
 
         server_name "galaxy-cz.grid.cesnet.cz";
 
-        return 308 "https://{{ inventory_hostname }}$request_uri";
-}
+        location /.well-known/acme-challenge/ {
+                root /srv/nginx/_well-known_root;
+        }
 
+        location / {
+                return 308 "https://{{ inventory_hostname }}$request_uri";
+        }
+}

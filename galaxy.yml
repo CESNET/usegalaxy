@@ -29,7 +29,7 @@
         mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'squashfs-tools']
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -100,3 +100,28 @@
         path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
         regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
         replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
+
+    ## Install required Galaxy tools
+    - name: Install required tools - create Ephemeris venv
+      ansible.builtin.shell:
+        cmd: python3 -m venv ~/ephemeris_venv
+      tags: tools
+    - name: Install required tools - install Ephemeris
+      ansible.builtin.shell:
+        cmd: source ~/ephemeris_venv/bin/activate && pip install ephemeris
+      tags: tools
+    - name: Install required tools - install Galaxy tools
+      ansible.builtin.shell:
+        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t regalaxy_tool_list.yaml
+      when: "'galaxy-re' in inventory_hostname"
+      tags: tools
+    - name: Install required tools - install Galaxy tools
+      ansible.builtin.shell:
+        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t umsa_tool_list.yaml
+      when: "'umsa' in inventory_hostname"
+      tags: tools
+    - name: Install required tools - install Galaxy tools
+      ansible.builtin.shell:
+        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t eu_tool_list.yaml
+      when: "'usegalaxy' in inventory_hostname or 'galaxy-cz' in inventory_hostname"
+      tags: tools

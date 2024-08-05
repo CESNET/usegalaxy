@@ -3,11 +3,13 @@ global:
 
 tools:
   default:
-#    abstract: true
     cores: 1
     mem: cores * 4
-    env: {}
-    params: {}
+    env: 
+    - name: GALAXY_SLOTS
+      value: "{cores}"
+    - name:  GALAXY_MEMORY_MB
+      value: "{int(mem)*1000}"
     context:
       walltime: 24
       scratch: 50
@@ -44,11 +46,24 @@ tools:
 
   .*/alphafold/.*:
     cores: 1
-    scheduling:
+    mem: 120
+    gpus: 1
+    context:
+      walltime: 24
+      scratch: 100 
+      gpu_mem: 8
+    scheduling:   
       require:
-        - pulsar
-        - singularity
-        - gpu
+        - alphafold
+
+  .*/goenrichment/.*:
+    scheduling:   
+      require:
+        - nasty-java
+
+  .*/bedtools_annotatebed/.*:
+    context:
+      walltime: 48
 
   toolshed.g2.bx.psu.edu/repos/iuc/megahit/megahit/.*:
     cores: 16
@@ -56,6 +71,20 @@ tools:
     context:
       walltime: 96
       scratch: 100
+
+  CONVERTER_.*:
+    scheduling:   
+      require:   
+#        - local
+#      reject:
+        - pulsar
+
+  __SET_.*:
+    scheduling:
+      require:
+        - local
+      reject:
+        - pulsar
 
 roles:
   training.*:
@@ -85,23 +114,20 @@ destinations:
     max_accepted_mem: 4
     params:
       singularity_enabled: true
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:
       # Ensuring a consistent collation environment is good for reproducibility.
       LC_ALL: C
       # The cache directory holds the docker containers that get converted
-      SINGULARITY_CACHEDIR: "/srv/galaxy/var/cache/singularity"
+#      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_CACHEDIR: "/rbd/data/singularity/"
       # Singularity uses a temporary directory to build the squashfs filesystem
-      SINGULARITY_TMPDIR: /tmp
-    container_resolvers:
-    - type: explicit_singularity
-    - type: cached_mulled_singularity
-      cache_directory: "/srv/galaxy/var/cache/singularity/mulled"
-    - type: mulled_singularity
+      SINGULARITY_TMPDIR: /rbd/data//tmp
     scheduling:
+      require:
+      - local
       prefer:
       - singularity
-      reject:
-      - pulsar
   tpv_pulsar:
     runner: pulsar_tpv_runner
     max_accepted_cores: 128
@@ -119,64 +145,49 @@ destinations:
       rewrite_parameters: true
       transport: curl
       outputs_to_working_directory: false
-      submit_native_specification: "-l select=1:ncpus={cores}:mem={mem}gb:scratch_local={scratch}gb -l walltime={walltime}:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q galaxycz@pbs-m1.metacentrum.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+      singularity_run_extra_arguments: >-
+        --env JAVA_OPTS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
+        --env JAVA_TOOL_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
     env:
       LC_ALL: C
       TMPDIR: $SCRATCHDIR
       TMP: $SCRATCHDIR
       TEMP: $SCRATCHDIR 
-      GALAXY_SLOTS: "{cores}"
-      GALAXY_MEMORY_MB: "{int(mem)*1000}"
+      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_TMPDIR: "$SCRATCHDIR"
+      XDG_CACHE_HOME: "$SCRATCHDIR"
     scheduling:
       require:
       - pulsar
-      reject:
-      - singularity
-  tpv_pulsar_singularity:
+  tpv_pulsar_nasty_java:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner
     params:
-      singularity_enabled: true
-      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
-      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
-    env:
-      SINGULARITY_CACHEDIR: "/auto/praha5-elixir/home/galaxyeu/pulsar-cz/files/singularity_cache"
-#      SINGULARITY_CACHEDIR: "/auto/praha5-elixir/home/galaxyeu/singularity/cache"
-      SINGULARITY_TMPDIR: "$SCRATCHDIR/tmp"
-#      SINGULARITY_TMPDIR: "/auto/praha5-elixir/home/galaxyeu/singularity/tmp"
-      XDG_CACHE_HOME: "$SCRATCHDIR"
-    container_resolvers:  
-    - type: explicit_singularity
-#      cache_directory: "/auto/praha5-elixir/home/galaxyeu/pulsar-cz/singularity"
-    - type: cached_mulled_singularity
-#      cache_directory: "/auto/praha5-elixir/home/galaxyeu/pulsar-cz/files/singularity_cache"
-    - type: mulled_singularity
-#      cache_directory: "/auto/praha5-elixir/home/galaxyeu/pulsar-cz/singularity"
+      singularity_run_extra_arguments: '--env _JAVA_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"'
     scheduling:
       require:
-      - pulsar
-      - singularity
-      reject:
-  tpv_pulsar_gpu:
-    inherits: tpv_pulsar_singularity
-    runner: pulsar_gpu_runner
+        - nasty-java
+  tpv_pulsar_alphafold:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
     params:
       singularity_run_extra_arguments: '--nv'
       singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
-      submit_native_specification: ""
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q galaxy_gpu@pbs-m1.metacentrum.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
     env:
       ALPHAFOLD_DB: "/auto/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
       ALPHAFOLD_USE_GPU: True
     scheduling:
       require:
-        - pulsar
-        - singularity
-        - gpu
+        - alphafold
       reject:
-  pulsar-training:
-    inherits: tpv_pulsar_singularity
+  tpv_pulsar_training:
+    inherits: tpv_pulsar
     runner: pulsar_tpv_runner
     scheduling:
       require:
-        - pulsar
         - training
