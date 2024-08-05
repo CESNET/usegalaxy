@@ -1,4 +1,14 @@
 ---
+- hosts: all
+  name: apt update & pip
+  become: true
+  become_user: root
+  tasks:
+    - ansible.builtin.apt:
+        name: python3-pip
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
 - hosts: dbservers
   become: true
   become_user: root
@@ -11,6 +21,22 @@
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
+
+- hosts: noletsencrypt
+  become: true
+  become_user: root
+  tasks:
+    - name: Certificate
+      copy:
+        src: "{{ nginx_ssl_src_dir }}/{{ nginx_conf_ssl_certificate | basename }}"
+        dest: "/etc/ssl/cert.pem"
+        mode: "0644"
+    - name: RabbitMQ key
+      copy:
+        content: "{{ sslkeys[nginx_conf_ssl_certificate_key | basename] }}"
+        dest: "{{ rabbitmq_conf_ssl_certificate_key }}"
+        owner: "999"
+        mode: "0400"
 
 - hosts: galaxyservers
   become: true
@@ -29,7 +55,7 @@
         mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'rsync' ]
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -41,27 +67,33 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
-    - name: Create the RBD storage directory
-      file:
-        owner: galaxy
-        group: galaxy
-        path: /rbd/data
-        state: directory
-        mode: '0755'
-    - name: Create the nginx upload job files store
-      file:
-        owner: www-data
-        group: galaxy
-        path: /rbd/data/_upload_job_files
-        state: directory
-        mode: '0775'
-    - name: Create the client body temp path   
-      file:
-        owner: www-data
-        group: galaxy
-        path: /rbd/data/nginx_upload_store
-        state: directory
-        mode: '0775'
+#    - ansible.builtin.group:
+#        name: galaxy
+#    - ansible.builtin.user:
+#        name: galaxy
+#        group: galaxy
+#        comment: Galaxy system user
+#    - name: Create the data storage directory
+#      file:
+#        owner: galaxy
+#        group: galaxy
+#        path: "{{ galaxy_mutable_data_dir }}"
+#        state: directory
+#        mode: '0755'
+#    - name: Create the nginx upload job files store
+#      file:
+#        owner: www-data
+#        group: galaxy
+#        path: "{{ datastore }}/data/_upload_job_files"
+#        state: directory
+#        mode: '0775'
+#    - name: Create the client body temp path   
+#      file:
+#        owner: www-data
+#        group: galaxy
+#        path: "{{ datastore }}/data/nginx_upload_store"
+#        state: directory
+#        mode: '0775'
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
@@ -71,7 +103,8 @@
       become: true
       become_user: "{{ galaxy_user_name }}"
     - geerlingguy.redis
-    - usegalaxy_eu.flower
+    - role: usegalaxy_eu.flower
+      when: enable_flower | bool
     - galaxyproject.nginx
     - galaxyproject.proftpd
     - geerlingguy.docker
@@ -79,7 +112,9 @@
     - galaxyproject.tiaas2
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
-    - dj-wasabi.telegraf
+    - role: dj-wasabi.telegraf
+      when: enable_telegraf | bool
+
   post_tasks:
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
@@ -95,3 +130,14 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+    - name: Add pulsar public ssh key
+      ansible.posix.authorized_key:
+        user: galaxy
+        state: present
+        key: "{{ lookup('file','files/{{ inventory_hostname }}/pulsar.pub') }}"
+    - name: Restart galaxy
+      become: true
+      become_user: root
+      ansible.builtin.command: galaxyctl restart
+      
+
