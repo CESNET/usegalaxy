@@ -55,7 +55,11 @@
         mode: 0640
     - name: Install Dependencies
       package:
+<<<<<<< HEAD
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'squashfs-tools']
+=======
         name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'rsync' ]
+>>>>>>> main
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -105,11 +109,11 @@
     - geerlingguy.redis
     - role: usegalaxy_eu.flower
       when: enable_flower | bool
+    - galaxyproject.tiaas2
     - galaxyproject.nginx
     - galaxyproject.proftpd
     - geerlingguy.docker
     - usegalaxy_eu.rabbitmqserver
-    - galaxyproject.tiaas2
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
     - role: dj-wasabi.telegraf
@@ -130,6 +134,11 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
+      replace:
+        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
+        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
+        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
     - name: Add pulsar public ssh key
       ansible.posix.authorized_key:
         user: galaxy
@@ -139,5 +148,3 @@
       become: true
       become_user: root
       ansible.builtin.command: galaxyctl restart
-      
-

@@ -8,7 +8,8 @@ upstream galaxy {
 
 server {
 	# Listen on port 443
-	listen        *:443 ssl default_server;
+        listen        443 ssl default_server;
+        listen        [::]:443 ssl default_server;
 	# The virtualhost is our domain name
 	server_name   "{{ inventory_hostname }}";
 
@@ -17,7 +18,13 @@ server {
 	error_log   syslog:server=unix:/dev/log;
 	# client_body_temp_path  /rbd/data/nginx_upload_store;
 	client_body_buffer_size 1024m;
-        client_max_body_size        20G;
+        client_max_body_size      50G;
+
+        # smaller timeout interrupted transimition of bigger files
+        send_timeout           300s;
+        proxy_read_timeout     600s;
+        client_body_timeout   3600s;    
+        client_header_timeout  600s;
 
 	# The most important location block, by default all requests are sent to gunicorn
 	# If you serve galaxy at a path like /galaxy, change that below (and all other locations!)

@@ -1,3 +1,4 @@
 ### Values and Secrets ###
 .vault-password.txt
 hosts
+ansible.cfg

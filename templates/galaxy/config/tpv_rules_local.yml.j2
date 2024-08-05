@@ -1,0 +1,193 @@
+global:
+  default_inherits: default
+
+tools:
+  default:
+    cores: 1
+    mem: cores * 4
+    env: 
+    - name: GALAXY_SLOTS
+      value: "{cores}"
+    - name:  GALAXY_MEMORY_MB
+      value: "{int(mem)*1000}"
+    context:
+      walltime: 24
+      scratch: 50
+    scheduling:
+      require:
+        - pulsar
+      reject:
+        - offline
+    rules: []
+    rank: |
+      helpers.weighted_random_sampling(candidate_destinations)
+
+  .*testing.*:
+    cores: 1
+    mem: 1
+    context:
+      walltime: 1
+    rules:
+      - id: admin_only_testing_tool
+        if: |
+          # Only allow the tool to be executed if the user is an admin
+          admin_users = app.config.admin_users
+          # last line in block must evaluate to a value - which determines whether the TPV if conditional matches or not
+          not user or user.email not in admin_users
+        fail: Unauthorized. Only admins can execute this tool.
+
+      - id: resource_params_defined
+        if: |
+          param_dict = job.get_param_values(app)
+          param_dict.get('__job_resource', {}).get('__job_resource__select') == 'yes'
+        cores: int(job.get_param_values(app)['__job_resource']['cores'])
+        context:
+           walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
+
+  .*/alphafold/.*:
+    cores: 1
+    mem: 120
+    gpus: 1
+    context:
+      walltime: 24
+      scratch: 100 
+      gpu_mem: 8
+    scheduling:   
+      require:
+        - alphafold
+
+  .*/goenrichment/.*:
+    scheduling:   
+      require:
+        - nasty-java
+
+  .*/bedtools_annotatebed/.*:
+    context:
+      walltime: 48
+
+  toolshed.g2.bx.psu.edu/repos/iuc/megahit/megahit/.*:
+    cores: 16
+    mem: 256
+    context:
+      walltime: 96
+      scratch: 100
+
+  CONVERTER_.*:
+    scheduling:   
+      require:   
+#        - local
+#      reject:
+        - pulsar
+
+  __SET_.*:
+    scheduling:
+      require:
+        - local
+      reject:
+        - pulsar
+
+roles:
+  training.*:
+    max_cores: 2
+    max_mem: max_cores * 4  # TODO check multiplier
+    scheduling:
+      require:
+        - pulsar
+        - training
+
+destinations:
+  tpv_local:
+    runner: local_runner
+    max_accepted_cores: 1
+    max_accepted_mem: 4
+    params:
+      tmp_dir: true
+    scheduling:
+      require:
+        - local
+      reject:
+        - pulsar
+        - singularity
+  tpv_local_singularity:
+    runner: local_runner
+    max_accepted_cores: 1
+    max_accepted_mem: 4
+    params:
+      singularity_enabled: true
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+    env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+      LC_ALL: C
+      # The cache directory holds the docker containers that get converted
+#      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_CACHEDIR: "/rbd/data/singularity/"
+      # Singularity uses a temporary directory to build the squashfs filesystem
+      SINGULARITY_TMPDIR: /rbd/data//tmp
+    scheduling:
+      require:
+      - local
+      prefer:
+      - singularity
+  tpv_pulsar:
+    runner: pulsar_tpv_runner
+    max_accepted_cores: 128
+    max_accepted_mem: 512
+    max_accepted_gpus: 2
+    max_cores: 16
+    max_mem: 256
+    max_gpus: 1
+    params:
+      default_file_action: remote_transfer
+      dependency_resolution: remote
+      jobs_directory: "/auto/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
+      persistence_directory: "/opt/pulsar/files/persistent"
+      remote_metadata: false
+      rewrite_parameters: true
+      transport: curl
+      outputs_to_working_directory: false
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q galaxycz@pbs-m1.metacentrum.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+      singularity_run_extra_arguments: >-
+        --env JAVA_OPTS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
+        --env JAVA_TOOL_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
+    env:
+      LC_ALL: C
+      TMPDIR: $SCRATCHDIR
+      TMP: $SCRATCHDIR
+      TEMP: $SCRATCHDIR 
+      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_TMPDIR: "$SCRATCHDIR"
+      XDG_CACHE_HOME: "$SCRATCHDIR"
+    scheduling:
+      require:
+      - pulsar
+  tpv_pulsar_nasty_java:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    params:
+      singularity_run_extra_arguments: '--env _JAVA_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"'
+    scheduling:
+      require:
+        - nasty-java
+  tpv_pulsar_alphafold:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    params:
+      singularity_run_extra_arguments: '--nv'
+      singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q galaxy_gpu@pbs-m1.metacentrum.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      ALPHAFOLD_DB: "/auto/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
+      ALPHAFOLD_USE_GPU: True
+    scheduling:
+      require:
+        - alphafold
+      reject:
+  tpv_pulsar_training:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    scheduling:
+      require:
+        - training

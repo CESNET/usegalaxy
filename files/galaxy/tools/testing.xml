@@ -1,15 +1,12 @@
 <tool id="testing" name="Big upload test">
     <command>
-        <![CDATA[mv "$input1" "$output1" &&
-	         mv "$input2" "$output2"]]>
+        <![CDATA[mv "$input1" "$output1"]]>
     </command>
     <inputs>
-	    <param name="input1" type="text" label="Input Text1"/>
-            <param name="input2" type="text" label="Input Text2"/>
+        <param name="input1" type="data" format="txt" label="Input Dataset"/>
     </inputs>
     <outputs>
-	    <data name="output1" format="fastq.gz" />
-	    <data name="output2" format="fastq.gz" />
+        <data name="output1" format="txt" />
     </outputs>
 </tool>
 

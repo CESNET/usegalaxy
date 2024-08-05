@@ -1,0 +1,14 @@
+---
+- hosts: galaxyservers
+  tasks:
+    - name: Install Ephemeris
+      local_action:
+        module: ansible.builtin.pip
+        name: ephemeris
+        virtualenv: /tmp/ephemeris
+        virtualenv_python: python3
+    
+    - name: Install required tools
+      local_action:
+        module: ansible.builtin.shell
+        cmd: /tmp/ephemeris/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t files/{{ inventory_hostname }}/tool_list.yaml
