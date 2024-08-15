@@ -105,9 +105,13 @@ tools:
 - name: spec2vec_training
   owner: recetox
   tool_panel_section_label: RECETOX
+  revisions:
+  - 9d917de87cca
 - name: spec2vec_similarity
   owner: recetox
   tool_panel_section_label: RECETOX
+  revisions:
+  - 721a4e666191
 - name: riassigner
   owner: recetox
   revisions:
@@ -1021,55 +1025,46 @@ tools:
   revisions:
   - f76a397afbe1
   tool_panel_section_label: matchms
-
 - name: mfassignr_snplot
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - 6a34bc7afd61
-
 - name: mfassignr_histnoise
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - faf7108f3b48
-
 - name: mfassignr_kmdnoise
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - f60df05dd038
-
 - name: mfassignr_isofiltr
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - 079ae9aa6ed5
-
 - name: mfassignr_mfassign
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - 5aa9380f397b
-
 - name: mfassignr_mfassigncho
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - 11949bd6837a
-
 - name: mfassignr_recal
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - 235878c45443
-
 - name: mfassignr_recallist
   owner: recetox
   tool_panel_section_label: mfassignr
   revisions:
   - 6e1813883a9a
-
 - name: rcx_tk
   owner: recetox
   tool_panel_section_label: RECETOX
