@@ -1,15 +1,4 @@
 tools:
-- name: compose_text_param
-  owner: iuc
-  revisions:
-  - e188c9826e0f
-  tool_panel_section_label: Text Manipulation
-- name: split_file_to_collection
-  owner: bgruening
-  revisions:
-  - 2dae863c8f42
-  - 6cbe2f30c2d7
-  tool_panel_section_label: Collection Operations
 - name: collapse_collections
   owner: nml
   revisions:
@@ -126,6 +115,7 @@ tools:
   owner: recetox
   revisions:
   - 0b86600b715e
+  - 6cd2a9e6ac49
   - e5fcba090b10
   tool_panel_section_label: RECETOX
 - name: spec2vec_training
@@ -133,6 +123,10 @@ tools:
   revisions:
   - 9d917de87cca
   - e1e22ada831e
+  tool_panel_section_label: RECETOX
+- name: spec2vec_similarity
+  owner: recetox
+  revisions: []
   tool_panel_section_label: RECETOX
 - name: riassigner
   owner: recetox
@@ -1206,3 +1200,39 @@ tools:
   - 9e3c83d2afc3
   - f76a397afbe1
   tool_panel_section_label: matchms
+- name: mfassignr_snplot
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: mfassignr_histnoise
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: mfassignr_kmdnoise
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: mfassignr_isofiltr
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: mfassignr_mfassign
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: mfassignr_mfassigncho
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: mfassignr_recal
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: mfassignr_recallist
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: mfassignr
+- name: rcx_tk
+  owner: recetox
+  revisions: []
+  tool_panel_section_label: RECETOX
