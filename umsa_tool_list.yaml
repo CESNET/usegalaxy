@@ -1,3 +1,4 @@
+tool_shed_url: toolshed.g2.bx.psu.edu
 tools:
 - name: collapse_collections
   owner: nml
@@ -123,10 +124,11 @@ tools:
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: spec2vec_training
   owner: recetox
-  revisions:
-  - e1e22ada831e
   tool_panel_section_label: RECETOX
   tool_shed_url: toolshed.g2.bx.psu.edu
+- name: spec2vec_similarity
+  owner: recetox
+  tool_panel_section_label: RECETOX
 - name: riassigner
   owner: recetox
   revisions:

@@ -195,6 +195,7 @@ tools:
   owner: bgruening
   revisions:
   - 4e3b2049a4d3
+  - f70b83b730ac
   tool_panel_section_label: ChemicalToolBox
 - name: msconvert
   owner: galaxyp
@@ -308,16 +309,19 @@ tools:
   revisions:
   - 50ca8845e7f5
   - b2569e22b40c
+  - c5de6c19eb06
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_addh
   owner: bgruening
   revisions:
   - 43167f164076
   - 6e4b7e0c61a6
+  - 7b6fd1c273cd
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_filter
   owner: bgruening
   revisions:
+  - 988085c7a0ea
   - df4dc55197dd
   - ff2dd4b7d918
   tool_panel_section_label: ChemicalToolBox
@@ -325,17 +329,20 @@ tools:
   owner: bgruening
   revisions:
   - 171c94786a56
+  - 9adf3fae2771
   - c19608db6b15
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_compound_convert
   owner: bgruening
   revisions:
   - 1c66bf08f687
+  - 4242b4d68e9c
   - e2c36f62e22f
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_remove_protonation_state
   owner: bgruening
   revisions:
+  - 22a866858b81
   - bf4e668b6690
   - e376ba0fcde0
   tool_panel_section_label: ChemicalToolBox
@@ -344,10 +351,12 @@ tools:
   revisions:
   - 330514267c57
   - afd14e10a318
+  - f5d7ffbb2d33
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_svg_depiction
   owner: bgruening
   revisions:
+  - 75ee9c410951
   - 7672039a0bb0
   - d3b48303045b
   tool_panel_section_label: ChemicalToolBox
@@ -359,6 +368,7 @@ tools:
 - name: openbabel_genprop
   owner: bgruening
   revisions:
+  - 50eaae9df8d3
   - a72ae2711a97
   - b249bf9be0d1
   tool_panel_section_label: ChemicalToolBox
@@ -367,16 +377,19 @@ tools:
   revisions:
   - 01ab890bf0ad
   - 3ecaa9634126
+  - a638d8d13bb3
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_obgrep
   owner: bgruening
   revisions:
   - 274193d6c443
   - 78640d0127ce
+  - 985ab0acd514
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_remsmall
   owner: bgruening
   revisions:
+  - 81836d586797
   - aebc671bae78
   - d7f0ca1f2669
   tool_panel_section_label: ChemicalToolBox
@@ -385,6 +398,7 @@ tools:
   revisions:
   - 5486f7a2b0cb
   - de4c80d17527
+  - fac2c28b4c55
   tool_panel_section_label: ChemicalToolBox
 - name: biomd_neqgamma
   owner: chemteam
@@ -637,6 +651,7 @@ tools:
   revisions:
   - 2c5c7da26e08
   - 4c9d6b47045c
+  - 8302ab092300
   tool_panel_section_label: ChemicalToolBox
 - name: ctb_frankenstein_ligand
   owner: bgruening
