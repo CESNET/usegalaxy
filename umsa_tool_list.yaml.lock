@@ -7,6 +7,7 @@ tools:
 - name: split_file_to_collection
   owner: bgruening
   revisions:
+  - 2dae863c8f42
   - 6cbe2f30c2d7
   tool_panel_section_label: Collection Operations
 - name: collapse_collections
@@ -92,6 +93,7 @@ tools:
 - name: xtb_molecular_optimization
   owner: recetox
   revisions:
+  - 6e1ef071fffc
   - cba7123c2741
   - d5633eaf3552
   tool_panel_section_label: RECETOX
@@ -106,6 +108,7 @@ tools:
   revisions:
   - 1a2aeb8137bf
   - 6480c6d5fa36
+  - bf32ae95a06f
   tool_panel_section_label: RECETOX
 - name: ramclustr
   owner: recetox
@@ -751,10 +754,12 @@ tools:
   revisions:
   - 11ab2081bd4a
   - 12def6edac2f
+  - 6de175c1f6ef
   tool_panel_section_label: XCMS
 - name: xcms_xcmsset
   owner: lecorguille
   revisions:
+  - 6550698fe60f
   - b02d1992a43a
   - f5d51091cf84
   tool_panel_section_label: XCMS
@@ -763,29 +768,34 @@ tools:
   revisions:
   - 018a9771de28
   - 2a2850fdf29e
+  - 444e3ed135e3
   tool_panel_section_label: XCMS
 - name: xcms_retcor
   owner: lecorguille
   revisions:
   - 8242376d9f35
   - aa252eec9229
+  - d2b82d89f848
   tool_panel_section_label: XCMS
 - name: xcms_plot_chromatogram
   owner: lecorguille
   revisions:
   - 024974037c4e
   - 8846a03995d3
+  - c8bef8f6a1cb
   tool_panel_section_label: XCMS
 - name: xcms_merge
   owner: lecorguille
   revisions:
   - 58b5a4b6e1da
   - 5bd125a3f3b0
+  - 6d475a389abc
   tool_panel_section_label: XCMS
 - name: xcms_group
   owner: lecorguille
   revisions:
   - 2b676d5eb848
+  - 71572faf938e
   - d45a786cbc40
   tool_panel_section_label: XCMS
 - name: xcms_fillpeaks
@@ -793,10 +803,12 @@ tools:
   revisions:
   - 26d77e9ceb49
   - bb9ee352fce0
+  - ec9aebabc1d2
   tool_panel_section_label: XCMS
 - name: xcms_export_samplemetadata
   owner: lecorguille
   revisions:
+  - 4ea32e46b2d6
   - 94eb263cfab4
   - cdab04a1d1d7
   tool_panel_section_label: XCMS
@@ -819,6 +831,7 @@ tools:
 - name: xcms_refine
   owner: workflow4metabolomics
   revisions:
+  - 090b33a9981c
   - 20f8ebc3a391
   tool_panel_section_label: W4M
 - name: qualitymetrics
@@ -1028,6 +1041,7 @@ tools:
   owner: recetox
   revisions:
   - 04892b463957
+  - 17a48d0a80f4
   - dd7bbc2b99d1
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_template
@@ -1035,11 +1049,13 @@ tools:
   revisions:
   - 481d769e2f7a
   - 4963811b6dec
+  - dfebc82ba1f0
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_generate_feature_table
   owner: recetox
   revisions:
   - 6ba3526237e0
+  - b3413f335327
   - e7305ba0dd38
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_remove_noise
@@ -1047,22 +1063,26 @@ tools:
   revisions:
   - b5a1f35abd8a
   - d90187b0f247
+  - ffbabefbd2e2
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_correct_time
   owner: recetox
   revisions:
   - 02c772a49998
   - 1574b8a29e6f
+  - 9064aecc78a7
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_clusters
   owner: recetox
   revisions:
   - 149b9cc7499b
   - b9b19a74ac01
+  - f3a18e020cdd
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_align_features
   owner: recetox
   revisions:
+  - 79ad928a0dae
   - 7b42ee54d757
   - d5c638b72ce4
   tool_panel_section_label: recetox-aplcms
@@ -1070,29 +1090,34 @@ tools:
   owner: recetox
   revisions:
   - 99d118321d5f
+  - d7f5878a98c3
   - e0536ff73f36
   tool_panel_section_label: recetox-aplcms
 - name: matchms_subsetting
   owner: recetox
   revisions:
+  - 6d2f2c565431
   - a598091029ad
   - cab0e4dcf372
   tool_panel_section_label: matchms
 - name: matchms_metadata_merge
   owner: recetox
   revisions:
+  - 84ead993862c
   - ec25de0f0c58
   - fc1a698a71e8
   tool_panel_section_label: matchms
 - name: matchms_add_key
   owner: recetox
   revisions:
+  - 1d10d32fa3b3
   - 51da674b945d
   - 7c5b86026e57
   tool_panel_section_label: matchms
 - name: matchms_networking
   owner: recetox
   revisions:
+  - 1d74ae228df3
   - 3cd1cf3034d1
   - ab8a33c370f5
   tool_panel_section_label: matchms
@@ -1100,6 +1125,7 @@ tools:
   owner: recetox
   revisions:
   - 05a7fc94e66c
+  - 1d443ed476a1
   - 844d32c59314
   tool_panel_section_label: matchms
 - name: matchms_spectral_similarity
@@ -1107,10 +1133,12 @@ tools:
   revisions:
   - 26c92af1bd28
   - 44e7027714d7
+  - 7627b40601f6
   tool_panel_section_label: matchms
 - name: matchms_metadata_export
   owner: recetox
   revisions:
+  - b576ed720711
   - cbadbec49b5d
   - dd49ef90297c
   tool_panel_section_label: matchms
@@ -1119,16 +1147,19 @@ tools:
   revisions:
   - 1d3ee4f9f63d
   - ad9d2d1b2b8d
+  - d7b517f2c5fe
   tool_panel_section_label: matchms
 - name: matchms_convert
   owner: recetox
   revisions:
   - 692471e62c68
   - bff7bfcf975e
+  - c990df6afc24
   tool_panel_section_label: matchms
 - name: matchms_filtering
   owner: recetox
   revisions:
+  - 00e66c401366
   - 07cac38cbd29
   - da15e8ea3b28
   tool_panel_section_label: matchms
@@ -1137,11 +1168,13 @@ tools:
   revisions:
   - 80df426e7e47
   - c24ebd41dd53
+  - fbe335d27d25
   tool_panel_section_label: matchms
 - name: matchms_split
   owner: recetox
   revisions:
   - 446fddefcee7
+  - 500f473df7e4
   - fc1bc38ede0b
   tool_panel_section_label: matchms
 - name: matchms_remove_key
@@ -1149,10 +1182,12 @@ tools:
   revisions:
   - 0a64e2bcce96
   - 19367db5cf3c
+  - 9d1b01d3fedd
   tool_panel_section_label: matchms
 - name: matchms_formatter
   owner: recetox
   revisions:
   - 6501d0287dcd
+  - 9e3c83d2afc3
   - f76a397afbe1
   tool_panel_section_label: matchms
