@@ -5,6 +5,17 @@ tools:
   revisions:
   - 90981f86000f
   tool_panel_section_label: Collection Operations
+- name: compose_text_param
+  owner: iuc
+  revisions:
+  - e188c9826e0f
+  tool_panel_section_label: Text Manipulation
+- name: split_file_to_collection
+  owner: bgruening
+  revisions:
+  - 2dae863c8f42
+  - 6cbe2f30c2d7
+  tool_panel_section_label: Collection Operations
 - name: scatterplot
   owner: devteam
   revisions:
@@ -13,31 +24,37 @@ tools:
 - name: ggplot2_violin
   owner: iuc
   revisions:
+  - 0e7290688b50
   - dfd5d981b5a4
   tool_panel_section_label: Visualization
 - name: ggplot2_heatmap
   owner: iuc
   revisions:
+  - 10515715c940
   - 391a4cc45fea
   tool_panel_section_label: Visualization
 - name: ggplot2_pca
   owner: iuc
   revisions:
   - 7e616a1bdb07
+  - b1268b7544d3
   tool_panel_section_label: Visualization
 - name: ggplot2_histogram
   owner: iuc
   revisions:
   - 398e5104f8a2
+  - b0d96516e6a5
   tool_panel_section_label: Visualization
 - name: ggplot2_heatmap2
   owner: iuc
   revisions:
+  - 374e9062d874
   - ca7cb0eaad62
   tool_panel_section_label: Visualization
 - name: ggplot2_point
   owner: iuc
   revisions:
+  - 3b12bf9b4b87
   - e3a675da7fd0
   tool_panel_section_label: Visualization
 - name: datamash_transpose
@@ -49,6 +66,7 @@ tools:
 - name: diff
   owner: bgruening
   revisions:
+  - 156d0908e232
   - 95a9dc82fc9a
   tool_panel_section_label: Text Manipulation
 - name: text_processing
@@ -71,36 +89,43 @@ tools:
   owner: recetox
   revisions:
   - 3e2cb0bc6959
+  - b5467dead5b1
   tool_panel_section_label: RECETOX
 - name: xtb_molecular_optimization
   owner: recetox
   revisions:
+  - 6e1ef071fffc
   - d5633eaf3552
   tool_panel_section_label: RECETOX
 - name: recetox_xmsannotator_advanced
   owner: recetox
   revisions:
+  - 6b5dec818827
   - cfd2e19f00a9
   tool_panel_section_label: RECETOX
 - name: waveica
   owner: recetox
   revisions:
   - 6480c6d5fa36
+  - bf32ae95a06f
   tool_panel_section_label: RECETOX
 - name: ramclustr
   owner: recetox
   revisions:
   - 050cfef6ba65
+  - da7722f665f4
   tool_panel_section_label: RECETOX
 - name: rmassbank
   owner: recetox
   revisions:
   - 0b28816c1c2c
+  - 5a6bb93ec656
   tool_panel_section_label: RECETOX
 - name: biotransformer
   owner: recetox
   revisions:
   - 0b86600b715e
+  - 6cd2a9e6ac49
   tool_panel_section_label: RECETOX
 - name: spec2vec_training
   owner: recetox
@@ -129,6 +154,7 @@ tools:
   owner: recetox
   revisions:
   - 25625114618e
+  - f2c1d0bbb074
   tool_panel_section_label: RECETOX
 - name: msp_split
   owner: recetox
@@ -138,6 +164,7 @@ tools:
 - name: filter_compounds
   owner: recetox
   revisions:
+  - 6c5df3eeb768
   - 72b687d21f65
   tool_panel_section_label: RECETOX
 - name: thermo_raw_file_converter
@@ -153,6 +180,7 @@ tools:
 - name: camera_annotate
   owner: lecorguille
   revisions:
+  - 4b9ab71be05e
   - abf1775ac14d
   tool_panel_section_label: CAMERA
 - name: camera_combinexsannos
@@ -163,17 +191,20 @@ tools:
 - name: rem_complex
   owner: recetox
   revisions:
+  - 60db8070a5c3
   - a0e07a0bc047
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_remions
   owner: bgruening
   revisions:
   - 4e3b2049a4d3
+  - f70b83b730ac
   tool_panel_section_label: ChemicalToolBox
 - name: msconvert
   owner: galaxyp
   revisions:
   - 6153e8ada1ee
+  - ab6c14374bc0
   tool_panel_section_label: ChemicalToolBox
 - name: smina
   owner: earlhaminst
@@ -183,26 +214,31 @@ tools:
 - name: apoc
   owner: earlhaminst
   revisions:
+  - 451f90534945
   - 67d2a6f3b4e3
   tool_panel_section_label: ChemicalToolBox
 - name: parmconv
   owner: chemteam
   revisions:
   - 6c6cecf51bd0
+  - 6d0677a148fe
   tool_panel_section_label: ChemicalToolBox
 - name: enumerate_charges
   owner: bgruening
   revisions:
   - 36360fa103d6
+  - 67ee76f0e497
   tool_panel_section_label: ChemicalToolBox
 - name: sdf_to_tab
   owner: bgruening
   revisions:
+  - 4beb3e026bbb
   - 55553120df69
   tool_panel_section_label: ChemicalToolBox
 - name: fpocket
   owner: bgruening
   revisions:
+  - 4cc9d85c3bae
   - 4fb73be7f4cb
   tool_panel_section_label: ChemicalToolBox
 - name: chembl_structure_pipeline
@@ -214,20 +250,24 @@ tools:
   owner: bgruening
   revisions:
   - 1d6fb7967ae9
+  - a446ea7e2bc1
   tool_panel_section_label: ChemicalToolBox
 - name: ambertools_parmchk2
   owner: chemteam
   revisions:
   - 96b872138d3b
+  - ecc43bf27a49
   tool_panel_section_label: ChemicalToolBox
 - name: ambertools_antechamber
   owner: chemteam
   revisions:
   - 29aa7091e533
+  - 8a839e6a1e3e
   tool_panel_section_label: ChemicalToolBox
 - name: ambertools_acpype
   owner: chemteam
   revisions:
+  - 095ad4d096d1
   - f4230f116196
   tool_panel_section_label: ChemicalToolBox
 - name: mordred
@@ -254,6 +294,7 @@ tools:
   owner: bgruening
   revisions:
   - 7a871df65202
+  - 90ea16534012
   tool_panel_section_label: ChemicalToolBox
 - name: autodock_vina_prepare_ligand
   owner: bgruening
@@ -263,46 +304,55 @@ tools:
 - name: autodock_vina_prepare_box
   owner: bgruening
   revisions:
+  - 8f766d9652a2
   - ad35eaa204ea
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_remduplicates
   owner: bgruening
   revisions:
   - 50ca8845e7f5
+  - c5de6c19eb06
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_addh
   owner: bgruening
   revisions:
   - 43167f164076
+  - 7b6fd1c273cd
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_filter
   owner: bgruening
   revisions:
+  - 988085c7a0ea
   - ff2dd4b7d918
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_subsearch
   owner: bgruening
   revisions:
   - 171c94786a56
+  - 9adf3fae2771
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_compound_convert
   owner: bgruening
   revisions:
   - 1c66bf08f687
+  - 4242b4d68e9c
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_remove_protonation_state
   owner: bgruening
   revisions:
+  - 22a866858b81
   - bf4e668b6690
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_spectrophore_search
   owner: bgruening
   revisions:
   - afd14e10a318
+  - f5d7ffbb2d33
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_svg_depiction
   owner: bgruening
   revisions:
+  - 75ee9c410951
   - d3b48303045b
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_multi_obgrep
@@ -313,47 +363,56 @@ tools:
 - name: openbabel_genprop
   owner: bgruening
   revisions:
+  - 50eaae9df8d3
   - a72ae2711a97
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_change_title
   owner: bgruening
   revisions:
   - 3ecaa9634126
+  - a638d8d13bb3
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_obgrep
   owner: bgruening
   revisions:
   - 78640d0127ce
+  - 985ab0acd514
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_remsmall
   owner: bgruening
   revisions:
+  - 81836d586797
   - aebc671bae78
   tool_panel_section_label: ChemicalToolBox
 - name: prepare_ligands_for_docking
   owner: bgruening
   revisions:
   - de4c80d17527
+  - fac2c28b4c55
   tool_panel_section_label: ChemicalToolBox
 - name: biomd_neqgamma
   owner: chemteam
   revisions:
   - 4f3222cb5cf6
+  - afcb925def69
   tool_panel_section_label: ChemicalToolBox
 - name: biomd_rmsd_clustering
   owner: chemteam
   revisions:
   - b001ebc8bf58
+  - b9c46dbe9605
   tool_panel_section_label: ChemicalToolBox
 - name: biomd_extract_clusters
   owner: chemteam
   revisions:
   - 078dfd7fb26d
+  - e0ecaf2d05fb
   tool_panel_section_label: ChemicalToolBox
 - name: fastpca
   owner: chemteam
   revisions:
   - 6f2029791c94
+  - 9ca30ad95444
   tool_panel_section_label: ChemicalToolBox
 - name: bio3d_dccm
   owner: chemteam
@@ -383,21 +442,25 @@ tools:
 - name: mdanalysis_extract_rmsd
   owner: chemteam
   revisions:
+  - 589f8ef21e58
   - 743bd6aa3c7a
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_ramachandran_protein
   owner: chemteam
   revisions:
+  - 060b9d9ec8cf
   - 0f270722aca6
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_endtoend
   owner: chemteam
   revisions:
   - 78aa3659fcd1
+  - 795a5996cdc8
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_cosine_analysis
   owner: chemteam
   revisions:
+  - 48d6a6eb438b
   - a842da7ef42b
   tool_panel_section_label: ChemicalToolBox
 - name: vmd_hbonds
@@ -409,30 +472,36 @@ tools:
   owner: chemteam
   revisions:
   - 4c36f5ad2799
+  - b17ce46509ad
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_ramachandran_plot
   owner: chemteam
   revisions:
   - 70a2d548e62c
+  - be5eaea0b2d1
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_distance
   owner: chemteam
   revisions:
+  - fd987ff06ceb
   - ffd6f8d159e1
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_dihedral
   owner: chemteam
   revisions:
+  - 976cfd44b921
   - aaa130695a2b
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_rdf
   owner: chemteam
   revisions:
   - 1a220575ad7a
+  - 49076afc90b1
   tool_panel_section_label: ChemicalToolBox
 - name: mdanalysis_angle
   owner: chemteam
   revisions:
+  - 567f8c5d4680
   - a0d210b9d287
   tool_panel_section_label: ChemicalToolBox
 - name: packmol
@@ -443,6 +512,7 @@ tools:
 - name: ctb_rdkit_descriptors
   owner: bgruening
   revisions:
+  - 0993ac4f4a23
   - cf725c82c865
   tool_panel_section_label: ChemicalToolBox
 - name: alchemical_analysis
@@ -453,26 +523,31 @@ tools:
 - name: gmx_editconf
   owner: chemteam
   revisions:
+  - 88076940fa94
   - bfb65cb551d8
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_makendx
   owner: chemteam
   revisions:
   - d9eb276dfa32
+  - e3e536aa2633
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_restraints
   owner: chemteam
   revisions:
+  - 509aa136d4e3
   - ca6a4740114e
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_energy
   owner: chemteam
   revisions:
   - c8d2c0162b6e
+  - f26afd1b7104
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_trj
   owner: chemteam
   revisions:
+  - 32052c6c3310
   - 9363254ef848
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_fep
@@ -484,10 +559,12 @@ tools:
   owner: chemteam
   revisions:
   - a97dcfc23b4b
+  - c0c9a5024177
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_merge_topology_files
   owner: chemteam
   revisions:
+  - bc31d02be922
   - ced8ec975548
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_nvt
@@ -504,21 +581,25 @@ tools:
   owner: chemteam
   revisions:
   - 27ea4e1a3f95
+  - c4fbab8e03c5
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_em
   owner: chemteam
   revisions:
   - 55918daa5651
+  - b46d4b4d995c
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_setup
   owner: chemteam
   revisions:
+  - 070e3ecc3fda
   - 4da9ee404eab
   tool_panel_section_label: ChemicalToolBox
 - name: md_converter
   owner: chemteam
   revisions:
   - 79e8ab8f1e81
+  - d7ec25187599
   tool_panel_section_label: ChemicalToolBox
 - name: gmx_npt
   owner: chemteam
@@ -529,31 +610,37 @@ tools:
   owner: bgruening
   revisions:
   - 30c673b5b061
+  - a84bcb007b09
   tool_panel_section_label: ChemicalToolBox
 - name: qed
   owner: bgruening
   revisions:
+  - 52a8d34dd08f
   - fc45bf8b6e01
   tool_panel_section_label: ChemicalToolBox
 - name: sucos_docking_scoring
   owner: bgruening
   revisions:
+  - 4f1896782f7c
   - fe318c648502
   tool_panel_section_label: ChemicalToolBox
 - name: sucos_clustering
   owner: bgruening
   revisions:
   - 12725d4b90f3
+  - b8725fec8c7b
   tool_panel_section_label: ChemicalToolBox
 - name: sucos_max_score
   owner: bgruening
   revisions:
   - 55ac04db36aa
+  - 9b48456a96fe
   tool_panel_section_label: ChemicalToolBox
 - name: openbabel_structure_distance_finder
   owner: bgruening
   revisions:
   - 4c9d6b47045c
+  - 8302ab092300
   tool_panel_section_label: ChemicalToolBox
 - name: ctb_frankenstein_ligand
   owner: bgruening
@@ -598,6 +685,7 @@ tools:
 - name: mmpbsa_mmgbsa
   owner: chemteam
   revisions:
+  - 608098b3668d
   - d09f116dfca5
   tool_panel_section_label: ChemicalToolBox
 - name: ctb_im_pbf_ev
@@ -669,51 +757,61 @@ tools:
   owner: lecorguille
   revisions:
   - 11ab2081bd4a
+  - 6de175c1f6ef
   tool_panel_section_label: XCMS
 - name: xcms_xcmsset
   owner: lecorguille
   revisions:
+  - 6550698fe60f
   - b02d1992a43a
   tool_panel_section_label: XCMS
 - name: xcms_summary
   owner: lecorguille
   revisions:
   - 018a9771de28
+  - 444e3ed135e3
   tool_panel_section_label: XCMS
 - name: xcms_retcor
   owner: lecorguille
   revisions:
   - aa252eec9229
+  - d2b82d89f848
   tool_panel_section_label: XCMS
 - name: xcms_plot_chromatogram
   owner: lecorguille
   revisions:
   - 024974037c4e
+  - c8bef8f6a1cb
   tool_panel_section_label: XCMS
 - name: xcms_merge
   owner: lecorguille
   revisions:
   - 5bd125a3f3b0
+  - 6d475a389abc
   tool_panel_section_label: XCMS
 - name: xcms_group
   owner: lecorguille
   revisions:
+  - 71572faf938e
   - d45a786cbc40
   tool_panel_section_label: XCMS
 - name: xcms_fillpeaks
   owner: lecorguille
   revisions:
   - 26d77e9ceb49
+  - ec9aebabc1d2
   tool_panel_section_label: XCMS
 - name: xcms_export_samplemetadata
   owner: lecorguille
   revisions:
+  - 4ea32e46b2d6
   - 94eb263cfab4
   tool_panel_section_label: XCMS
 - name: secimtools
   owner: malex
   revisions:
   - 2e7d47c0b027
+  - caba07f41453
   tool_panel_section_label: SECIMTools
 - name: metams_plot
   owner: workflow4metabolomics
@@ -728,6 +826,7 @@ tools:
 - name: xcms_refine
   owner: workflow4metabolomics
   revisions:
+  - 090b33a9981c
   - 20f8ebc3a391
   tool_panel_section_label: W4M
 - name: qualitymetrics
@@ -763,57 +862,68 @@ tools:
 - name: mspurity_frag4feature
   owner: computational-metabolomics
   revisions:
+  - 174a523cb1da
   - e9fbb65451f6
   tool_panel_section_label: msPurity
 - name: mspurity_spectralmatching
   owner: computational-metabolomics
   revisions:
   - 20f4fdaf36bb
+  - c33b92eeb1fb
   tool_panel_section_label: msPurity
 - name: mspurity_filterfragspectra
   owner: computational-metabolomics
   revisions:
   - 2e10c13085c9
+  - a8842e5e75a7
   tool_panel_section_label: msPurity
 - name: mspurity_puritya
   owner: computational-metabolomics
   revisions:
+  - 10e56e53668c
   - 55f1691db108
   tool_panel_section_label: msPurity
 - name: mspurity_dimspredictpuritysingle
   owner: computational-metabolomics
   revisions:
   - 2ce66d2f6a24
+  - 548fed2ef792
   tool_panel_section_label: msPurity
 - name: mspurity_combineannotations
   owner: computational-metabolomics
   revisions:
   - d7104112fac6
+  - f11c129a4227
   tool_panel_section_label: msPurity
 - name: mspurity_purityx
   owner: computational-metabolomics
   revisions:
+  - 374022b7b469
   - 942e676515fe
   tool_panel_section_label: msPurity
 - name: mspurity_createmsp
   owner: computational-metabolomics
   revisions:
+  - 3d92b95cf6c0
   - 8512923bdd37
   tool_panel_section_label: msPurity
 - name: mspurity_createdatabase
   owner: computational-metabolomics
   revisions:
   - 0cc6b67dccb8
+  - 751b7378a683
   tool_panel_section_label: msPurity
 - name: mspurity_averagefragspectra
   owner: computational-metabolomics
   revisions:
   - 94eb1fcfde88
+  - ac284b969836
   tool_panel_section_label: msPurity
 - name: mspurity_flagremove
   owner: computational-metabolomics
   revisions:
   - 69ed543767b2
+  - da36e8bbcfbd
   tool_panel_section_label: msPurity
 - name: frag_hires_mass
   owner: ljocha
@@ -849,11 +959,13 @@ tools:
   owner: galaxyp
   revisions:
   - 2735db4dd8d9
+  - 748dfbdf2201
   tool_panel_section_label: OpenMS
 - name: openms_featurelinkerunlabeled
   owner: galaxyp
   revisions:
   - b46263c3ee99
+  - fbe41f0cc71e
   tool_panel_section_label: OpenMS
 - name: openms_featurefindersuperhirn
   owner: galaxyp
@@ -864,201 +976,241 @@ tools:
   owner: galaxyp
   revisions:
   - 1a709ba66f2f
+  - d0c5325cb998
   tool_panel_section_label: OpenMS
 - name: openms_featurefindermetabo
   owner: galaxyp
   revisions:
   - 2451315543f9
+  - a49dde5a836e
   tool_panel_section_label: OpenMS
 - name: openms_fileconverter
   owner: galaxyp
   revisions:
   - 2a93a25f0599
+  - 8b6336c903ef
   tool_panel_section_label: OpenMS
 - name: openms_peakpickerwavelet
   owner: galaxyp
   revisions:
   - 2077efa205de
+  - bf0b36140329
   tool_panel_section_label: OpenMS
 - name: openms_peakpickerhires
   owner: galaxyp
   revisions:
+  - 401f500aae50
   - 6b01678ec2fc
   tool_panel_section_label: OpenMS
 - name: openms_noisefiltergaussian
   owner: galaxyp
   revisions:
+  - 464f7877215b
   - 47982606f542
   tool_panel_section_label: OpenMS
 - name: openms_noisefiltersgolay
   owner: galaxyp
   revisions:
+  - 35468667de97
   - cf86c9091cb3
   tool_panel_section_label: OpenMS
 - name: openms_filefilter
   owner: galaxyp
   revisions:
+  - 86a9dd43dd09
   - fe4e4587d265
   tool_panel_section_label: OpenMS
 - name: openms_baselinefilter
   owner: galaxyp
   revisions:
+  - 84bd73e60367
   - ddbae9eb797e
   tool_panel_section_label: OpenMS
 - name: openms_fileinfo
   owner: galaxyp
   revisions:
   - 4af67edd5aef
+  - 5a45e6ac9aae
   tool_panel_section_label: OpenMS
 - name: recetox_aplcms_merge_known_table
   owner: recetox
   revisions:
+  - 17a48d0a80f4
   - dd7bbc2b99d1
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_template
   owner: recetox
   revisions:
   - 481d769e2f7a
+  - dfebc82ba1f0
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_generate_feature_table
   owner: recetox
   revisions:
+  - b3413f335327
   - e7305ba0dd38
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_remove_noise
   owner: recetox
   revisions:
   - d90187b0f247
+  - ffbabefbd2e2
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_correct_time
   owner: recetox
   revisions:
   - 02c772a49998
+  - 9064aecc78a7
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_clusters
   owner: recetox
   revisions:
   - 149b9cc7499b
+  - f3a18e020cdd
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_align_features
   owner: recetox
   revisions:
+  - 79ad928a0dae
   - 7b42ee54d757
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_recover_weaker_signals
   owner: recetox
   revisions:
   - 99d118321d5f
+  - d7f5878a98c3
   tool_panel_section_label: recetox-aplcms
 - name: matchms_subsetting
   owner: recetox
   revisions:
+  - 6d2f2c565431
   - a598091029ad
   tool_panel_section_label: matchms
 - name: matchms_metadata_merge
   owner: recetox
   revisions:
+  - 84ead993862c
   - ec25de0f0c58
   tool_panel_section_label: matchms
 - name: matchms_add_key
   owner: recetox
   revisions:
+  - 1d10d32fa3b3
   - 51da674b945d
   tool_panel_section_label: matchms
 - name: matchms_networking
   owner: recetox
   revisions:
+  - 1d74ae228df3
   - 3cd1cf3034d1
   tool_panel_section_label: matchms
 - name: matchms_metadata_match
   owner: recetox
   revisions:
   - 05a7fc94e66c
+  - 1d443ed476a1
   tool_panel_section_label: matchms
 - name: matchms_spectral_similarity
   owner: recetox
   revisions:
   - 44e7027714d7
+  - 7627b40601f6
   tool_panel_section_label: matchms
 - name: matchms_metadata_export
   owner: recetox
   revisions:
+  - b576ed720711
   - cbadbec49b5d
   tool_panel_section_label: matchms
 - name: matchms_fingerprint_similarity
   owner: recetox
   revisions:
   - 1d3ee4f9f63d
+  - d7b517f2c5fe
   tool_panel_section_label: matchms
 - name: matchms_convert
   owner: recetox
   revisions:
   - bff7bfcf975e
+  - c990df6afc24
   tool_panel_section_label: matchms
 - name: matchms_filtering
   owner: recetox
   revisions:
+  - 00e66c401366
   - da15e8ea3b28
   tool_panel_section_label: matchms
 - name: matchms_remove_spectra
   owner: recetox
   revisions:
   - 80df426e7e47
+  - fbe335d27d25
   tool_panel_section_label: matchms
 - name: matchms_split
   owner: recetox
   revisions:
+  - 500f473df7e4
   - fc1bc38ede0b
   tool_panel_section_label: matchms
 - name: matchms_remove_key
   owner: recetox
   revisions:
   - 0a64e2bcce96
+  - 9d1b01d3fedd
   tool_panel_section_label: matchms
 - name: matchms_formatter
   owner: recetox
   revisions:
+  - 9e3c83d2afc3
   - f76a397afbe1
   tool_panel_section_label: matchms
 - name: mfassignr_snplot
   owner: recetox
   revisions:
   - 6a34bc7afd61
+  - 7579b0cda787
   tool_panel_section_label: mfassignr
 - name: mfassignr_histnoise
   owner: recetox
   revisions:
+  - 5d99cb9755da
   - faf7108f3b48
   tool_panel_section_label: mfassignr
 - name: mfassignr_kmdnoise
   owner: recetox
   revisions:
+  - 99d021734000
   - f60df05dd038
   tool_panel_section_label: mfassignr
 - name: mfassignr_isofiltr
   owner: recetox
   revisions:
   - 079ae9aa6ed5
+  - e4ddc3bc7e15
   tool_panel_section_label: mfassignr
 - name: mfassignr_mfassign
   owner: recetox
   revisions:
   - 5aa9380f397b
+  - 9cbbfd54d7c4
   tool_panel_section_label: mfassignr
 - name: mfassignr_mfassigncho
   owner: recetox
   revisions:
   - 11949bd6837a
+  - db058392cb2e
   tool_panel_section_label: mfassignr
 - name: mfassignr_recal
   owner: recetox
   revisions:
+  - 13ef8b748af9
   - 235878c45443
   tool_panel_section_label: mfassignr
 - name: mfassignr_recallist
   owner: recetox
   revisions:
   - 6e1813883a9a
+  - 7e5ccc8b6f6e
   tool_panel_section_label: mfassignr
 - name: rcx_tk
   owner: recetox

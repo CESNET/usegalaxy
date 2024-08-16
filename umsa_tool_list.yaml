@@ -5,6 +5,17 @@ tools:
   revisions:
   - 90981f86000f
   tool_panel_section_label: Collection Operations
+- name: compose_text_param
+  owner: iuc
+  revisions:
+  - e188c9826e0f
+  tool_panel_section_label: Text Manipulation
+- name: split_file_to_collection
+  owner: bgruening
+  revisions:
+  - 6cbe2f30c2d7
+  - 2dae863c8f42
+  tool_panel_section_label: Collection Operations
 - name: scatterplot
   owner: devteam
   revisions:
@@ -1027,9 +1038,9 @@ tools:
   tool_panel_section_label: matchms
 - name: mfassignr_snplot
   owner: recetox
-  tool_panel_section_label: mfassignr
   revisions:
   - 6a34bc7afd61
+  tool_panel_section_label: mfassignr
 - name: mfassignr_histnoise
   owner: recetox
   tool_panel_section_label: mfassignr
