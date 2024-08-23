@@ -105,29 +105,29 @@ destinations:
     scheduling:
       require:
         - local
-      reject:
-        - pulsar  
-        - singularity
-  tpv_local_singularity:
-    runner: local_runner
-    max_accepted_cores: 1
-    max_accepted_mem: 4
-    params:
-      singularity_enabled: true
-      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
-    env:
-      # Ensuring a consistent collation environment is good for reproducibility.
-      LC_ALL: C
-      # The cache directory holds the docker containers that get converted
-#      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
-      SINGULARITY_CACHEDIR: "/rbd/data/singularity/"
-      # Singularity uses a temporary directory to build the squashfs filesystem
-      SINGULARITY_TMPDIR: /rbd/data//tmp
-    scheduling:
-      require:
-      - local
-      prefer:
-      - singularity
+#      reject:
+#        - pulsar  
+#        - singularity
+#   tpv_local_singularity:
+#     runner: local_runner
+#     max_accepted_cores: 1
+#     max_accepted_mem: 4
+#     params:
+#       singularity_enabled: true
+#       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+#     env:
+#       # Ensuring a consistent collation environment is good for reproducibility.
+#       LC_ALL: C
+#       # The cache directory holds the docker containers that get converted
+# #      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+#       SINGULARITY_CACHEDIR: "/rbd/data/singularity/"
+#       # Singularity uses a temporary directory to build the squashfs filesystem
+#       SINGULARITY_TMPDIR: /rbd/data//tmp
+#     scheduling:
+#       require:
+#       - local
+#       prefer:
+#       - singularity
   tpv_pulsar:
     runner: pulsar_tpv_runner
     max_accepted_cores: 128
