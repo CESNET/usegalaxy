@@ -1,0 +1,4 @@
+extra_certbot_domains:
+ - "galaxy-cz.grid.cesnet.cz"
+ - "galaxy.metacentrum.cz"
+
