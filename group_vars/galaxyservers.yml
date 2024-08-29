@@ -9,7 +9,8 @@ galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 # galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
-galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
+# galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
+galaxy_commit_id: release_24.1
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
@@ -125,7 +126,6 @@ galaxy_config:
     # NFS workarounds
     retry_job_output_collection: 3
     # Debugging
-    cleanup_job: onsuccess
     allow_user_impersonation: true
     # Tool security
     outputs_to_working_directory: true
@@ -277,10 +277,7 @@ certbot_post_renewal: |
     docker restart rabbit_hole || true
     systemctl restart proftpd || true
 # the order in domain names matter, rabbitMQ role takes the first entry for path to letsencrypt certificates
-certbot_domains:
- - "{{ inventory_hostname }}"
- - "galaxy-cz.grid.cesnet.cz"
- - "galaxy.metacentrum.cz"
+certbot_domains: "{{ [ inventory_hostname ] + (extra_certbot_domains | default([]) ) }}"
 certbot_expand: true
 certbot_agree_tos: --agree-tos
 
@@ -318,9 +315,9 @@ nginx_conf_http:
       image/x-icon
 
 # default Let's encrypt, override in host_vars eventually
-#nginx_ssl_role: usegalaxy_eu.certbot
-#nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-#nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+nginx_ssl_role: usegalaxy_eu.certbot
+nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
 
 #Install pip docker package for ansible
 pip_install_packages:
@@ -335,7 +332,10 @@ rabbitmq_container:
 rabbitmq_plugins:
   - rabbitmq_management
 
-rabbitmq_conf_ssl_certificate: /etc/ssl/certs/cert.pem
+# ok for noletsencrypt
+#rabbitmq_conf_ssl_certificate: /etc/ssl/certs/cert.pem
+
+rabbitmq_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
 rabbitmq_conf_ssl_certificate_key: /etc/ssl/user/privkey-999:999.pem
 
 rabbitmq_config:

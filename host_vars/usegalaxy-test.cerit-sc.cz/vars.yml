@@ -1,0 +1,14 @@
+# where to put most of the data; we use RBD or NBD volumes
+galaxy_mutable_data_dir: /data/galaxy
+
+enable_flower: no
+enable_telegraf: no
+
+pulsar_data_dir: /storage/brno11-elixir/home/galaxyelixir/pulsar-cz-test
+pulsar_queue: galaxyre
+pulsar_gpu_queue: galaxy_gpu
+
+# just test
+#extra_certbot_domains:
+# - "nonexistent.domain"
+
