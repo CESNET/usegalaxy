@@ -28,11 +28,21 @@ ansible-vault create group_vars/secret.yml
 ```
 The second command opens an editor wherein you should define variables eg.:
 ```
-vault_id_secret: "a-long-random-value"
+vault_id_secret: "a-really-long-password-here"
 rabbitmq_users_password:
-  mqadmin: "a-long-random-value"
-  galaxy: "a-long-random-value"
-  galaxy_gpu: "a-long-random-value"
+  mqadmin: "a-really-long-password-here"
+  pulsar: "a-really-long-password-here"
+vault_rabbitmq_password_flower: "a-really-long-password-here"
+vault_rabbitmq_password_galaxy: "a-different-really-long-password"
+vault_flower_user_password: "a-really-long-password-here"
+vault_sentry_password: "a-really-long-password-here"
+vault_reports_admin_password: "a-really-long-password-here"
+e_infra_client_id: "a-really-long-password-here"
+e_infra_client_secret: "a-really-long-password-here"
+elixir_client_id: "a-really-long-password-here"
+elixir_client_secret: "a-really-long-password-here"
+api_key: "a-really-long-password-here"
+tiaas_password: "a-really-long-password-here"
 ```
 The value should be a long random value, which can be obtained by command `openssl rand -base64 24`, though you should avoid having a `/` or `\` in your password as galaxy will interpret this as a path.
 
