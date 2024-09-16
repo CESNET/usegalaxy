@@ -72,6 +72,7 @@ tools:
 - name: text_processing
   owner: bgruening
   revisions:
+  - 86755160afbf
   - ddf54b12c295
   - fbf99087e067
   tool_panel_section_label: Text Manipulation
@@ -136,6 +137,21 @@ tools:
   owner: recetox
   revisions:
   - 721a4e666191
+  tool_panel_section_label: RECETOX
+- name: ms2deepscore_config_generator
+  owner: recetox
+  revisions:
+  - 7e4ac334fc33
+  tool_panel_section_label: RECETOX
+- name: ms2deepscore_similarity
+  owner: recetox
+  revisions:
+  - 58c95171a0d3
+  tool_panel_section_label: RECETOX
+- name: ms2deepscore_training
+  owner: recetox
+  revisions:
+  - 0a0529822d91
   tool_panel_section_label: RECETOX
 - name: riassigner
   owner: recetox
@@ -863,17 +879,20 @@ tools:
   owner: computational-metabolomics
   revisions:
   - 174a523cb1da
+  - 31f64ff8320d
   - e9fbb65451f6
   tool_panel_section_label: msPurity
 - name: mspurity_spectralmatching
   owner: computational-metabolomics
   revisions:
+  - 01cbb99bca13
   - 20f4fdaf36bb
   - c33b92eeb1fb
   tool_panel_section_label: msPurity
 - name: mspurity_filterfragspectra
   owner: computational-metabolomics
   revisions:
+  - 0a0f22586cad
   - 2e10c13085c9
   - a8842e5e75a7
   tool_panel_section_label: msPurity
@@ -881,6 +900,7 @@ tools:
   owner: computational-metabolomics
   revisions:
   - 10e56e53668c
+  - 416460f611cc
   - 55f1691db108
   tool_panel_section_label: msPurity
 - name: mspurity_dimspredictpuritysingle
@@ -888,10 +908,12 @@ tools:
   revisions:
   - 2ce66d2f6a24
   - 548fed2ef792
+  - b563d5fe4fc0
   tool_panel_section_label: msPurity
 - name: mspurity_combineannotations
   owner: computational-metabolomics
   revisions:
+  - 85e83614f891
   - d7104112fac6
   - f11c129a4227
   tool_panel_section_label: msPurity
@@ -900,22 +922,26 @@ tools:
   revisions:
   - 374022b7b469
   - 942e676515fe
+  - d84cc9960035
   tool_panel_section_label: msPurity
 - name: mspurity_createmsp
   owner: computational-metabolomics
   revisions:
   - 3d92b95cf6c0
   - 8512923bdd37
+  - f98b4bb0fa58
   tool_panel_section_label: msPurity
 - name: mspurity_createdatabase
   owner: computational-metabolomics
   revisions:
   - 0cc6b67dccb8
   - 751b7378a683
+  - fa84bfaab681
   tool_panel_section_label: msPurity
 - name: mspurity_averagefragspectra
   owner: computational-metabolomics
   revisions:
+  - 406ae6769162
   - 94eb1fcfde88
   - ac284b969836
   tool_panel_section_label: msPurity
@@ -923,6 +949,7 @@ tools:
   owner: computational-metabolomics
   revisions:
   - 69ed543767b2
+  - 816bac69e03e
   - da36e8bbcfbd
   tool_panel_section_label: msPurity
 - name: frag_hires_mass
@@ -1169,17 +1196,20 @@ tools:
   revisions:
   - 6a34bc7afd61
   - 7579b0cda787
+  - ccd9b0c1aee6
   tool_panel_section_label: mfassignr
 - name: mfassignr_histnoise
   owner: recetox
   revisions:
   - 5d99cb9755da
+  - e93401e2ad89
   - faf7108f3b48
   tool_panel_section_label: mfassignr
 - name: mfassignr_kmdnoise
   owner: recetox
   revisions:
   - 99d021734000
+  - a9fba8378048
   - f60df05dd038
   tool_panel_section_label: mfassignr
 - name: mfassignr_isofiltr
@@ -1187,17 +1217,20 @@ tools:
   revisions:
   - 079ae9aa6ed5
   - e4ddc3bc7e15
+  - ef0388b42f7a
   tool_panel_section_label: mfassignr
 - name: mfassignr_mfassign
   owner: recetox
   revisions:
   - 5aa9380f397b
   - 9cbbfd54d7c4
+  - d2bad53dd220
   tool_panel_section_label: mfassignr
 - name: mfassignr_mfassigncho
   owner: recetox
   revisions:
   - 11949bd6837a
+  - b92c9388240a
   - db058392cb2e
   tool_panel_section_label: mfassignr
 - name: mfassignr_recal
@@ -1205,12 +1238,20 @@ tools:
   revisions:
   - 13ef8b748af9
   - 235878c45443
+  - 3ea8ed561c5a
   tool_panel_section_label: mfassignr
 - name: mfassignr_recallist
   owner: recetox
   revisions:
+  - 1104682fb7cc
   - 6e1813883a9a
   - 7e5ccc8b6f6e
+  tool_panel_section_label: mfassignr
+- name: mfassignr_findrecalseries
+  owner: recetox
+  revisions:
+  - a26b860d6ce7
+  - ad4176b336dc
   tool_panel_section_label: mfassignr
 - name: rcx_tk
   owner: recetox
