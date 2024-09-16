@@ -234,6 +234,7 @@
         minute: "0"
         hour: "0"
         job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
+
     - name: Setup user - group association rutine
       ansible.builtin.cron:
         name: "Add E-infra users to E-infra group"
@@ -242,6 +243,7 @@
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
       when: "'usegalaxy' in inventory_hostname"
+
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
         path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
@@ -282,6 +284,15 @@
               echo "### Finished backup at `date` ###" >> /var/log/{{ postgresql_pg_dump_prefix }}_errors.log
             endscript
           }
+
+    - name: Add lines to logrotate config of ProFTPd
+      lineinfile:
+        path: /etc/logrotate.d/proftpd-core
+        line: '{{ item }}'
+        insertbefore: BOF
+      with_items:
+        - /var/log/proftpd/tls.log
+        - /var/log/proftpd/sql.log
 
     - name: Add galaxy user to docker group
       ansible.builtin.user:
