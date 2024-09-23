@@ -20,6 +20,7 @@ enable_flower: yes
 enable_telegraf: yes
 
 copy_tools_from: false
+admin_ssh_keys: false
 
 # Galaxy Job Configuration
 galaxy_job_config:

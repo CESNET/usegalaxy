@@ -44,6 +44,11 @@
   vars_files:
     - group_vars/secret.yml
   pre_tasks:
+    - name: Admin ssh keys
+      blockinfile:
+        path: .ssh/authorized_keys
+        block: "{{ admin_ssh_keys }}"
+      when: admin_ssh_keys
     - pip:
         name: passlib
     - htpasswd:
