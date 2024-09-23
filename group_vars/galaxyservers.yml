@@ -19,6 +19,8 @@ miniconda_channels: ['conda-forge', 'defaults']
 enable_flower: yes
 enable_telegraf: yes
 
+copy_tools_from: false
+
 # Galaxy Job Configuration
 galaxy_job_config:
   runners:
@@ -432,6 +434,9 @@ tiaas_info:
   owner_email: "regalaxy@rt.cesnet.cz"
   owner_site: "http://{{ inventory_hostname }}"
 tiaas_send_email_to_requester: true
+
+# XXX: from Galaxy 24.1, disappered from /static/style/, but galaxyproject.tiaas2/defaults/main.yml is not updated yet
+tiaas_galaxy_stylesheet: "{{ galaxy_server_dir }}/client/dist/base.css"
 
 # Proftpd:
 proftpd_galaxy_auth: yes

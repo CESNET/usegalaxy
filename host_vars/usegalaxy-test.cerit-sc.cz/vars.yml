@@ -8,6 +8,8 @@ pulsar_data_dir: /storage/brno11-elixir/home/galaxyelixir/pulsar-cz-test
 pulsar_queue: galaxyre
 pulsar_gpu_queue: galaxy_gpu
 
+copy_tools_from: usegalaxy.eu
+
 # just test
 #extra_certbot_domains:
 # - "nonexistent.domain"
