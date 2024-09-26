@@ -1063,11 +1063,13 @@ tools:
   owner: recetox
   revisions:
   - 17a48d0a80f4
+  - cf061712a184
   - dd7bbc2b99d1
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_template
   owner: recetox
   revisions:
+  - 134be5abb208
   - 481d769e2f7a
   - dfebc82ba1f0
   tool_panel_section_label: recetox-aplcms
@@ -1075,24 +1077,28 @@ tools:
   owner: recetox
   revisions:
   - b3413f335327
+  - b341cfd4baf8
   - e7305ba0dd38
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_remove_noise
   owner: recetox
   revisions:
   - d90187b0f247
+  - ea0758b41473
   - ffbabefbd2e2
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_correct_time
   owner: recetox
   revisions:
   - 02c772a49998
+  - 51332c2520c7
   - 9064aecc78a7
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_clusters
   owner: recetox
   revisions:
   - 149b9cc7499b
+  - 18ec7635bac6
   - f3a18e020cdd
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_align_features
@@ -1100,10 +1106,12 @@ tools:
   revisions:
   - 79ad928a0dae
   - 7b42ee54d757
+  - c53a97599181
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_recover_weaker_signals
   owner: recetox
   revisions:
+  - 24278c6b6d1c
   - 99d118321d5f
   - d7f5878a98c3
   tool_panel_section_label: recetox-aplcms
@@ -1257,4 +1265,9 @@ tools:
   owner: recetox
   revisions:
   - 54401f9d1a30
+  tool_panel_section_label: RECETOX
+- name: target_screen
+  owner: recetox
+  revisions:
+  - d4c2d5bc0524
   tool_panel_section_label: RECETOX
