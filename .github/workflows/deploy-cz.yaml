@@ -1,5 +1,7 @@
 #! vim: ts=2 expandtab:
 
+# FIXME: out of date, update folowing deploy-test
+
 name: deploy-cz
 
 on: [ workflow_dispatch ]
