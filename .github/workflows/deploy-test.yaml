@@ -13,8 +13,8 @@ jobs:
         destination:
         - test-cz:
           env:
-            HOSTNAME: usegalaxy-test.cerit-sc.cz
-            USER: debian
+            TARGET_HOSTNAME: usegalaxy-test.cerit-sc.cz
+            TARGET_USER: debian
 #            VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_TEST_CZ }}
 #            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_TEST_CZ }}
 # TODO: other test hosts here
