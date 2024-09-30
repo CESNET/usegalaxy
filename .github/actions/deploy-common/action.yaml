@@ -11,7 +11,7 @@ runs:
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         cp known_hosts ~/.ssh/known_hosts
-        ssh $USER@$HOSTNAME hostname -f
+        ssh -vv $USER@$HOSTNAME hostname -f
 
     - name: Install Ansible requirements
       shell: bash
