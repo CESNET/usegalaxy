@@ -8,10 +8,12 @@ runs:
     - name: Create SSH key
       shell: bash
       run: |
+        mkdir -p ~/.ssh
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         cp known_hosts ~/.ssh/known_hosts
-        ssh -vv $USER@$HOSTNAME hostname -f
+        ls -l .ssh
+        ssh -vvv $USER@$HOSTNAME hostname -f
 
     - name: Install Ansible requirements
       shell: bash
