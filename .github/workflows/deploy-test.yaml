@@ -15,8 +15,8 @@ jobs:
           env:
             HOSTNAME: usegalaxy-test.cerit-sc.cz
             USER: debian
-            VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_TEST_CZ }}
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_TEST_CZ }}
+            VAULT_PASSWORD: "${{ secrets.VAULT_PASSWORD_TEST_CZ }}"
+            SSH_PRIVATE_KEY: "${{ secrets.SSH_PRIVATE_KEY_TEST_CZ }}"
 # TODO: other test hosts here
       
     steps:
