@@ -14,7 +14,7 @@ jobs:
       - name: Call common
         uses: ./.github/actions/deploy-common
         env:
-          TARGET_HOSTNAME: 147.251.245.177
+          TARGET_HOSTNAME: mu-pub-245-177.flt.openstack.cloud.e-infra.cz
           TARGET_USER: debian
           VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_DEV }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
