@@ -25,36 +25,42 @@ tools:
   owner: iuc
   revisions:
   - 0e7290688b50
+  - 17b666467c32
   - dfd5d981b5a4
   tool_panel_section_label: Visualization
 - name: ggplot2_heatmap
   owner: iuc
   revisions:
   - 10515715c940
+  - 1a72f938213e
   - 391a4cc45fea
   tool_panel_section_label: Visualization
 - name: ggplot2_pca
   owner: iuc
   revisions:
   - 7e616a1bdb07
+  - ae344ccf9d62
   - b1268b7544d3
   tool_panel_section_label: Visualization
 - name: ggplot2_histogram
   owner: iuc
   revisions:
   - 398e5104f8a2
+  - 6fc8bab811da
   - b0d96516e6a5
   tool_panel_section_label: Visualization
 - name: ggplot2_heatmap2
   owner: iuc
   revisions:
   - 374e9062d874
+  - 51c6ccaace7e
   - ca7cb0eaad62
   tool_panel_section_label: Visualization
 - name: ggplot2_point
   owner: iuc
   revisions:
   - 3b12bf9b4b87
+  - 5298e06f14f9
   - e3a675da7fd0
   tool_panel_section_label: Visualization
 - name: datamash_transpose
@@ -196,6 +202,7 @@ tools:
 - name: camera_annotate
   owner: lecorguille
   revisions:
+  - 3d63a762954a
   - 4b9ab71be05e
   - abf1775ac14d
   tool_panel_section_label: CAMERA
