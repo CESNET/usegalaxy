@@ -1101,3 +1101,8 @@ tools:
   tool_panel_section_label: RECETOX
   revisions:
   - 54401f9d1a30
+- name: target_screen
+  owner: recetox
+  tool_panel_section_label: RECETOX
+  revisions:
+  - d4c2d5bc0524
