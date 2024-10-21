@@ -11,6 +11,8 @@ runs:
         mkdir -p $HOME/.ssh
         install -m 600 -D /dev/null $HOME/.ssh/id_rsa
         echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
+        touch $HOME/.ssh/known_hosts
+        ls -lA $HOME/.ssh/
         ssh -vv $TARGET_USER@$TARGET_HOSTNAME hostname -f
 
     - name: Install Ansible requirements
