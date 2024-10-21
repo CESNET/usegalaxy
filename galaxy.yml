@@ -60,7 +60,7 @@
         mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'ceph-common', 'squashfs-tools', 'anacron' ]
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'ceph-common', 'squashfs-tools', 'cron', 'anacron' ]
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
