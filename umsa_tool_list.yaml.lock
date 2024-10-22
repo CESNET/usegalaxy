@@ -25,36 +25,42 @@ tools:
   owner: iuc
   revisions:
   - 0e7290688b50
+  - 17b666467c32
   - dfd5d981b5a4
   tool_panel_section_label: Visualization
 - name: ggplot2_heatmap
   owner: iuc
   revisions:
   - 10515715c940
+  - 1a72f938213e
   - 391a4cc45fea
   tool_panel_section_label: Visualization
 - name: ggplot2_pca
   owner: iuc
   revisions:
   - 7e616a1bdb07
+  - ae344ccf9d62
   - b1268b7544d3
   tool_panel_section_label: Visualization
 - name: ggplot2_histogram
   owner: iuc
   revisions:
   - 398e5104f8a2
+  - 6fc8bab811da
   - b0d96516e6a5
   tool_panel_section_label: Visualization
 - name: ggplot2_heatmap2
   owner: iuc
   revisions:
   - 374e9062d874
+  - 51c6ccaace7e
   - ca7cb0eaad62
   tool_panel_section_label: Visualization
 - name: ggplot2_point
   owner: iuc
   revisions:
   - 3b12bf9b4b87
+  - 5298e06f14f9
   - e3a675da7fd0
   tool_panel_section_label: Visualization
 - name: datamash_transpose
@@ -196,6 +202,7 @@ tools:
 - name: camera_annotate
   owner: lecorguille
   revisions:
+  - 3d63a762954a
   - 4b9ab71be05e
   - abf1775ac14d
   tool_panel_section_label: CAMERA
@@ -1063,11 +1070,13 @@ tools:
   owner: recetox
   revisions:
   - 17a48d0a80f4
+  - cf061712a184
   - dd7bbc2b99d1
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_template
   owner: recetox
   revisions:
+  - 134be5abb208
   - 481d769e2f7a
   - dfebc82ba1f0
   tool_panel_section_label: recetox-aplcms
@@ -1075,24 +1084,29 @@ tools:
   owner: recetox
   revisions:
   - b3413f335327
+  - b341cfd4baf8
   - e7305ba0dd38
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_remove_noise
   owner: recetox
   revisions:
   - d90187b0f247
+  - ea0758b41473
   - ffbabefbd2e2
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_correct_time
   owner: recetox
   revisions:
   - 02c772a49998
+  - 501a232f3cd5
+  - 51332c2520c7
   - 9064aecc78a7
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_compute_clusters
   owner: recetox
   revisions:
   - 149b9cc7499b
+  - 18ec7635bac6
   - f3a18e020cdd
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_align_features
@@ -1100,10 +1114,12 @@ tools:
   revisions:
   - 79ad928a0dae
   - 7b42ee54d757
+  - c53a97599181
   tool_panel_section_label: recetox-aplcms
 - name: recetox_aplcms_recover_weaker_signals
   owner: recetox
   revisions:
+  - 24278c6b6d1c
   - 99d118321d5f
   - d7f5878a98c3
   tool_panel_section_label: recetox-aplcms
@@ -1194,20 +1210,26 @@ tools:
 - name: mfassignr_snplot
   owner: recetox
   revisions:
+  - 5f4b3130272e
   - 6a34bc7afd61
+  - 7279d7a37c43
   - 7579b0cda787
   - ccd9b0c1aee6
   tool_panel_section_label: mfassignr
 - name: mfassignr_histnoise
   owner: recetox
   revisions:
+  - 3b09c6e3013b
   - 5d99cb9755da
+  - 5dd25cf1ac0a
   - e93401e2ad89
   - faf7108f3b48
   tool_panel_section_label: mfassignr
 - name: mfassignr_kmdnoise
   owner: recetox
   revisions:
+  - 634ae07958a2
+  - 922f0b4507d2
   - 99d021734000
   - a9fba8378048
   - f60df05dd038
@@ -1216,12 +1238,16 @@ tools:
   owner: recetox
   revisions:
   - 079ae9aa6ed5
+  - b880fcae60ea
   - e4ddc3bc7e15
   - ef0388b42f7a
+  - f7a738bf392f
   tool_panel_section_label: mfassignr
 - name: mfassignr_mfassign
   owner: recetox
   revisions:
+  - 0492fff60960
+  - 4422c60a4b71
   - 5aa9380f397b
   - 9cbbfd54d7c4
   - d2bad53dd220
@@ -1230,6 +1256,8 @@ tools:
   owner: recetox
   revisions:
   - 11949bd6837a
+  - 59326d3b9c52
+  - 5ea9dd423109
   - b92c9388240a
   - db058392cb2e
   tool_panel_section_label: mfassignr
@@ -1239,17 +1267,23 @@ tools:
   - 13ef8b748af9
   - 235878c45443
   - 3ea8ed561c5a
+  - 407bf5518a2c
+  - 861917f1a211
   tool_panel_section_label: mfassignr
 - name: mfassignr_recallist
   owner: recetox
   revisions:
   - 1104682fb7cc
+  - 4f671baab2fd
   - 6e1813883a9a
   - 7e5ccc8b6f6e
+  - 8c72eb08f474
   tool_panel_section_label: mfassignr
 - name: mfassignr_findrecalseries
   owner: recetox
   revisions:
+  - 18e13043167d
+  - 7944c8cf27c3
   - a26b860d6ce7
   - ad4176b336dc
   tool_panel_section_label: mfassignr
@@ -1257,4 +1291,9 @@ tools:
   owner: recetox
   revisions:
   - 54401f9d1a30
+  tool_panel_section_label: RECETOX
+- name: target_screen
+  owner: recetox
+  revisions:
+  - d4c2d5bc0524
   tool_panel_section_label: RECETOX
