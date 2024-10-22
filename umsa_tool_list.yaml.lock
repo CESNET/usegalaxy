@@ -1098,6 +1098,7 @@ tools:
   owner: recetox
   revisions:
   - 02c772a49998
+  - 501a232f3cd5
   - 51332c2520c7
   - 9064aecc78a7
   tool_panel_section_label: recetox-aplcms
@@ -1209,20 +1210,26 @@ tools:
 - name: mfassignr_snplot
   owner: recetox
   revisions:
+  - 5f4b3130272e
   - 6a34bc7afd61
+  - 7279d7a37c43
   - 7579b0cda787
   - ccd9b0c1aee6
   tool_panel_section_label: mfassignr
 - name: mfassignr_histnoise
   owner: recetox
   revisions:
+  - 3b09c6e3013b
   - 5d99cb9755da
+  - 5dd25cf1ac0a
   - e93401e2ad89
   - faf7108f3b48
   tool_panel_section_label: mfassignr
 - name: mfassignr_kmdnoise
   owner: recetox
   revisions:
+  - 634ae07958a2
+  - 922f0b4507d2
   - 99d021734000
   - a9fba8378048
   - f60df05dd038
@@ -1231,12 +1238,16 @@ tools:
   owner: recetox
   revisions:
   - 079ae9aa6ed5
+  - b880fcae60ea
   - e4ddc3bc7e15
   - ef0388b42f7a
+  - f7a738bf392f
   tool_panel_section_label: mfassignr
 - name: mfassignr_mfassign
   owner: recetox
   revisions:
+  - 0492fff60960
+  - 4422c60a4b71
   - 5aa9380f397b
   - 9cbbfd54d7c4
   - d2bad53dd220
@@ -1245,6 +1256,8 @@ tools:
   owner: recetox
   revisions:
   - 11949bd6837a
+  - 59326d3b9c52
+  - 5ea9dd423109
   - b92c9388240a
   - db058392cb2e
   tool_panel_section_label: mfassignr
@@ -1254,17 +1267,23 @@ tools:
   - 13ef8b748af9
   - 235878c45443
   - 3ea8ed561c5a
+  - 407bf5518a2c
+  - 861917f1a211
   tool_panel_section_label: mfassignr
 - name: mfassignr_recallist
   owner: recetox
   revisions:
   - 1104682fb7cc
+  - 4f671baab2fd
   - 6e1813883a9a
   - 7e5ccc8b6f6e
+  - 8c72eb08f474
   tool_panel_section_label: mfassignr
 - name: mfassignr_findrecalseries
   owner: recetox
   revisions:
+  - 18e13043167d
+  - 7944c8cf27c3
   - a26b860d6ce7
   - ad4176b336dc
   tool_panel_section_label: mfassignr
