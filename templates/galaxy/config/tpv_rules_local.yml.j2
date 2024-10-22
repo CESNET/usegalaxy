@@ -28,6 +28,9 @@ tools:
     cores: 1
     mem: 10
 
+  .*/ms2deepscore_training/.*:
+    mem: 16
+
   .*testing.*:
     cores: 1
     mem: 1
@@ -60,14 +63,20 @@ tools:
       - pulsar
       - singularity
 
-#roles:
-#  training.*:
-#    max_cores: 2
-#    max_mem: max_cores * 4  # TODO check multiplier
-#    scheduling:
-#      require:
-#        - pulsar
-#        - training
+  __IMPORT_HISTORY__: 
+    scheduling:
+      require:
+      - local 
+      - pulsar
+
+roles:
+  training.*:
+    max_cores: 2
+    max_mem: max_cores * 4  # TODO check multiplier
+    scheduling:
+      require:
+        - pulsar
+        - training
 
 destinations:
   tpv_local:
@@ -81,7 +90,6 @@ destinations:
       require:
         - local
       reject:
-        - pulsar
         - singularity
   tpv_singularity:
     runner: local_runner
@@ -104,8 +112,6 @@ destinations:
         - local
       prefer:
         - singularity
-      reject:
-        - pulsar
 
   tpv_pulsar:
     runner: pulsar_runner
@@ -179,65 +185,16 @@ destinations:
         - pulsar
         - singularity
     
-#  pulsar_gpu:
-#    runner: pulsar_gpu_runner
-#    max_accepted_cores: 128
-#    max_accepted_mem: 512
-#    max_accepted_gpus: 2
-#    max_cores: 16
-#    max_mem: 64
-#    max_gpus: 1
-#    params:
-#      default_file_action: remote_transfer
-#      transport: curl
-#      dependency_resolution: remote
-#      jobs_directory: "/auto/brno11-elixir/home/galaxyumsa/pulsar-umsa/files/staging"
-#      persistence_directory: "/opt/pulsar/files/persistent"
-#      remote_metadata: false
-#      rewrite_parameters: true
-#      outputs_to_working_directory: false
-#      singularity_enabled: true
-#      singularity_run_extra_arguments: '--nv'
-#      singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
-#    env:
-#      # The cache directory holds the docker containers that get converted
-#      - name: SINGULARITY_CACHEDIR
-#        value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-#      - name: APPTAINER_CACHEDIR
-#        value: "/storage/praha5-elixir/home/galaxyeu/singularity/cache"
-#      # Singularity uses a temporary directory to build the squashfs filesystem
-#      - name: SINGULARITY_TMPDIR
-#        value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp" 
-#      - name: APPTAINER_TMPDIR
-#        value: "/storage/praha5-elixir/home/galaxyeu/singularity/tmp"
-#      # Alphafold specific variables
-#      - name: ALPHAFOLD_DB
-#        value: "/storage/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
-#      # Default variables
-#      - name: TMPDIR
-#        value: "$SCRATCHDIR"
-#      - name: TMP
-#        value: "$SCRATCHDIR"
-#      - name: TEMP
-#        value: "$SCRATCHDIR"
-#      # Ensuring a consistent collation environment is good for reproducibility.
-#      - name: LC_ALL
-#        value: C
-#    scheduling:
-#      require:
-#        - pulsar
-#        - gpu
-
-#  pulsar-training:
-#    inherits: pulsar
-#    runner: pulsar_runner
-#    max_accepted_cores: 12
-#    max_accepted_mem: 120
-#    max_cores: 2 # Limit the cores
-#    max_mem: 8 # Limit the memory
-#    params:
-#      native_specification: --nodes=1 --ntasks=1 --mem={round(mem*1024)} --cpus-per-task={cores} --time=00:30:00
-#    scheduling:
-#      require:
-#        - pulsar
-#        - training
+  tpv_pulsar_training:
+    inherits: tpv_pulsar
+    runner: pulsar_runner
+    max_accepted_cores: 12
+    max_accepted_mem: 120
+    max_cores: 2 # Limit the cores
+    max_mem: 8 # Limit the memory
+    params:
+      native_specification: --nodes=1 --ntasks=1 --mem={round(mem*1024)} --cpus-per-task={cores} --time=00:30:00
+    scheduling:
+      require:
+        - pulsar
+        - training
