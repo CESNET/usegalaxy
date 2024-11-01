@@ -24,6 +24,24 @@ tools:
     rank: |
       helpers.weighted_random_sampling(candidate_destinations)
 
+  local_running_tools:
+    abstract: True
+    scheduling:
+      require:
+      - local
+      reject:
+      - pulsar
+
+  .*/recetox_aplcms_align_features/.*:
+    mem: 32
+    cores: 8
+    context:
+      walltime: 48
+
+  .*/recetox_aplcms_compute_clusters/.*:
+    cores: 1
+    mem: 16
+
   .*/recetox_aplcms_remove_noise/.*:
     cores: 1
     mem: 10
@@ -64,10 +82,16 @@ tools:
       - singularity
 
   __IMPORT_HISTORY__: 
-    scheduling:
-      require:
-      - local 
-      - pulsar
+     inherits: local_running_tools
+
+  "Show .*":
+     inherits: local_running_tools
+
+  "Remove .*":
+     inherits: local_running_tools
+
+  cat1:
+     inherits: local_running_tools
 
 roles:
   training.*:
@@ -81,6 +105,8 @@ roles:
 destinations:
   tpv_local:
     runner: local_runner
+    max_cores: 1
+    max_mem: 4
     max_accepted_cores: 1
     max_accepted_mem: 4
     max_accepted_gpus: 0
@@ -93,6 +119,8 @@ destinations:
         - singularity
   tpv_singularity:
     runner: local_runner
+    max_cores: 1
+    max_mem: 4
     max_accepted_cores: 1
     max_accepted_mem: 4
     max_accepted_gpus: 0

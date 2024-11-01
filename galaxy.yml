@@ -20,7 +20,7 @@
   pre_tasks:
     - name: Install Dependencies
       ansible.builtin.package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full', 'squashfs-tools']
     - name: Install additional pip packages
       ansible.builtin.pip:
         name: passlib

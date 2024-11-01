@@ -23,6 +23,7 @@ miniconda_version: 'latest' # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'bioconda', 'iuc', 'r', 'anaconda', 'defaults']
 miniconda_base_env_packages: ['mamba']
 
+#singularity_version: 3.7.4 # This was an attempt how to install singularity via ansible, but at the end I had to install it as apt install singularity-container
 #singularity_local_cache_dir: "{{ galaxy_data_prefix }}/singularity"
 singularity_local_cache_dir: "/cvmfs/singularity.galaxyproject.org/all"
 pulsar_singularity_cache_dir: "/auto/brno11-elixir/home/{{ galaxy_user.name }}/.singularity"
