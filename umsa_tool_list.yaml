@@ -1106,3 +1106,8 @@ tools:
   tool_panel_section_label: RECETOX
   revisions:
   - d4c2d5bc0524
+- name: isolib
+  owner: recetox
+  tool_panel_section_label: RECETOX
+  revisions:
+  - 2b1118bce0b1
