@@ -51,7 +51,7 @@
       when: admin_ssh_keys
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'ceph-common', 'squashfs-tools' ]
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'ceph-common', 'squashfs-tools' ]
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -60,8 +60,12 @@
       package:
         name: ['tmpreaper']
       when: ansible_os_family == 'Debian'
-    - pip:
-        name: passlib
+    - name: Comment out SHOWWARNING line in tmpreaper config
+      ansible.builtin.lineinfile:
+        path: /etc/tmpreaper.conf
+        regexp: "SHOWWARNING="
+        state: absent
+      when: ansible_os_family == 'Debian'
     - htpasswd:
         path: /etc/nginx/passwd
         name: admin        # Pick a username
