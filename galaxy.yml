@@ -20,7 +20,7 @@
   pre_tasks:
     - name: Install Dependencies
       ansible.builtin.package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full', 'logrotate', 'proftpd-mod-ldap']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'ceph-common']
     - name: Install additional pip packages
       ansible.builtin.pip:
         name: passlib
@@ -85,22 +85,36 @@
         state: directory
         mode: '0755'
       when: "'usegalaxy' in inventory_hostname"
+
+    - name: Ensure galaxy temp dir mount
+      mount:
+        path: "{{ galaxy_temp_dir }}"
+        src: "/dev/rbd0"
+        fstype: "ext4"
+        opts: "defaults,nodev,nosuid,noexec,noatime,_netdev"
+        passno: "2"
+        state: mounted
+    - name: Create the galaxy temp directory under root
+      file:
+        owner: root
+        group: root
+        path: "{{ galaxy_temp_dir }}"
+        state: directory
+        mode: '1777'
     - name: Create the nginx upload job files store
       file:
         owner: www-data
         group: "{{ galaxy_user_group_name }}"
-        path: /rbd/data/_upload_job_files
+        path: "{{ galaxy_temp_dir }}/_upload_job_files"
         state: directory
         mode: '0775'
-      when: "'usegalaxy' in inventory_hostname"
     - name: Create the client body temp path   
       file:
         owner: www-data
         group: "{{ galaxy_user_group_name }}"
-        path: /rbd/data/nginx_upload_store
+        path: "{{ galaxy_temp_dir }}/nginx_upload_store"
         state: directory
         mode: '0775'
-      when: "'usegalaxy' in inventory_hostname"
       ## Part responsible for setting up NBD mount (specific for galaxy-re)
     - name: Check if /dev/nbd0 exists
       stat:
@@ -135,6 +149,7 @@
         path: /mnt
         fstype: xfs
         opts: rw,_netdev
+        passno: "2"
         state: mounted
       when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
 
@@ -259,6 +274,40 @@
     - galaxyproject.cvmfs
 #    - dj-wasabi.telegraf
   post_tasks:
+    - name: Adds nginx's www-data user into galaxy user group
+      ansible.builtin.user:
+        name: www-data
+        groups: "{{ galaxy_user_group_name }}"
+        append: yes
+    - name: Restart Nginx after changing its user
+      ansible.builtin.systemd:
+        state: restarted
+        name: nginx
+    - name: Creates entry in crontab "chmod on _files for ngnix access"
+      ansible.builtin.cron:
+        name: "chmod on _files for ngnix access"
+        minute: "2"
+        hour: "*" 
+        #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'
+        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -type d -mmin -180 -maxdepth 0 -exec chmod -R g+rw '{}' ';'"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
+    - name: Creates entry in crontab "tmpreaper call in tus upload dir"
+      ansible.builtin.cron:
+        name: "tmpreaper in tus upload dir"
+        minute: "5"
+        hour: "*" 
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 4h {{ galaxy_tus_upload_store }} >> {{ galaxy_data_dir }}/cleaning_tus_upload_dir.log"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
+    - name: Creates entry in crontab "tmpreaper call in galaxy tmp dir"
+      ansible.builtin.cron:
+        name: "tmpreaper in galaxy temp dir"
+        minute: "7"
+        hour: "*" 
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 4h {{ galaxy_temp_dir }}/tmp >> {{ galaxy_data_dir }}/cleaning_galaxy_temp_dir.log"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
         name: "Cleanup Old User Data"
@@ -274,13 +323,22 @@
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
       when: "'usegalaxy' in inventory_hostname"
-    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
-      replace:
-        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
-        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
-        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
-#        validate: 'python -m py_compile %s'  # Error: python couldn't be found
-      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
+#    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
+#      replace:
+#        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
+#        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
+#        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
+##        validate: 'python -m py_compile %s'  # Error: python couldn't be found
+#      when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
+
+    - name: Add lines to logrotate config of ProFTPd
+      lineinfile:
+        path: /etc/logrotate.d/proftpd-core
+        line: '{{ item }}'
+        insertbefore: BOF
+      with_items:
+        - /var/log/proftpd/tls.log
+        - /var/log/proftpd/sql.log
 
     - name: Create pg_dump backup folder if needed
       file:
@@ -332,3 +390,8 @@
         cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }}{{ galaxy_prefix }} -a {{ admin_apikey }} -t regalaxy_tool_list.yaml
       when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
       tags: tools
+
+
+    - name: Print notification about changing ProFTPd folder
+      ansible.builtin.fail:
+        msg: DONT FORGET TO REWRITE /etc/proftpd with /etc/proftpd.ldap_works_backup/proftpd !!!!

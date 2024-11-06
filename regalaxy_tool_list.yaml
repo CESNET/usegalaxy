@@ -128,7 +128,12 @@ tools:
 - name: repeatexplorer2_testing
   owner: petr-novak
   revisions:
-  - 84106349d4b1
+  - a27646c27090 # revision 25 - tool version 2.3.11.1
+#  - 84106349d4b1 # revision 21 - tool version 2.3.10.1
+  - 3d0ba5734776 # revision 19 - tool version 2.3.9.1
+  - 4308d3e572ee # revision 18 - tool version 2.3.9.1/2.3.8.3
+  - 5cca2c9aa4ad # revision 17 - tool version 2.3.8.4/2.3.8.3
+  - 20ef42e81eeb # revision 16 - tool version 2.3.8.3
   tool_panel_section_label: RepeatExplorer
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: dante

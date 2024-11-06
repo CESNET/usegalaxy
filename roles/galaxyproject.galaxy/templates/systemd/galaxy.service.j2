@@ -29,6 +29,7 @@ Environment=GRAVITY_STATE_DIR={{ galaxy_gravity_state_dir }}
 Environment={{ env }}
 {% endfor %}
 MemoryLimit={{ __galaxy_systemd_memory_limit_merged.mule }}G
+LimitNOFILE={{ galaxy_systemd_nofile_limit }}
 Restart=always
 
 MemoryAccounting=yes

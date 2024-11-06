@@ -4,5 +4,6 @@ toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean
 toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster
 toolshed.g2.bx.psu.edu/repos/iuc/multiqc/multiqc
 toolshed.g2.bx.psu.edu/repos/saskia-hiltemann/krona_text/krona_text
+toolshed.g2.bx.psu.edu/repos/petr-novak/krona_text/krona-text
 toolshed.g2.bx.psu.edu/repos/iuc/jbrowse/jbrowse
 toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr

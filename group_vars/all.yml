@@ -9,12 +9,13 @@ galaxy_user_group_name: galaxyelixir
 galaxy_user_group_gid: 10145
 galaxy_db_name: galaxyelixir
 galaxy_data_dir: "/mnt/galaxy-re"
+galaxy_temp_dir: "/tmp_galaxy"
 galaxy_prefix: "/galaxy"
 
 # CVMFS vars
 cvmfs_role: client
 galaxy_cvmfs_repos_enabled: config-repo
-cvmfs_quota_limit: 500
+cvmfs_quota_limit: 5000
 
 # Telegraf
 telegraf_agent_package_state: latest

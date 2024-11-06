@@ -1,5 +1,6 @@
 [galaxyservers]
-galaxy-re.grid.cesnet.cz ansible_connection=local ansible_user=debian
+repeatexplorer-elixir.cerit-sc.cz ansible_connection=local ansible_user=debian
+#galaxy-re.grid.cesnet.cz ansible_connection=local ansible_user=debian
 #usegalaxy.cz ansible_connection=local ansible_user=debian
 #galaxy-re.grid.cesnet.cz ansible_connection=local ansible_user=debian
 #galaxy-umsa.grid.cesnet.cz ansible_connection=local ansible_user=debian
@@ -8,6 +9,8 @@ galaxyservers
 [dbservers:children]
 galaxyservers
 [monitoring]
-galaxy-re.grid.cesnet.cz ansible_connection=local ansible_user=debian
+repeatexplorer-elixir.cerit-sc.cz ansible_connection=local ansible_user=debian
+#galaxy-re.grid.cesnet.cz ansible_connection=local ansible_user=debian
 [sentryservers]
-galaxy-re.grid.cesnet.cz ansible_connection=local ansible_user=debian
+repeatexplorer-elixir.cerit-sc.cz ansible_connection=local ansible_user=debian
+#galaxy-re.grid.cesnet.cz ansible_connection=local ansible_user=debian

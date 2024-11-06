@@ -40,11 +40,13 @@
         <tool id="export_remote" />
     </section>
     <section id="repeatexplorer" name="RepeatExplorer" version="">
+        <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/2.3.11.1" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/2.3.10.2" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/2.3.10.1" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/2.3.8.4" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/2.3.9.1" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/2.3.8.3" />
+        <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/2.3.11.1" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/2.3.10.2" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/2.3.10.1" />
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/2.3.9.1" />

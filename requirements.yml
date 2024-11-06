@@ -33,3 +33,6 @@
   version: 1.8.0
 - name: usegalaxy_eu.flower
   version: 1.0.2
+# CVMFS Support role
+- src: galaxyproject.cvmfs
+  version: 0.2.22

@@ -9,6 +9,17 @@ server {
 	}
 
 	location / {
-		return 302 https://$host$request_uri;
+		return 302 "https://{{ inventory_hostname }}$request_uri";
 	}
 }
+
+#server {
+#        listen 80;
+#        listen [::]:80;
+#        listen 443 ssl;
+#        listen [::]:443 ssl;
+#
+#        server_name "repeatexplorer-elixir.cerit-sc.cz";
+#
+#        return 308 "https://{{ inventory_hostname }}$request_uri";
+#}

@@ -20,21 +20,27 @@ server {
 
 	# Listen on port 443
 	listen        443 ssl default_server;
+        listen        [::]:443 ssl default_server;
 	# The virtualhost is our domain name
 	server_name   "{{ inventory_hostname }}";
 
 	# allows to send/receive big files to/from pulsar
-	client_max_body_size 30G;
+	client_max_body_size 50G;
+	client_body_buffer_size 1024m;
+	client_body_temp_path  {{ galaxy_temp_dir }}/nginx_upload_store;
+
 	# smaller timeout interrupted transimition of bigger files
-	send_timeout 600s;
-	proxy_read_timeout 300s;
+	send_timeout 300s;
+        proxy_read_timeout 1200s;
+        proxy_request_buffering off;
+        proxy_buffering off;
+        proxy_http_version 1.1;
+        client_body_timeout 7200s;    
+        client_header_timeout 600s;
 
 	# Our log files will go to journalctl
 	access_log  syslog:server=unix:/dev/log;
 	error_log   syslog:server=unix:/dev/log;
-	# client_body_temp_path  {{ galaxy_data_dir }}/nginx_upload_store;
-	client_body_buffer_size 1024m;
-        #client_max_body_size        20G;
 
 	# The most important location block, by default all requests are sent to gunicorn
 	# If you serve galaxy at a path like /galaxy, change that below (and all other locations!)
@@ -51,6 +57,27 @@ server {
 		#auth_ldap "LDAP Protected -- Galaxy instance of RepeatExplorer tool";
 		#auth_ldap_servers ad_1;
 	}
+
+        location {{ galaxy_prefix }}/api/upload/resumable_upload {
+                # Disable request and response buffering
+                proxy_request_buffering     off;
+                proxy_buffering             off;
+                proxy_http_version          1.1;
+
+                # Add X-Forwarded-* headers
+                proxy_set_header X-Forwarded-Host   $host;
+                proxy_set_header X-Forwarded-Proto  $scheme;
+
+                proxy_set_header Upgrade            $http_upgrade;
+                proxy_set_header Connection         "upgrade";
+                client_max_body_size        0;
+                proxy_pass http://localhost:{{ galaxy_tusd_port }}/files;  
+        }
+        #DEMON: hopefully just a temporary hack, need to find out how to configure TUSd hook via ansible role
+        location /api/upload/hooks {
+                rewrite ^/api/upload/hooks(.*)$ {{ galaxy_prefix }}/api/upload/hooks$1 break;
+                proxy_pass https://{{ inventory_hostname }};
+        }
 
 	# Static files can be more efficiently served by Nginx. Why send the
 	# request to Gunicorn which should be spending its time doing more useful
@@ -79,7 +106,7 @@ server {
 		alias {{ galaxy_server_dir }}/static/robots.txt;
 	}
 
-	location {{ galaxy_prefix }}/favicon.ico {
+	location /favicon.ico {
 		alias {{ galaxy_server_dir }}/static/favicon.ico;
 	}
 
