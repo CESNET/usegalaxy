@@ -78,8 +78,16 @@ width="700px"/></p>
 <li>Official <a href="https://galaxyproject.org/">Galaxy Project</a> website with information on how to use the Galaxy platform</li>
 <li>For the command line version of the RepeatExplorer tools, see the source <a href="https://github.com/kavonrtep/repex_tarean">code repository</a></li>
 </ul>
-<a href="https://twitter.com/RepeatExplorer?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false" data-size="small">Follow <span class="citation" data-cites="RepeatExplorer">@RepeatExplorer</span></a>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<h3 id="rexdb">REXdb</h3>
+<p>RepeatExplorer2, DANTE and DANTE_LTR tools use the REXdb database. REXdb is a comprehensive database of conserved protein domain sequences extracted from all types transposable elementa found in plants. More information about REXdb can be found <a href="https://mobilednajournal.biomedcentral.com/articles/10.1186/s13100-018-0144-1">in related publication</a> or in REXdb <a href="https://github.com/repeatexplorer/rexdb">repository</a>.</p>
+<p><strong>REXdb versions included in the server:</strong></p>
+<ul>
+<li>Viridiplantae 4.0 - The latest version,<font color="#FF0000"> updated on 2024-11-06</font>. This version covers additional sequences and lineages from non-angiosperm species including gymnosperms, ferns, and mosses</li>
+<li>Viridiplantae 3.0 - This version mainly covers domains extracted from elements of angiosperm species</li>
+<li>Viridiplantae 2.2</li>
+<li>Metazoa 3.0</li>
+<li>Metazoa 2.0</li>
+</ul>
 <hr />
 <h2 id="common-use-cases-of-repeatexplorer-server">Common Use Cases of RepeatExplorer Server</h2>
 <p>The RepeatExplorer server provides a suite of tools designed for the comprehensive analysis of repetitive DNA sequences in genomic data. Here are the most common use cases for utilizing these tools:</p>
@@ -91,7 +99,10 @@ width="700px"/></p>
 <li><p><strong>Annotation of full-Length LTR-retrotransposons in genome assemblies</strong>: For detailed annotation of LTR-retrotransposons within assembled genomes, use the DANTE + DANTE_LTR tools. (see <a href="https://github.com/kavonrtep/dante_ltr">https://github.com/kavonrtep/dante_ltr</a> for details)</p></li>
 <li><p><strong>Annotation of tandem repeats in genome assemblies</strong>: The TideCluster tools are designed for the annotation and analysis of tandem repeats within genome assemblies (see <a href="https://github.com/kavonrtep/TideCluster">https://github.com/kavonrtep/TideCluster</a> for more information).</p></li>
 </ul>
-<hr>
+<hr />
+<a href="https://twitter.com/RepeatExplorer?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false" data-size="small">Follow <span class="citation" data-cites="RepeatExplorer">@RepeatExplorer</span></a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<hr />
 <h2 id="how-to-cite">How to Cite</h2>
 <p>Novak, P., Neumann, P., Macas, J. (2020) – <a href="https://rdcu.be/b80Gr">Global analysis of repetitive DNA from unassembled sequence reads using RepeatExplorer2</a>. <em>Nature Protocols</em> <strong>15</strong>:3745–3776.</p>
 <p>Novak, P., Neumann, P., Pech, J., Steinhaisl, J., Macas, J. (2013) - <a href="http://bioinformatics.oxfordjournals.org/content/29/6/792">RepeatExplorer: a Galaxy-based web server for genome-wide characterization of eukaryotic repetitive elements from next-generation sequence reads</a>. <em>Bioinformatics</em> <strong>29</strong>:792-793.</p>
@@ -101,6 +112,7 @@ width="700px"/></p>
 <p>Novak, P., Neumann, P., Macas, J. (2010) - <a href="http://www.biomedcentral.com/1471-2105/11/378">Graph-based clustering and characterization of repetitive sequences in next-generation sequencing data</a>. <em>BMC Bioinformatics</em> <strong>11</strong>:378.</p>
 <p><em>Using TAREAN for satellite repeat detection and characterization:</em></p>
 <p>Novak, P., Robledillo, L.A.,Koblizkova, A., Vrbova, I., Neumann, P., Macas, J. (2017) - <a href="https://doi.org/10.1093/nar/gkx257">TAREAN: a computational tool for identification and characterization of satellite DNA from unassembled short reads</a>. <em>Nucleic Acid Research</em> <strong>45</strong>:e111</p>
+<p>Novak, P., Hostakova, N., Neumann, P., Macas, J. (2024) – DANTE and DANTE_LTR: computational pipelines implementing lineage-centered annotation of LTR-retrotransposons in plant genomes. bioRxiv doi: https://doi.org/10.1101/2024.04.17.589915</p>
 <hr>
 <h2 id="terms-of-use">Terms of Use</h2>
 <p>RepeatExplorer is provided as free, public, Internet accessible service, in the hope that it will be useful, but WITHOUT ANY WARRANTY. Data transfer are encrypted, but data storage is not. If there are restrictions on the way your research data can be stored and used, please consult your local institutional review board or the project PI before uploading it to this Galaxy server. If you have protected data, large data storage requirements, or short deadlines you are encouraged to set up your own local Galaxy instance with RepeatExplorer Alternatively, you can install only RepeatExplorer and use its <em>command line version</em>. If you need help with RepeatExplorer or you want to report a problem, please contact <a href="mailto:regalaxy@rt.cesnet.cz">server administrator</a>.</p>
