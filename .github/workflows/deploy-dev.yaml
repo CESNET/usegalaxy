@@ -8,13 +8,26 @@ on: [ workflow_dispatch ]
 jobs:
   call-common:
     runs-on: ubuntu-latest
+    env:
+      SERVER_IP: 147.251.245.177
+      TARGET_HOSTNAME: mu-pub-245-177.flt.openstack.cloud.e-infra.cz
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Clear old known_hosts entry
+        run: |
+          ssh-keygen -R $SERVER_IP || true
+          ssh-keygen -R $TARGET_HOSTNAME || true
+
+      - name: Add new host to known_hosts
+        run: |
+          ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+          ssh-keyscan -H $TARGET_HOSTNAME >> ~/.ssh/known_hosts
+        
       - name: Call common
         uses: ./.github/actions/deploy-common
         env:
-          TARGET_HOSTNAME: mu-pub-245-177.flt.openstack.cloud.e-infra.cz
           TARGET_USER: debian
           VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_DEV }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
