@@ -9,8 +9,8 @@ enable_flower: yes
 enable_telegraf: yes
 
 
-pulsar_user:
-  name: galaxyeu
+pulsar:
+  user_name: galaxyeu
   nfs_home: praha5-elixir
   nfs_prefix: pulsar-cz
   pbs_queue: galaxycz
