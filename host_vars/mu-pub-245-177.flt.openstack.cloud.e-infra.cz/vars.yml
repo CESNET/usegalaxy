@@ -4,9 +4,14 @@ galaxy_mutable_data_dir: /data/galaxy
 enable_flower: no
 enable_telegraf: no
 
-pulsar_data_dir: /storage/brno11-elixir/home/galaxyelixir/pulsar-dev
-pulsar_queue: galaxycz
-pulsar_gpu_queue: galaxy_gpu
+pulsar_user:
+  name: galaxy-qa1
+  nfs_home: brno11-elixir
+  nfs_prefix: pulsar-dev
+  pbs_queue: galaxydev
+  pbs_gpu_queue: galaxy_gpu
+
+pulsar_data_dir: "/storage/{{ pulsar_user.nfs_home }}/home/{{ pulsar_user.name }}/{{ pulsar_user.nfs_prefix }}"
 
 copy_tools_from: usegalaxy.eu
 
