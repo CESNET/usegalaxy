@@ -12,7 +12,7 @@ pulsar:
   pbs_queue: galaxyre
   pbs_gpu_queue: galaxy_gpu
 
-pulsar_data_dir: "/storage/{{ pulsar_user.nfs_home }}/home/{{ pulsar_user.name }}/{{ pulsar_user.nfs_prefix }}"
+pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
 copy_tools_from: usegalaxy.eu
 
