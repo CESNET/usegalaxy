@@ -31,7 +31,7 @@ galaxy_job_config:
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
+      amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
       amqp_consumer_timeout: 2
@@ -92,6 +92,7 @@ galaxy_config:
     - demko@cesnet.cz
     - galaxy@usegalaxy.cz
     - ljocha@ics.muni.cz
+    - Martin.Cech@cesnet.cz
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
@@ -371,7 +372,7 @@ rabbitmq_users:
     password: "{{ rabbitmq_users_password.mqadmin }}"
     tags: administrator
     vhost: /
-  - user: pulsar
+  - user: "{{ pulsar.user_name }}"
     password: "{{ rabbitmq_users_password.pulsar }}"
     vhost: pulsar
   - user: galaxy
