@@ -4,8 +4,8 @@ galaxy_mutable_data_dir: /data/galaxy
 enable_flower: no
 enable_telegraf: no
 
-pulsar_user:
-  name: galaxy-qa1
+pulsar:
+  user_name: galaxy-qa1
   nfs_home: brno11-elixir
   nfs_prefix: pulsar-dev
   pbs_queue: galaxydev
