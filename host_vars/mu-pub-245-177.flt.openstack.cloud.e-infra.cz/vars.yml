@@ -8,7 +8,7 @@ pulsar:
   user_name: galaxy-qa1
   nfs_home: brno11-elixir
   nfs_prefix: pulsar-dev
-  pbs_queue: galaxydev
+  pbs_queue: galaxyqa
   pbs_gpu_queue: galaxy_gpu
 
 pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
