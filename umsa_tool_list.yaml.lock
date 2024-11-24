@@ -10,6 +10,11 @@ tools:
   revisions:
   - e188c9826e0f
   tool_panel_section_label: Text Manipulation
+- name: table_compute
+  owner: iuc
+  revisions:
+  - 3bf5661c0280
+  tool_panel_section_label: Text Manipulation
 - name: split_file_to_collection
   owner: bgruening
   revisions:
@@ -53,6 +58,7 @@ tools:
   owner: iuc
   revisions:
   - 374e9062d874
+  - 48b42ee61bc5
   - 51c6ccaace7e
   - ca7cb0eaad62
   tool_panel_section_label: Visualization
@@ -1134,12 +1140,14 @@ tools:
 - name: matchms_subsetting
   owner: recetox
   revisions:
+  - 5bbd1a8404f5
   - 6d2f2c565431
   - a598091029ad
   tool_panel_section_label: matchms
 - name: matchms_metadata_merge
   owner: recetox
   revisions:
+  - 1fd950c5586a
   - 84ead993862c
   - ec25de0f0c58
   tool_panel_section_label: matchms
@@ -1148,28 +1156,33 @@ tools:
   revisions:
   - 1d10d32fa3b3
   - 51da674b945d
+  - a5d41764722d
   tool_panel_section_label: matchms
 - name: matchms_networking
   owner: recetox
   revisions:
   - 1d74ae228df3
   - 3cd1cf3034d1
+  - f04b378325e5
   tool_panel_section_label: matchms
 - name: matchms_metadata_match
   owner: recetox
   revisions:
   - 05a7fc94e66c
   - 1d443ed476a1
+  - 330b0dfae8da
   tool_panel_section_label: matchms
 - name: matchms_spectral_similarity
   owner: recetox
   revisions:
   - 44e7027714d7
   - 7627b40601f6
+  - 7ba589b01dbc
   tool_panel_section_label: matchms
 - name: matchms_metadata_export
   owner: recetox
   revisions:
+  - 8832425b1ff6
   - b576ed720711
   - cbadbec49b5d
   tool_panel_section_label: matchms
@@ -1178,10 +1191,12 @@ tools:
   revisions:
   - 1d3ee4f9f63d
   - d7b517f2c5fe
+  - fd890f162ce6
   tool_panel_section_label: matchms
 - name: matchms_convert
   owner: recetox
   revisions:
+  - 9e83636da9d3
   - bff7bfcf975e
   - c990df6afc24
   tool_panel_section_label: matchms
@@ -1189,18 +1204,21 @@ tools:
   owner: recetox
   revisions:
   - 00e66c401366
+  - 83c4b4359ac4
   - da15e8ea3b28
   tool_panel_section_label: matchms
 - name: matchms_remove_spectra
   owner: recetox
   revisions:
   - 80df426e7e47
+  - d50ce2f51fc0
   - fbe335d27d25
   tool_panel_section_label: matchms
 - name: matchms_split
   owner: recetox
   revisions:
   - 500f473df7e4
+  - ea6c5636c0cf
   - fc1bc38ede0b
   tool_panel_section_label: matchms
 - name: matchms_remove_key
@@ -1208,12 +1226,19 @@ tools:
   revisions:
   - 0a64e2bcce96
   - 9d1b01d3fedd
+  - fbdb2ae524df
   tool_panel_section_label: matchms
 - name: matchms_formatter
   owner: recetox
   revisions:
   - 9e3c83d2afc3
+  - a5a5b147da70
   - f76a397afbe1
+  tool_panel_section_label: matchms
+- name: matchms_matchms_export_skyline_transition_list
+  owner: recetox
+  revisions:
+  - 8aa0014a5ad4
   tool_panel_section_label: matchms
 - name: mfassignr_snplot
   owner: recetox
@@ -1319,3 +1344,24 @@ tools:
   revisions:
   - 2b1118bce0b1
   tool_panel_section_label: RECETOX
+- name: qcxms_neutral_run
+  owner: recetox
+  revisions:
+  - 33b7a99b6de3
+  tool_panel_section_label: QCxMS
+- name: qcxms_production_run
+  owner: recetox
+  revisions:
+  - 356f7916ac07
+  tool_panel_section_label: QCxMS
+- name: qcxms_getres
+  owner: recetox
+  revisions:
+  - 89b026d67e9f
+  tool_panel_section_label: QCxMS
+- name: xtb_molecular_optimization
+  owner: recetox
+  revisions:
+  - 6e1ef071fffc
+  - d5633eaf3552
+  tool_panel_section_label: QCxMS
