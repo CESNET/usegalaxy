@@ -32,11 +32,22 @@ tools:
       reject:
       - pulsar
 
-  .*/recetox_aplcms_align_features/.*:
-    mem: 32
-    cores: 8
+  .*/mfassignr_mfassign.*:
+    mem: 16
     context:
       walltime: 48
+
+  .*/mfassignr_mfassignCHO/.*:
+    mem: 32
+
+  .*/mfassignr_isofiltr/.*:
+    mem: 32
+
+  .*/recetox_aplcms_align_features/.*:
+    mem: 150
+    cores: 8
+    context:
+      walltime: 72
 
   .*/recetox_aplcms_compute_clusters/.*:
     cores: 1
@@ -47,6 +58,9 @@ tools:
     mem: 10
 
   .*/ms2deepscore_training/.*:
+    mem: 16
+
+  .*/target_screen/.*:                      
     mem: 16
 
   .*testing.*:
@@ -107,8 +121,6 @@ destinations:
     runner: local_runner
     max_cores: 1
     max_mem: 4
-    max_accepted_cores: 1
-    max_accepted_mem: 4
     max_accepted_gpus: 0
     params:
       tmp_dir: true
@@ -119,11 +131,6 @@ destinations:
         - singularity
   tpv_singularity:
     runner: local_runner
-    max_cores: 1
-    max_mem: 4
-    max_accepted_cores: 1
-    max_accepted_mem: 4
-    max_accepted_gpus: 0
     params:
       require_container: true
       singularity_enabled: true
