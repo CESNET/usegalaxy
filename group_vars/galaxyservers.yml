@@ -86,7 +86,6 @@ galaxy_config:
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users:
-    - admin@example.org
     - 499542@muni.cz
     - 325073@mail.muni.cz
     - demko@cesnet.cz
