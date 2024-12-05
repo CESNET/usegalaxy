@@ -96,7 +96,7 @@
 #        path: "{{ datastore }}/data/_upload_job_files"
 #        state: directory
 #        mode: '0775'
-#    - name: Create the client body temp path   
+#    - name: Create the client body temp path
 #      file:
 #        owner: www-data
 #        group: galaxy
@@ -138,7 +138,7 @@
         user: postgres # Run as the postgres user
         minute: "0"
         hour: "*"
-        job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+        job: "python3 {{ playbook_dir }}/extra_scripts/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
         path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
