@@ -18,3 +18,9 @@ tools:
   - f5ea3ce9b9b0
   tool_panel_section_label: Get Data
   tool_shed_url: toolshed.g2.bx.psu.edu
+- name: fastqc
+  owner: devteam
+  revisions:
+  - 5ec9f6bceaee
+  tool_panel_section_label: FASTA/FASTQ
+  tool_shed_url: toolshed.g2.bx.psu.edu
