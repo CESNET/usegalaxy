@@ -1,6 +1,7 @@
 *~
 *.*.swp
 *.retry
+.venv
 
 ### Values and Secrets ###
 .vault-password.txt
