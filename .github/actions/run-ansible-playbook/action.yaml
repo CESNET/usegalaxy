@@ -23,4 +23,4 @@ runs:
 
     - name: Run playbook
       shell: bash
-      run: ansible-playbook --limit $TARGET_HOSTNAME galaxy.yml
+      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy.yml
