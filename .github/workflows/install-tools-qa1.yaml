@@ -1,0 +1,21 @@
+#! vim: ts=2 expandtab:
+
+name: install-tools-qa1
+
+# TODO: run automatically on push to main
+on: [ workflow_dispatch ]
+
+jobs:
+  call-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout actions
+        uses: actions/checkout@v2
+        
+      - name: Call install-tools-playbook action
+        uses: ./.github/actions/install-tools-playbook
+        env:
+          TARGET_HOSTNAME: galaxy-qa1.galaxy.cloud.e-infra.cz
+          TARGET_USER: debian
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_QA1 }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_QA1 }}
