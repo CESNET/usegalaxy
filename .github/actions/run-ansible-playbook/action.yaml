@@ -25,6 +25,10 @@ runs:
       shell: bash
       run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy.yml
 
+    - name: Sleep for 3 minutes
+      shell: bash
+      run: sleep 180s
+
     - name: Run galaxy_tools.yaml playbook
       shell: bash
       run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tools.yml
