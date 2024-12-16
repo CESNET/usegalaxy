@@ -1,6 +1,11 @@
 ---
 - hosts: galaxyservers
   tasks:
+    - name: Ensure virtualenv is present
+      local_action:
+        module: ansible.builtin.pip
+        name: virtualenv
+
     - name: Install Ephemeris
       local_action:
         module: ansible.builtin.pip
