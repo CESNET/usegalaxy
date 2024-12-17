@@ -6,24 +6,28 @@
         module: ansible.builtin.pip
         name: virtualenv
 
+    - name: Create a Python virtual environment for Ephemeris
+      local_action:
+        module: ansible.builtin.command
+        cmd: python3 -m venv /tmp/ephemeris
+
     - name: Install Ephemeris
       local_action:
         module: ansible.builtin.pip
         name: ephemeris
         virtualenv: /tmp/ephemeris
-        virtualenv_python: python3
 
-    - name: Copy tools from master instance
-      local_action:
-        module: ansible.builtin.shell
-        cmd: /tmp/ephemeris/bin/get-tool-list -g {{ copy_tools_from }} -o /tmp/master_tool_list.yaml
-      when: copy_tools_from
-
-    - name: Install tools from master instance
-      local_action:
-        module: ansible.builtin.shell
-        cmd: /tmp/ephemeris/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t /tmp/master_tool_list.yaml
-      when: copy_tools_from
+#    - name: Copy tools from master instance
+#      local_action:
+#        module: ansible.builtin.shell
+#        cmd: /tmp/ephemeris/bin/get-tool-list -g {{ copy_tools_from }} -o /tmp/master_tool_list.yaml
+#      when: copy_tools_from
+#
+#    - name: Install tools from master instance
+#      local_action:
+#        module: ansible.builtin.shell
+#        cmd: /tmp/ephemeris/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t /tmp/master_tool_list.yaml
+#      when: copy_tools_from
 
     - name: Install local tools
       local_action:
