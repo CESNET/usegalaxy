@@ -166,6 +166,7 @@ galaxy_config:
     # FTP
     ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
+    brand: "{{ inventory_hostname }}"
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
