@@ -15,14 +15,13 @@
       local_action:
         module: ansible.builtin.pip
         name: 
-        - distutils
         - ephemeris
         virtualenv: /tmp/ephemeris
 
     - name: Copy tools from master instance
       local_action:
         module: ansible.builtin.shell
-        cmd: /tmp/ephemeris/bin/get-tool-list -g {{ copy_tools_from }} -o /tmp/master_tool_list.yaml
+        cmd: /tmp/ephemeris/bin/get-tool-list -g https://{{ copy_tools_from }} -o /tmp/master_tool_list.yaml
       when: copy_tools_from
 
     - name: Install tools from master instance
