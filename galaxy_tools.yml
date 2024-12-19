@@ -14,7 +14,9 @@
     - name: Install Ephemeris
       local_action:
         module: ansible.builtin.pip
-        name: ephemeris
+        name: 
+        - distutils
+        - ephemeris
         virtualenv: /tmp/ephemeris
 
     - name: Copy tools from master instance
