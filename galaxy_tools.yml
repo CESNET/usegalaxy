@@ -16,6 +16,7 @@
         module: ansible.builtin.pip
         name: 
         - ephemeris
+        - setuptools
         virtualenv: /tmp/ephemeris
 
     - name: Copy tools from master instance
