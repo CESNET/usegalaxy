@@ -1,7 +1,7 @@
 tools:
 - name: fastqc
-  owner: devteam
-  tool_shed_url: toolshed.g2.bx.psu.edu
+#  owner: devteam
+#  tool_shed_url: toolshed.g2.bx.psu.edu
 #- name: bwa
 #  owner: devteam
 #  revisions:
