@@ -24,7 +24,7 @@
     - name: Test local tools
       local_action:
         module: ansible.builtin.shell
-        cmd: python extra_scripts/run_tool.py -g https://{{ inventory_hostname }} -a {{ api_key }} -t testing_pbs
+        cmd: /tmp/test_tools/bin/python extra_scripts/run_tool.py -g https://{{ inventory_hostname }} -a {{ api_key }} -t testing_pbs
 
     - name: Test shed-tool tools
       local_action:
