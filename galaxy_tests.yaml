@@ -1,0 +1,36 @@
+---
+- hosts: galaxyservers
+  tasks:
+    - name: Ensure virtualenv is present
+      local_action:
+        module: ansible.builtin.pip
+        name: virtualenv
+
+    - name: Create a Python virtual environment for Ephemeris
+      local_action:
+        module: ansible.builtin.command
+        cmd: python3 -m venv /tmp/test_tools
+
+    - name: Install Ephemeris
+      local_action:
+        module: ansible.builtin.pip
+        name: 
+        - ephemeris
+        - setuptools
+        - planemo
+        virtualenv: /tmp/test_tools
+
+    - name: Test local tools
+      local_action:
+        module: ansible.builtin.shell
+        cmd: python extra_scripts/run_tool.py -g https://{{ inventory_hostname }} -a {{ api_key }} -t testing_pbs
+
+    - name: Test shed-tool tools
+      local_action:
+        module: ansible.builtin.shell
+        cmd: /tmp/test_tools/bin/shed-tools test -g https://{{ inventory_hostname }} -a {{ api_key }} -t files/{{ inventory_hostname }}/test_tool_list.yaml --test-json /tmp/test_tools_report.json --parallel-tests 5
+
+    - name: Generate report for shed-tool tools
+      local_action:
+        module: ansible.builtin.shell
+        cmd: /tmp/test_tools/bin/planemo test_reports /tmp/test_tools_report.json

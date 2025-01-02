@@ -28,7 +28,21 @@ runs:
 #    - name: Sleep for 3 minutes
 #      shell: bash
 #      run: sleep 180s
+#
+#    - name: Run galaxy_tools.yaml playbook
+#      shell: bash
+#      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tools.yml
 
-    - name: Run galaxy_tools.yaml playbook
+    - name: Run galaxy_tests.yaml playbook
       shell: bash
-      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tools.yml
+      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tests.yml
+
+#    - name: Publish report from tests
+#      shell: bash
+#      run: npx github-actions-ctrf /tmp/test_tools_report.json
+
+    - name: Publish HTML report from testing
+      uses: pavi2410/html-preview-action@v4
+      with:
+        html_file: '/tmp/test_tools_report.html'
+        job_summary: true
