@@ -43,8 +43,8 @@ runs:
 #        html_file: '/tmp/test_tools_report.html'
 #        job_summary: true
 
-    - name: Publish HTML report from testing
-      uses: turing85/publish-report@v2
-      with:
-        checkout: true
-        report-path: '/tmp/test_tools_report*.html'
+#    - name: Publish HTML report from testing
+#      uses: turing85/publish-report@v2
+#      with:
+#        checkout: true
+#        report-path: '/tmp/test_tools_report*.html'
