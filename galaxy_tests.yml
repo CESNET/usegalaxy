@@ -29,7 +29,7 @@
     - name: Test shed-tool tools
       local_action:
         module: ansible.builtin.shell
-        cmd: /tmp/test_tools/bin/shed-tools test -g https://{{ inventory_hostname }} -a {{ api_key }} -t files/{{ inventory_hostname }}/test_tool_list.yaml --test-json /tmp/test_tools_report.json --parallel-tests 5
+        cmd: /tmp/test_tools/bin/shed-tools test -g https://{{ inventory_hostname }} -a {{ api_key }} -t files/{{ inventory_hostname }}/test_tool_list.yaml --test-json /tmp/test_tools_report.json --parallel-tests 1
 
     - name: Generate report for shed-tool tools
       local_action:
