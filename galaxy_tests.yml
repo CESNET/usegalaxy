@@ -11,10 +11,11 @@
         module: ansible.builtin.command
         cmd: python3 -m venv /tmp/test_tools
 
-    - name: Install Ephemeris
+    - name: Install packages
       local_action:
         module: ansible.builtin.pip
         name: 
+        - bioblend
         - ephemeris
         - setuptools
         - planemo
