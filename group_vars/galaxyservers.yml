@@ -22,6 +22,8 @@ enable_telegraf: yes
 copy_tools_from: false
 admin_ssh_keys: false
 
+galaxy_brand: ""
+
 # Galaxy Job Configuration
 galaxy_job_config:
   runners:
@@ -166,7 +168,7 @@ galaxy_config:
     # FTP
     ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
-    brand: "{{ inventory_hostname }}"
+    brand: "{{ galaxy_brand }}"
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
@@ -211,7 +213,7 @@ galaxy_config:
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
 galaxy_config_files_public:
-  - src: files/galaxy/static/welcome.html
+  - src: templates/galaxy/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
   - src: files/galaxy/static/usegalaxy-cz.png
     dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
