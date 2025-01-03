@@ -5,7 +5,7 @@ enable_flower: no
 enable_telegraf: no
 
 pulsar:
-  user_name: galaxy-qa2
+  user_name: galaxy-qa1
   nfs_home: brno11-elixir
   nfs_prefix: pulsar-qa2
   pbs_queue: galaxyqa
