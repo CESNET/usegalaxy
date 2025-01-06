@@ -49,10 +49,12 @@ runs:
     - name: Upload test report to display
       uses: actions/upload-artifact@v3
       with:
-        path: test_tools_report.html
+        name: test-tool-report
+        path: test_tools_report.*
+        if-no-files-found: error
 
-    - name: Publish HTML report from testing
-      uses: turing85/publish-report@v2
-      with:
-        checkout: true
-        report-path: test_tools_report.html
+#    - name: Publish HTML report from testing
+#      uses: turing85/publish-report@v2
+#      with:
+#        checkout: true
+#        report-path: test_tools_report.html
