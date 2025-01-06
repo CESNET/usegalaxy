@@ -8,21 +8,21 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-#    - name: Make SSH connection
-#      shell: bash
-#      run: |
-#        mkdir -p $HOME/.ssh
-#        install -m 600 -D /dev/null $HOME/.ssh/id_rsa
-#        echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
-#        ssh -f -o StrictHostKeyChecking=no $TARGET_USER@$TARGET_HOSTNAME hostname
-#
-#    - name: Install Ansible requirements
-#      shell: bash
-#      run: ansible-galaxy install -p roles -r requirements.yml
-#
-#    - name: Create vault password
-#      shell: bash
-#      run: echo "$VAULT_PASSWORD" >.vault-password.txt
+    - name: Make SSH connection
+      shell: bash
+      run: |
+        mkdir -p $HOME/.ssh
+        install -m 600 -D /dev/null $HOME/.ssh/id_rsa
+        echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
+        ssh -f -o StrictHostKeyChecking=no $TARGET_USER@$TARGET_HOSTNAME hostname
+
+    - name: Install Ansible requirements
+      shell: bash
+      run: ansible-galaxy install -p roles -r requirements.yml
+
+    - name: Create vault password
+      shell: bash
+      run: echo "$VAULT_PASSWORD" >.vault-password.txt
 
 #    - name: Run galaxy.yaml playbook
 #      shell: bash
@@ -36,15 +36,9 @@ runs:
 #      shell: bash
 #      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tools.yml
 
-#    - name: Run galaxy_tests.yaml playbook
-#      shell: bash
-#      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tests.yml
-
-#    - name: Publish HTML report from testing
-#      uses: pavi2410/html-preview-action@v4
-#      with:
-#        html_file: '/tmp/test_tools_report.html'
-#        job_summary: true
+    - name: Run galaxy_tests.yaml playbook
+      shell: bash
+      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tests.yml
 
     - name: Upload test report to display
       uses: actions/upload-artifact@v4
@@ -52,16 +46,3 @@ runs:
         name: test-tool-report
         path: test_tools_report.html
         if-no-files-found: error
-        compression-level: 0 # no compression
-
-    - name: HTML Preview
-      id: html_preview
-      uses: pavi2410/html-preview-action@v2
-      with:
-        html_file: 'test_tools_report.html'
-
-#    - name: Publish HTML report from testing
-#      uses: turing85/publish-report@v2
-#      with:
-#        checkout: true
-#        report-path: test_tools_report.html
