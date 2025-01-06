@@ -169,6 +169,7 @@ galaxy_config:
     ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
     brand: "{{ galaxy_brand }}"
+    vault_config_file: vault_conf.yml
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
@@ -231,6 +232,10 @@ galaxy_config_files:
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
   - src: "files/{{ inventory_hostname }}/tpv_rules_local.yml"
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
+  - src: files/{{ inventory_hostname }}/file_sources_conf.yml
+    dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
+  - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
+    dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
 
 galaxy_config_templates:
   - src: templates/galaxy/config/dependency_resolvers_conf.xml
@@ -251,6 +256,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
   - src: templates/galaxy/config/tpv_rules_meta.yml.j2
     dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
+  - src: "templates/galaxy/config/vault_conf.yml.j2"
+    dest: "{{ galaxy_config_dir }}/vault_conf.yml"
 
 
 galaxy_extra_dirs:

@@ -1,0 +1,9 @@
+type: database
+# path_prefix: /galaxy
+# Encryption keys must be valid fernet keys.
+# Use the ascii string value as a key.
+# For more details, see: https://cryptography.io/en/latest/fernet/#
+encryption_keys:
+{% for item in vault_encryption_keys %}
+- {{ item }}
+{% endfor %}
