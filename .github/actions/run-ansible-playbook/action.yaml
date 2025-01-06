@@ -54,8 +54,14 @@ runs:
         if-no-files-found: error
         compression-level: 0 # no compression
 
-    - name: Publish HTML report from testing
-      uses: turing85/publish-report@v2
+    - name: HTML Preview
+      id: html_preview
+      uses: pavi2410/html-preview-action@v2
       with:
-        checkout: true
-        report-path: test_tools_report.html
+        html_file: 'test_tools_report.html'
+
+#    - name: Publish HTML report from testing
+#      uses: turing85/publish-report@v2
+#      with:
+#        checkout: true
+#        report-path: test_tools_report.html
