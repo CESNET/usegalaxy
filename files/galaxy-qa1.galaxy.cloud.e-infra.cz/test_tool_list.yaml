@@ -1,7 +1,7 @@
 tools:
 - name: fastqc
   owner: devteam
-#- name: bwa
-#  owner: devteam
-#- name: alphafold2
-#  owner: galaxy-australia
+- name: bwa
+  owner: devteam
+- name: alphafold2
+  owner: galaxy-australia
