@@ -50,7 +50,7 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: test-tool-report
-        path: test_tools_report.*
+        path: test_tools_report.md
         if-no-files-found: error
 
 #    - name: Publish HTML report from testing
