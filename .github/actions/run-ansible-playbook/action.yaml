@@ -50,8 +50,9 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: test-tool-report
-        path: test_tools_report.md
+        path: test_tools_report.html
         if-no-files-found: error
+        compression-level: 0 # no compression
 
 #    - name: Publish HTML report from testing
 #      uses: turing85/publish-report@v2
