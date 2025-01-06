@@ -249,8 +249,6 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
   - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
-  - src: templates/galaxy/config/tool_conf.xml.j2
-    dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
   - src: templates/galaxy/config/local_tool_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
   - src: templates/galaxy/config/tpv_rules_meta.yml.j2
