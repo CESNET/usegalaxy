@@ -47,4 +47,4 @@ runs:
       uses: turing85/publish-report@v2
       with:
         checkout: true
-        report-path: '/tmp/test_tools_report*.html'
+        report-path: test_tools_report.html
