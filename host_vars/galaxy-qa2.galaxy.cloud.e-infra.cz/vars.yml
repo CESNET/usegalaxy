@@ -1,5 +1,7 @@
 # where to put most of the data; we use RBD or NBD volumes
+# galaxy_build_client: false
 galaxy_mutable_data_dir: /data/galaxy
+galaxy_commit_id: release_24.2
 
 enable_flower: no
 enable_telegraf: no
@@ -13,6 +15,4 @@ pulsar:
 
 pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
-galaxy_brand: QA2
-
-# copy_tools_from: usegalaxy.eu
+galaxy_brand: QA2-TEST
