@@ -47,7 +47,7 @@ runs:
 #        job_summary: true
 
     - name: Upload test report to display
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-tool-report
         path: test_tools_report.html
