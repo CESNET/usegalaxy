@@ -72,22 +72,32 @@ create vault for your host `ansible-vault create host_vars/<YOUR_HOST>/secret.ym
 
 The vault should contain the following vars:
 
-```
-vault_id_secret: "a-really-long-password-here"
+```yml
+vault_id_secret: choose_something_unique_per_instance
 rabbitmq_users_password:
-  mqadmin: "a-really-long-password-here"
-  pulsar: "a-really-long-password-here"
-vault_rabbitmq_password_flower: "a-really-long-password-here"
-vault_rabbitmq_password_galaxy: "a-different-really-long-password"
-vault_flower_user_password: "a-really-long-password-here"
-vault_sentry_password: "a-really-long-password-here"
-vault_reports_admin_password: "a-really-long-password-here"
-e_infra_client_id: "a-really-long-password-here"
-e_infra_client_secret: "a-really-long-password-here"
-elixir_client_id: "a-really-long-password-here"
-elixir_client_secret: "a-really-long-password-here"
-api_key: "a-really-long-password-here"
-tiaas_password: "a-really-long-password-here"
+  mqadmin: a-really-long-password-here
+  pulsar: a-really-long-DIFFERENT-password-here
+vault_rabbitmq_password_galaxy: good-password-here
+oidc_client_id: string-with-client-id
+oidc_client_secret: string-with-client-secret
+
+# Galaxy admin API key for tool installation
+api_key: dont-be-lazy-a-really-long-password-here
+
+# see https://github.com/galaxyproject/galaxy/blob/dev/doc/source/admin/special_topics/vault.md
+vault_encryption_keys:
+- generated_key_NUDIABSUmny78sad8a7sby87av8dv=
+
+pulsar_ssh_key: |
+  -----BEGIN OPENSSH PRIVATE KEY-----
+  asdasdasdad
+  -----END OPENSSH PRIVATE KEY-----
+
+tiaas_password: a-really-long-password-here
+vault_rabbitmq_password_flower: a-really-long-password-here
+vault_flower_user_password: a-really-long-password-here
+vault_sentry_password: a-really-long-password-here
+vault_reports_admin_password: a-really-long-password-here
 ```
 note: you should avoid having a `/` or `\` in your password as galaxy will interpret this as a path.
 

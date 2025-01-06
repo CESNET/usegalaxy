@@ -41,8 +41,6 @@
 - hosts: galaxyservers
   become: true
   become_user: root
-  vars_files:
-    - group_vars/secret.yml
   pre_tasks:
     - name: Admin ssh keys
       blockinfile:
