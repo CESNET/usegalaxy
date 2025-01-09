@@ -46,9 +46,6 @@ Create `host_vars/<YOUR_HOST>/vars.yml`. It should contain the following vars:
 ```
 galaxy_mutable_data_dir: /data/galaxy
 
-enable_flower: no
-enable_telegraf: no
-
 pulsar:
   user_name: galaxy-qa1
   nfs_home: brno11-elixir
@@ -59,7 +56,7 @@ pulsar:
 pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
 # displayed in Galaxy's masthead
-galaxy_brand: <YOUR_HOST>
+csnt_brand: <YOUR_HOST>
 ```
 
 note: the same service user (`galaxy-qa1`) is used for both `pulsar-qa1` and `pulsar-qa2`

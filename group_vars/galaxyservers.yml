@@ -1,6 +1,5 @@
 ---
 # Galaxy
-# galaxy_build_client: false
 galaxy_manage_systemd: no
 galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
 galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
@@ -15,13 +14,13 @@ miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'defaults']
 
-enable_flower: yes
-enable_telegraf: yes
-
-copy_tools_from: false
+# defaults for host-specific vars
+csnt_brand: ""
+csnt_short_term_storage_dir: short_term_web_storage
 admin_ssh_keys: false
-
-galaxy_brand: ""
+copy_tools_from: false
+enable_telegraf: false
+enable_flower: false
 
 # Galaxy Job Configuration
 galaxy_job_config:
@@ -100,14 +99,13 @@ galaxy_config:
     allow_user_creation: false
     require_login: true
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
-# XXX: don't know the purpose anymore
-#    cluster_files_directory: "/rbd/data/pbs"
-#    short_term_storage_dir: "/rbd/data/short_term_web_storage"
     file_path: "{{ galaxy_mutable_data_dir }}/datasets"
+    short_term_storage_dir: "{{ csnt_short_term_storage_dir }}"
     job_working_directory: "{{ galaxy_mutable_data_dir }}/jobs"
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
+    vault_config_file: vault_conf.yml
     tool_config_file:
     - "{{ galaxy_config_dir }}/tool_conf.xml"
     - "{{ galaxy_config_dir }}/local_tool_conf.xml"
@@ -119,6 +117,7 @@ galaxy_config:
     # File serving Performance
     nginx_x_accel_redirect_base: /_x_accel_redirect
     # Automation / Ease of Use / User-facing features
+    brand: "{{ csnt_brand }}"
     watch_job_rules: 'auto'
     allow_path_paste: true
     enable_quotas: true
@@ -140,7 +139,6 @@ galaxy_config:
     # CVMFS
     tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
-    dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
     container_resolvers:
     -   type: explicit_singularity
     -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
@@ -167,8 +165,6 @@ galaxy_config:
     # FTP
     ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
-    brand: "{{ galaxy_brand }}"
-    vault_config_file: vault_conf.yml
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"
@@ -213,7 +209,7 @@ galaxy_config:
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
 galaxy_config_files_public:
-  - src: templates/galaxy/static/welcome.html
+  - src: templates/{{ inventory_hostname }}/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
   - src: files/galaxy/static/usegalaxy-cz.png
     dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
@@ -235,29 +231,26 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
     dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
+  - src: files/galaxy/config/tool_conf.xml
+    dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
+  - src: files/galaxy/config/oidc_config.xml
+    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
 
 galaxy_config_templates:
-  - src: templates/galaxy/config/dependency_resolvers_conf.xml
-    dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
   - src: templates/galaxy/config/job_resource_params_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.job_resource_params_file }}"
-  - src: templates/galaxy/config/reports.yml
+  - src: templates/galaxy/config/reports.yml.j2
     dest: "{{ galaxy_config.gravity.reports.config_file }}"
-  - src: templates/galaxy/config/oidc_config.xml
-    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
-  - src: "files/{{ inventory_hostname }}/oidc_backends_config.xml"
+  - src: "templates/galaxy/config/oidc_backends_config.xml.j2"
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
-  - src: "files/{{ inventory_hostname }}/object_store_conf.xml.j2"
+  - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
-  - src: templates/galaxy/config/tool_conf.xml.j2
-    dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
   - src: templates/galaxy/config/local_tool_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
   - src: templates/galaxy/config/tpv_rules_meta.yml.j2
     dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
   - src: "templates/galaxy/config/vault_conf.yml.j2"
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
-
 
 galaxy_extra_dirs:
   - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
@@ -334,6 +327,7 @@ nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/p
 #Install pip docker package for ansible
 pip_install_packages:
   - name: docker
+
 # RabbitMQ
 rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
