@@ -15,7 +15,8 @@ miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'defaults']
 
 # defaults for host-specific vars
-galaxy_brand: ""
+csnt_brand: ""
+csnt_short_term_storage_dir: short_term_web_storage
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -99,6 +100,7 @@ galaxy_config:
     require_login: true
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: "{{ galaxy_mutable_data_dir }}/datasets"
+    short_term_storage_dir: "{{ csnt_short_term_storage_dir }}"
     job_working_directory: "{{ galaxy_mutable_data_dir }}/jobs"
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
@@ -115,7 +117,7 @@ galaxy_config:
     # File serving Performance
     nginx_x_accel_redirect_base: /_x_accel_redirect
     # Automation / Ease of Use / User-facing features
-    brand: "{{ galaxy_brand }}"
+    brand: "{{ csnt_brand }}"
     watch_job_rules: 'auto'
     allow_path_paste: true
     enable_quotas: true
