@@ -24,17 +24,17 @@ runs:
       shell: bash
       run: echo "$VAULT_PASSWORD" >.vault-password.txt
 
-#    - name: Run galaxy.yaml playbook
-#      shell: bash
-#      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy.yml
-#
-#    - name: Sleep for 3 minutes
-#      shell: bash
-#      run: sleep 180s
-#
-#    - name: Run galaxy_tools.yaml playbook
-#      shell: bash
-#      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tools.yml
+    - name: Run galaxy.yaml playbook
+      shell: bash
+      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy.yml
+
+    - name: Sleep for 3 minutes
+      shell: bash
+      run: sleep 180s
+
+    - name: Run galaxy_tools.yaml playbook
+      shell: bash
+      run: ansible-playbook -vvv --limit $TARGET_HOSTNAME galaxy_tools.yml
 
     - name: Run galaxy_tests.yaml playbook
       shell: bash
