@@ -1,44 +1,64 @@
 <html>
-  <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="style/base.css" type="text/css" />
-    </head>
-    <body class="m-0" style="font-size: 1.1rem;">
-        <div class="py-4">
-            <div class="container">
-	        <br>
-                <h1>Výtejte na usegalaxy.cz!</h1>
-                <img src="https://www.e-infra.cz/img/logo.svg">
-                <br>
-                <p>Tato služba je součástí <a href="https://e-infra.cz" target="_blank">e-infra.cz</a> infrastruktury.</p>
-		<p>Zatím máme skušebný provoz, jakékoliv problémy hlaste na <a href="mailto: regalaxy@rt.cesnet.cz" target="_blank">regalaxy@rt.cesnet.cz</a></p>
-		<p>Dear users, we are still in testing mode, so we kindly ask you to report any troubles at <a href="mailto: regalaxy@rt.cesnet.cz" target="_blank">regalaxy@rt.cesnet.cz</a>. So far, we know that a few tools are incompatible with the latest Galaxy version. Sometimes your jobs may end up in the Error state or even in the Complete state (but empty with 0 size) with messages like: <b>=>> PBS: job killed:...</b> That means the resources need to be fit to means of the tool, and reporting this fact will help us improve the service. On behalf of the admin group, thank you.
-                </p>
-    <!--<iframe src="https://galaxyproject.org/#" width="100%" height="500px" />-->
-    <br>
-    <br>
-                <h2>About the Galaxy platform</h2>
-                <br>
-                <p>
-                    <a target="_blank" class="reference" href="http://galaxyproject.org/">
-                    Galaxy</a> is an open platform for supporting data intensive
-                    research. Galaxy is developed by <a target="_blank" class="reference" href="https://galaxyproject.org/galaxy-team/">The Galaxy Team</a>
-                    with the support of  <a target="_blank" class="reference" href="https://github.com/galaxyproject/galaxy/blob/dev/CONTRIBUTORS.md">many contributors</a>.
-                </p>
-                <p>
-                    The <a target="_blank" class="reference" href="http://galaxyproject.org/">Galaxy Project</a>
-                    is supported in part by <a target="_blank" class="reference" href="http://www.genome.gov">NHGRI</a>,
-                    <a target="_blank" class="reference" href="http://www.nsf.gov">NSF</a>,
-                    <a target="_blank" class="reference" href="http://www.huck.psu.edu">The Huck Institutes of the Life Sciences</a>,
-                    <a target="_blank" class="reference" href="http://www.ics.psu.edu">The Institute for CyberScience at Penn State</a>,
-                    and <a target="_blank" class="reference" href="http://www.jhu.edu/">Johns Hopkins University</a>.
-                </p>
-                <p>Take an interactive tour:
-                    <a target="_parent" href="../tours/core.galaxy_ui" class="btn btn-secondary btn-sm">Galaxy UI</a>
-                    <a target="_parent" href="../tours/core.history" class="btn btn-secondary btn-sm">History</a>
-                    <a target="_parent" href="../tours/core.scratchbook" class="btn btn-secondary btn-sm">Scratchbook</a>
-                </p>
-	    </div>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="dist/base.css" type="text/css" />
+    <link rel="stylesheet" href="style/additional_styles.css" type="text/css" />
+</head>
+
+<body class="m-0" style="font-size: 1.1rem">
+    <div class="py-4">
+        <div class="container">
+            <p class="text-center">
+                <img width="600px" src="usegalaxy-cz.png" alt="UsegalaxyCZ logo" />
+            </p>
+            <p class="lead text-center">
+                Welcome to the Czech Galaxy instance of
+                <a href="https://www.e-infra.cz/">E-Infra CZ</a> and
+                <a href="https://www.elixir-czech.cz/">ELIXIR CZ</a>
+                hosted at <a href="https://metavo.metacentrum.cz/">MetaCentrum</a>. We
+                aim to enable accessible, reproducible, and transparent computational
+                research in Czechia. We support thousands of documented and maintained
+                tools that are free to use and backed by a robust public
+                infrastructure.
+            </p>
+            <p>
+                Please visit our
+                <a href="https://docs.metacentrum.cz/related/galaxy/" target="_blank"
+                    class="reference">Documentation</a>
+                for details about using this service. In case of any further
+                questions, please contact us at
+                <a href="mailto:regalaxy@rt.cesnet.cz" target="_blank">regalaxy@rt.cesnet.cz</a>.
+            </p>
+            <p>You can start with an interactive tour:
+            <div>
+                <a target="_parent" href="../tours/core.galaxy_ui" class="btn btn-secondary btn-sm">Galaxy UI</a>
+                <a target="_parent" href="../tours/core.history" class="btn btn-secondary btn-sm">Galaxy History</a>
+                <a target="_parent" href="../tours/core.windows" class="btn btn-secondary btn-sm">Window Manager</a>
+                <a target="_parent" href="../tours/core.deferred" class="btn btn-secondary btn-sm">Deferred Datasets</a>
+            </div>
+            </p>
+            <p>
+                <a target="_blank" class="reference" href="http://galaxyproject.org/">
+                    Galaxy</a>
+                is an open platform for supporting data intensive research developed
+                by its
+                <a target="_blank" class="reference"
+                    href="https://github.com/galaxyproject/galaxy/blob/dev/CONTRIBUTORS.md">many contributors</a>.
+            </p>
+            <div class="row">
+                <div class="column">
+                    <a href="https://www.e-infra.cz/">
+                        <img src="e-infra_logo.svg" alt="e-infra" style="width: 100%" /></a>
+                </div>
+                <div class="column" style="padding: 50px"></div>
+                <div class="column">
+                    <a href="https://www.elixir-czech.cz/"><img src="elixir_logo.png" alt="elixir"
+                            style="width: 100%" /></a>
+                </div>
+            </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

@@ -1,0 +1,18 @@
+# where to put most of the data; we use RBD or NBD volumes
+galaxy_mutable_data_dir: /data/galaxy
+
+enable_flower: no
+enable_telegraf: no
+
+pulsar:
+  user_name: galaxy-qa1
+  nfs_home: brno11-elixir
+  nfs_prefix: pulsar-qa2
+  pbs_queue: galaxyqa
+  pbs_gpu_queue: galaxy_gpu
+
+pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
+
+galaxy_brand: QA2
+
+# copy_tools_from: usegalaxy.eu
