@@ -17,6 +17,7 @@ miniconda_channels: ['conda-forge', 'defaults']
 # defaults for host-specific vars
 csnt_brand: ""
 csnt_short_term_storage_dir: short_term_web_storage
+csnt_enable_account_interface: true
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -119,6 +120,7 @@ galaxy_config:
     nginx_x_accel_redirect_base: /_x_accel_redirect
     # Automation / Ease of Use / User-facing features
     brand: "{{ csnt_brand }}"
+    enable_account_interface: "{{ csnt_enable_account_interface }}"
     watch_job_rules: 'auto'
     allow_path_paste: true
     enable_quotas: true

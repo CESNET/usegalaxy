@@ -2,6 +2,7 @@
 galaxy_commit_id: release_24.2
 
 csnt_brand: QA2-TEST
+csnt_enable_account_interface: false
 
 pulsar:
   user_name: galaxy-qa1
