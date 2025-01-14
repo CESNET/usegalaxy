@@ -88,10 +88,11 @@ galaxy_config:
     admin_users:
     - 499542@muni.cz
     - 325073@mail.muni.cz
-    - demko@cesnet.cz
+    - Demko.Martin@cesnet.cz
     - galaxy@usegalaxy.cz
     - ljocha@ics.muni.cz
     - Martin.Cech@cesnet.cz
+    - galaxy@cesnet.cz
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
@@ -332,7 +333,7 @@ pip_install_packages:
 rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.13-management
+  image: rabbitmq:3.11-management
   hostname: "{{ inventory_hostname }}"
 
 rabbitmq_plugins:

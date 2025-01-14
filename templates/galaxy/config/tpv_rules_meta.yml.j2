@@ -188,6 +188,8 @@ destinations:
         - nasty-java
   tpv_pulsar_alphafold:
     inherits: tpv_pulsar
+    max_accepted_gpus: 1
+    max_gpus: 1
     runner: pulsar_tpv_runner
     params:
       singularity_run_extra_arguments: '--nv'
