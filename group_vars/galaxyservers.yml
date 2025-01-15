@@ -18,6 +18,7 @@ miniconda_channels: ['conda-forge', 'defaults']
 csnt_brand: ""
 csnt_short_term_storage_dir: short_term_web_storage
 csnt_enable_account_interface: true
+csnt_log_level: WARNING
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -133,6 +134,7 @@ galaxy_config:
     retry_job_output_collection: 3
     # Debugging
     allow_user_impersonation: true
+    log_level= "{{ csnt_log_level }}"
     # Tool security
     outputs_to_working_directory: true
     new_user_dataset_access_role_default_private: true # Make datasets private by default
