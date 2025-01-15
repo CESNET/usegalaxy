@@ -17,6 +17,12 @@ miniconda_channels: ['conda-forge', 'defaults']
 # defaults for host-specific vars
 csnt_brand: ""
 csnt_short_term_storage_dir: short_term_web_storage
+csnt_enable_account_interface: true
+csnt_log_level: WARNING
+csnt_allow_user_deletion: false
+csnt_enable_oidc: true
+csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
+csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -80,9 +86,9 @@ galaxy_config:
     # To not bother the main disk
     new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
-    enable_oidc: true
-    oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
-    oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+    enable_oidc: "{{ csnt_enable_oidc }}"
+    oidc_config_file: "{{ csnt_oidc_config_file }}"
+    enable_oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users:
@@ -119,10 +125,11 @@ galaxy_config:
     nginx_x_accel_redirect_base: /_x_accel_redirect
     # Automation / Ease of Use / User-facing features
     brand: "{{ csnt_brand }}"
+    enable_account_interface: "{{ csnt_enable_account_interface }}"
     watch_job_rules: 'auto'
     allow_path_paste: true
     enable_quotas: true
-    allow_user_deletion: true
+    allow_user_deletion: "{{ csnt_allow_user_deletion }}"
     show_welcome_with_login: true
     expose_user_name: true
     expose_dataset_path: true
@@ -131,6 +138,7 @@ galaxy_config:
     retry_job_output_collection: 3
     # Debugging
     allow_user_impersonation: true
+    log_level= "{{ csnt_log_level }}"
     # Tool security
     outputs_to_working_directory: true
     new_user_dataset_access_role_default_private: true # Make datasets private by default
@@ -333,7 +341,7 @@ pip_install_packages:
 rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.11-management
+  image: rabbitmq:3.13-management
   hostname: "{{ inventory_hostname }}"
 
 rabbitmq_plugins:
