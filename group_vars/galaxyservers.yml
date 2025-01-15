@@ -240,7 +240,7 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
     dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
-  - src: files/galaxy/config/tool_conf.xml
+  - src: "{{ lookup('first_found', [{'path': 'templates/'+inventory_hostname+'/config/tool_conf.xml.j2'}, {'path': 'files/galaxy/config/tool_conf.xml'}]) }}"
     dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
   - src: files/galaxy/config/oidc_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
@@ -250,7 +250,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.job_resource_params_file }}"
   - src: templates/galaxy/config/reports.yml.j2
     dest: "{{ galaxy_config.gravity.reports.config_file }}"
-  - src: "templates/galaxy/config/oidc_backends_config.xml.j2"
+#  - src: "templates/galaxy/config/oidc_backends_config.xml.j2"
+  - src: "{{ lookup('first_found', [{'path': 'templates/'+inventory_hostname+'/config/oidc_backends_config.xml.j2'}, {'path': 'templates/galaxy/config/oidc_backends_config.xml.j2'}]) }}"
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
   - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
