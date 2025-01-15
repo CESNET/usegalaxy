@@ -20,16 +20,6 @@ galaxy_job_config:
     local_runner:
       load: galaxy.jobs.runners.local:LocalJobRunner
       workers: 4
-    pulsar_runner:
-      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
-      amqp_acknowledge: true
-      amqp_ack_republish_time: 1200
-      amqp_consumer_timeout: 2
-      amqp_publish_retry: true
-      amqp_publish_retry_max_retries: 60
-      manager: _default_
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
@@ -40,6 +30,7 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: tpv
+#      manager: _default_
   handling:
     assign: ['db-skip-locked']
   execution:
@@ -48,44 +39,6 @@ galaxy_job_config:
       local_env:
         runner: local_runner
         tmp_dir: true
-      singularity:
-        runner: local_runner
-        singularity_enabled: true
-        env:
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
-        # The cache directory holds the docker containers that get converted
-        - name: APPTAINER_CACHEDIR
-          value: /tmp/singularity
-        # Apptainer uses a temporary directory to build the squashfs filesystem
-        - name: APPTAINER_TMPDIR
-          value: /tmp
-      pulsar:
-        runner: pulsar_runner
-        default_file_action: remote_transfer
-        dependency_resolution: remote
-        jobs_directory: "/storage/praha5-elixir/home/galaxyeu/pulsar-cz/files/staging"
-        persistence_directory: "/opt/pulsar/files/persistent"
-        remote_metadata: false
-        rewrite_parameters: true
-        transport: curl
-        outputs_to_working_directory: false
-        # submit_native_specification: '-l select=1:ncpus=2:mem=8gb:scratch_local=50gb -l walltime=12:00:00 -q galaxyeu@elixir-pbs.elixir-czech.cz' 
-        singularity_enabled: true
-        singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR"
-        ## Following configuration works!
-        # singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro"
-        env:
-        # Ensuring a consistent collation environment is good for reproducibility.
-        - name: LC_ALL
-          value: C
-        - name: TMPDIR
-          value: "$SCRATCHDIR"
-        - name: TMP
-          value: "$SCRATCHDIR"
-        - name: TEMP
-          value: "$SCRATCHDIR"
       tpv_dispatcher:
         runner: dynamic
         type: python
@@ -109,9 +62,6 @@ galaxy_job_config:
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local_env
-    - id: testing
-      environment: tpv_dispatcher
-      resources: testing
 
 galaxy_config:
   galaxy:
@@ -132,6 +82,7 @@ galaxy_config:
     - 325073@mail.muni.cz
     - demko@cesnet.cz
     - galaxy@usegalaxy.cz
+    - Martin.Cech@cesnet.cz
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
@@ -149,6 +100,7 @@ galaxy_config:
     tool_config_file: 
     - "{{ galaxy_config_dir }}/tool_conf.xml"
     - "{{ galaxy_config_dir }}/local_tool_conf.xml"
+    tool_data_path: "/rbd/data/tool_data"
     job_resource_params_file: "{{ galaxy_config_dir }}/job_resource_params_conf.xml"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # SQL Performance
@@ -177,19 +129,22 @@ galaxy_config:
     galaxy_infrastructure_url: "https://{{ inventory_hostname }}"
     tus_upload_store: "{{ galaxy_tus_upload_store }}"
     # CVMFS
-    tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
+    tool_data_table_config_path: 
+    - /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml
+    - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
     dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
     container_resolvers:
     -   type: explicit_singularity
-#    -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-    -   cache_directory: /rbd/data/singularity
+    -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+#    -   cache_directory: /rbd/data/singularity
         type: cached_mulled_singularity
     -   auto_install: true
         type: mulled_singularity
     -   auto_install: false
         type: build_mulled_singularity   
-        cache_directory: /rbd/data/singularity/mulled
+        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+#        cache_directory: /rbd/data/singularity/mulled
     # Data Library Directories
 #    library_import_dir: "/rbd/data/library_import_dir" # likely to be here
     library_import_dir: /libraries/admin 
@@ -462,7 +417,7 @@ tiaas_info:
   owner: "Metacentrum"
   domain: "{{ inventory_hostname }}"
   owner_email: "regalaxy@rt.cesnet.cz"
-  owner_site: "http://{{ inventory_hostname }}"
+  owner_site: "https://{{ inventory_hostname }}"
 tiaas_send_email_to_requester: true
 
 # Proftpd:

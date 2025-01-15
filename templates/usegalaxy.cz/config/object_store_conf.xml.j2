@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<object_store type="hierarchical">
+    <backends>
+        <backend id="newdata" type="disk" order="0">
+	    <files_dir path="/rbd/data/datasets" />
+	    <extra_dir type="temp" path="/rbd/data/tmp"/>
+	    <extra_dir type="job_work" path="/rbd/data/jobs" />
+        </backend>
+    </backends>
+</object_store>
+

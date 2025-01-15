@@ -29,7 +29,7 @@
         mode: 0640
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'squashfs-tools']
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'squashfs-tools', 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -81,6 +81,25 @@
     - galaxyproject.cvmfs
     - dj-wasabi.telegraf
   post_tasks:
+    - name: Adds nginx's www-data user into galaxy user group
+      ansible.builtin.user:
+        name: www-data
+        groups: "{{ galaxy_user_group_name }}"
+        append: yes
+    - name: Restart Nginx after changing its user
+      ansible.builtin.systemd:
+        state: restarted
+        name: nginx
+    - name: Creates entry in crontab "chmod on _files for ngnix access"
+      ansible.builtin.cron:
+        name: "chmod on _files for ngnix access"
+        minute: "2"
+        hour: "*" 
+        #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'
+        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -type d -mmin -180 -maxdepth 0 -exec chmod -R g+rw '{}' ';'"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
+
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
         name: "Cleanup Old User Data"
@@ -88,6 +107,7 @@
         minute: "0"
         hour: "0"
         job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
+
     - name: Setup user - group association rutine
       ansible.builtin.cron:
         name: "Add E-infra users to E-infra group"
@@ -95,11 +115,28 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+#    - name: Setup CVMFS cache cleaning
+#      ansible.builtin.cron:
+#        name: "CVMFS cache cleaning"
+#        user: root
+#        minute: "0"
+#        hour: "*/12"
+#        job: "cvmfs_talk -i singularity.galaxyproject.org cleanup {{ cvmfs_quota_limit }}"
+
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
         path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
         regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
         replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
+
+    - name: Add lines to logrotate config of ProFTPd
+      lineinfile:
+        path: /etc/logrotate.d/proftpd-core
+        line: '{{ item }}'
+        insertbefore: BOF
+      with_items:
+        - /var/log/proftpd/tls.log
+        - /var/log/proftpd/sql.log
 
     ## Install required Galaxy tools
     - name: Install required tools - create Ephemeris venv

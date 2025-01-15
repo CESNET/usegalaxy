@@ -22,6 +22,21 @@ tools:
     rank: |
       helpers.weighted_random_sampling(candidate_destinations)
 
+  local_running_tools:
+    abstract: True
+    scheduling:
+      require:
+      - local
+      reject:
+      - pulsar
+
+  local_sing_running_tools:
+    inherits: local_running_tools
+    abstract: True
+    scheduling:
+      require:
+      - singularity
+
   .*testing.*:
     cores: 1
     mem: 1
@@ -45,13 +60,17 @@ tools:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
   .*/alphafold/.*:
-    cores: 1
+    cores: 8
     mem: 120
     gpus: 1
     context:
       walltime: 24
       scratch: 100 
-      gpu_mem: 8
+      gpu_mem: 16
+    env:
+      MPLCONFIGDIR: "$SCRATCHDIR"
+      ALPHAFOLD_DB: "/scratch.ssd/galaxyeu/permanent/alphafold.db"
+      ALPHAFOLD_USE_GPU: True
     scheduling:   
       require:
         - alphafold
@@ -72,23 +91,15 @@ tools:
       walltime: 96
       scratch: 100
 
-  CONVERTER_.*:
-    scheduling:   
-      require:   
-#        - local
-#      reject:
-        - pulsar
-
   __SET_.*:
-    scheduling:
-      require:
-        - local
-      reject:
-        - pulsar
+    inherits: local_running_tools
+
+  .*/data_manager_.*:
+    inherits: local_sing_running_tools
 
 roles:
   training.*:
-    max_cores: 2
+    max_cores: 4
     max_mem: max_cores * 4  # TODO check multiplier
     scheduling:
       require:
@@ -98,20 +109,19 @@ roles:
 destinations:
   tpv_local:
     runner: local_runner
-    max_accepted_cores: 1
-    max_accepted_mem: 4
+    max_cores: 1
+    max_mem: 4
     params:
       tmp_dir: true
     scheduling:
       require:
         - local
       reject:
-        - pulsar
         - singularity
   tpv_local_singularity:
     runner: local_runner
-    max_accepted_cores: 1
-    max_accepted_mem: 4
+    max_cores: 1
+    max_mem: 4
     params:
       singularity_enabled: true
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
@@ -119,10 +129,9 @@ destinations:
       # Ensuring a consistent collation environment is good for reproducibility.
       LC_ALL: C
       # The cache directory holds the docker containers that get converted
-#      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
-      SINGULARITY_CACHEDIR: "/rbd/data/singularity/"
+      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
       # Singularity uses a temporary directory to build the squashfs filesystem
-      SINGULARITY_TMPDIR: /rbd/data//tmp
+      SINGULARITY_TMPDIR: /rbd/data/tmp
     scheduling:
       require:
       - local
@@ -134,7 +143,7 @@ destinations:
     max_accepted_mem: 512
     max_accepted_gpus: 2
     max_cores: 16
-    max_mem: 256
+    max_mem: 180
     max_gpus: 1
     params:
       default_file_action: remote_transfer
@@ -178,13 +187,9 @@ destinations:
       singularity_run_extra_arguments: '--nv'
       singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
       submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q galaxy_gpu@pbs-m1.metacentrum.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
-    env:
-      ALPHAFOLD_DB: "/auto/brno11-elixir/projects/alphafold/alphafold.db-2.3.1"
-      ALPHAFOLD_USE_GPU: True
     scheduling:
       require:
         - alphafold
-      reject:
   tpv_pulsar_training:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner

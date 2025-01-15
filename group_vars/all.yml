@@ -4,12 +4,18 @@ pip_virtualenv_command: /usr/bin/python3 -m venv  # usegalaxy_eu.certbot, usegal
 
 # Common variables needed by all hosts
 galaxy_user_name: galaxy
+galaxy_user_id: 199
+galaxy_user_group_name: galaxy
+galaxy_user_group_gid: 199
 galaxy_db_name: galaxy
+galaxy_data_dir: "/rbd/data/"
+galaxy_temp_dir: "{{ galaxy_data_dir }}"
+galaxy_prefix: ""
 
 # CVMFS vars
 cvmfs_role: client
 galaxy_cvmfs_repos_enabled: config-repo
-cvmfs_quota_limit: 500
+cvmfs_quota_limit: 5000
 
 # Telegraf
 telegraf_agent_package_state: latest
