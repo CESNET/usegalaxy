@@ -335,7 +335,7 @@ pip_install_packages:
 rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.11-management
+  image: rabbitmq:3.13-management
   hostname: "{{ inventory_hostname }}"
 
 rabbitmq_plugins:
