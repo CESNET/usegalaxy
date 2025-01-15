@@ -130,7 +130,6 @@ destinations:
       LC_ALL: C
       # The cache directory holds the docker containers that get converted
       SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
-#      SINGULARITY_CACHEDIR: "{{ galaxy_mutable_data_dir }}/singularity"
       # Singularity uses a temporary directory to build the squashfs filesystem
       SINGULARITY_TMPDIR: "{{ galaxy_mutable_data_dir }}/tmp"
     scheduling:
