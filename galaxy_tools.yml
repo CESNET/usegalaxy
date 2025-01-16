@@ -31,7 +31,7 @@
         cmd: /tmp/ephemeris/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t /tmp/master_tool_list.yaml
       when: copy_tools_from
 
-    - name: Install local tools
+    - name: Install instance specific tools
       local_action:
         module: ansible.builtin.shell
         cmd: /tmp/ephemeris/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t files/{{ inventory_hostname }}/tool_list.yaml

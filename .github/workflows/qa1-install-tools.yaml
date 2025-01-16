@@ -1,6 +1,6 @@
 #! vim: ts=2 expandtab:
 
-name: deploy-qa1-ansible
+name: qa1-install-tools
 
 # TODO: run automatically on push to main
 on: [ workflow_dispatch ]
@@ -10,12 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout actions
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
-      - name: Call run-ansible-playbook action
-        uses: ./.github/actions/run-ansible-playbook
+      - name: Call run-install-tools-playbook action
+        uses: ./.github/actions/run-install-tools-playbook
         env:
           TARGET_HOSTNAME: galaxy-qa1.galaxy.cloud.e-infra.cz
           TARGET_USER: debian
           VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_QA1 }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_QA1 }}
+        
