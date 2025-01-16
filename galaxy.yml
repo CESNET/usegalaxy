@@ -1,35 +1,55 @@
 ---
+- hosts: all
+  name: apt update & pip
+  become: true
+  become_user: root
+  tasks:
+    - ansible.builtin.apt:
+        name: python3-pip
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
 - hosts: dbservers
   become: true
   become_user: root
   pre_tasks:
     - name: Install Dependencies
       package:
-        name: 'acl'
+        name: ['acl', 'anacron']
   roles:
     - galaxyproject.postgresql
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
 
+- hosts: noletsencrypt
+  become: true
+  become_user: root
+  tasks:
+    - name: Certificate
+      copy:
+        src: "{{ nginx_ssl_src_dir }}/{{ nginx_conf_ssl_certificate | basename }}"
+        dest: "/etc/ssl/cert.pem"
+        mode: "0644"
+    - name: RabbitMQ key
+      copy:
+        content: "{{ sslkeys[nginx_conf_ssl_certificate_key | basename] }}"
+        dest: "{{ rabbitmq_conf_ssl_certificate_key }}"
+        owner: "999"
+        mode: "0400"
+
 - hosts: galaxyservers
   become: true
   become_user: root
-  vars_files:
-    - group_vars/secret.yml
   pre_tasks:
-    - pip:
-        name: passlib
-    - htpasswd:
-        path: /etc/nginx/passwd
-        name: admin        # Pick a username
-        password: "{{ vault_reports_admin_password }}" # and a password
-        owner: www-data    # nginx on centos
-        group: root
-        mode: 0640
+    - name: Admin ssh keys
+      blockinfile:
+        path: .ssh/authorized_keys
+        block: "{{ admin_ssh_keys }}"
+      when: admin_ssh_keys
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'squashfs-tools', 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'ceph-common', 'squashfs-tools', 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -38,30 +58,49 @@
       package:
         name: ['tmpreaper']
       when: ansible_os_family == 'Debian'
+    - name: Comment out SHOWWARNING line in tmpreaper config
+      ansible.builtin.lineinfile:
+        path: /etc/tmpreaper.conf
+        regexp: "SHOWWARNING="
+        state: absent
+      when: ansible_os_family == 'Debian'
+    - htpasswd:
+        path: /etc/nginx/passwd
+        name: admin        # Pick a username
+        password: "{{ vault_reports_admin_password }}" # and a password
+        owner: www-data    # nginx on centos
+        group: root
+        mode: 0640
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
-    - name: Create the RBD storage directory
-      file:
-        owner: galaxy
-        group: galaxy
-        path: /rbd/data
-        state: directory
-        mode: '0755'
-    - name: Create the nginx upload job files store
-      file:
-        owner: www-data
-        group: galaxy
-        path: /rbd/data/_upload_job_files
-        state: directory
-        mode: '0775'
-    - name: Create the client body temp path   
-      file:
-        owner: www-data
-        group: galaxy
-        path: /rbd/data/nginx_upload_store
-        state: directory
-        mode: '0775'
+#    - ansible.builtin.group:
+#        name: galaxy
+#    - ansible.builtin.user:
+#        name: galaxy
+#        group: galaxy
+#        comment: Galaxy system user
+#    - name: Create the data storage directory
+#      file:
+#        owner: galaxy
+#        group: galaxy
+#        path: "{{ galaxy_mutable_data_dir }}"
+#        state: directory
+#        mode: '0755'
+#    - name: Create the nginx upload job files store
+#      file:
+#        owner: www-data
+#        group: galaxy
+#        path: "{{ datastore }}/data/_upload_job_files"
+#        state: directory
+#        mode: '0775'
+#    - name: Create the client body temp path
+#      file:
+#        owner: www-data
+#        group: galaxy
+#        path: "{{ datastore }}/data/nginx_upload_store"
+#        state: directory
+#        mode: '0775'
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
@@ -71,7 +110,8 @@
       become: true
       become_user: "{{ galaxy_user_name }}"
     - geerlingguy.redis
-    - usegalaxy_eu.flower
+    - role: usegalaxy_eu.flower
+      when: enable_flower | bool
     - galaxyproject.tiaas2
     - galaxyproject.nginx
     - galaxyproject.proftpd
@@ -79,7 +119,9 @@
     - usegalaxy_eu.rabbitmqserver
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
-    - dj-wasabi.telegraf
+    - role: dj-wasabi.telegraf
+      when: enable_telegraf | bool
+
   post_tasks:
     - name: Adds nginx's www-data user into galaxy user group
       ansible.builtin.user:
@@ -114,7 +156,8 @@
         user: postgres # Run as the postgres user
         minute: "0"
         hour: "*"
-        job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+        job: "python3 {{ playbook_dir }}/extra_scripts/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+
 #    - name: Setup CVMFS cache cleaning
 #      ansible.builtin.cron:
 #        name: "CVMFS cache cleaning"
@@ -138,27 +181,12 @@
         - /var/log/proftpd/tls.log
         - /var/log/proftpd/sql.log
 
-    ## Install required Galaxy tools
-    - name: Install required tools - create Ephemeris venv
-      ansible.builtin.shell:
-        cmd: python3 -m venv ~/ephemeris_venv
-      tags: tools
-    - name: Install required tools - install Ephemeris
-      ansible.builtin.shell:
-        cmd: source ~/ephemeris_venv/bin/activate && pip install ephemeris
-      tags: tools
-    - name: Install required tools - install Galaxy tools
-      ansible.builtin.shell:
-        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t regalaxy_tool_list.yaml
-      when: "'galaxy-re' in inventory_hostname"
-      tags: tools
-    - name: Install required tools - install Galaxy tools
-      ansible.builtin.shell:
-        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t umsa_tool_list.yaml
-      when: "'umsa' in inventory_hostname"
-      tags: tools
-    - name: Install required tools - install Galaxy tools
-      ansible.builtin.shell:
-        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }} -a {{ api_key }} -t eu_tool_list.yaml
-      when: "'usegalaxy' in inventory_hostname or 'galaxy-cz' in inventory_hostname"
-      tags: tools
+    - name: Add pulsar public ssh key
+      ansible.posix.authorized_key:
+        user: galaxy
+        state: present
+        key: "{{ lookup('file','files/{{ inventory_hostname }}/pulsar.pub') }}"
+    - name: Restart galaxy
+      become: true
+      become_user: root
+      ansible.builtin.command: galaxyctl restart

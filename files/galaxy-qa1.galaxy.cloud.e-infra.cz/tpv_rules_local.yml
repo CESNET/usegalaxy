@@ -1,0 +1,5 @@
+# empty intentionally
+
+# prevent tpv lint complaints
+global:
+  default_inherits: default

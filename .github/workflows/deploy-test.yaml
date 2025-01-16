@@ -1,0 +1,20 @@
+#! vim: ts=2 expandtab:
+
+name: deploy-test
+
+# TODO: run automatically on push to main
+on: [ workflow_dispatch ]
+
+jobs:
+  call-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Call common
+        uses: ./.github/actions/deploy-common
+        env:
+          TARGET_HOSTNAME: usegalaxy-test.cerit-sc.cz
+          TARGET_USER: debian
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_TEST_CZ }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_TEST_CZ }}

@@ -1,4 +1,16 @@
+*~
+*.*.swp
+*.retry
+.venv
+*.log
+
 ### Values and Secrets ###
-.vault-password.txt
+.vault-password.*
 hosts
-ansible.cfg
+ansible.log
+
+# Python bytecode
+*.pyc
+
+# Macs
+.DS_Store

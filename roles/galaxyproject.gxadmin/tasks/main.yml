@@ -14,7 +14,8 @@
   register: __gxadmin_check
 
 - name: Compile gxadmin when there are updates
-  community.general.system.make:
+  make:
+#  community.general.system.make:
     chdir: "{{ gxadmin_dir }}"
     target: gxadmin
   when: |

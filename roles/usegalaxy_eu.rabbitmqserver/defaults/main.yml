@@ -31,6 +31,9 @@ rabbitmq_config:
     keyfile: /etc/ssl/user/privkey-rabbitmq.pem
     verify: verify_peer
     fail_if_no_peer_cert: 'false'
+    versions:
+      - tlsv1.3
+      - tlsv1.2
   management_agent:
     disable_metrics_collector: 'false'
   management:
@@ -56,6 +59,7 @@ rabbitmq_container_standalone_setup_details:
     - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
     - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
     - /etc/ssl:/etc/ssl:ro
+    - /etc/nginx/ssl:/etc/nginx/ssl:ro
     - /etc/pki:/etc/pki:ro
   ports:
     - 15672:15672
@@ -66,6 +70,7 @@ rabbitmq_container_cluster_setup_details:
     - "{{ rabbitmq_path }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro"
     - "{{ rabbitmq_path }}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie"
     - /etc/ssl:/etc/ssl:ro
+    - /etc/nginx/ssl:/etc/nginx/ssl:ro
     - /etc/pki:/etc/pki:ro
   ports:
     - 15672:15672

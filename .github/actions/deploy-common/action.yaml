@@ -1,0 +1,27 @@
+#! vim: ts=2 expandtab:
+
+name: deploy-common
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create SSH key
+      shell: bash
+      run: |
+        mkdir -p $HOME/.ssh
+        install -m 600 -D /dev/null $HOME/.ssh/id_rsa
+        echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
+        cp known_hosts $HOME/.ssh/known_hosts
+        ssh -f -o StrictHostKeyChecking=no $TARGET_USER@$TARGET_HOSTNAME hostname
+
+    - name: Install Ansible requirements
+      shell: bash
+      run: ansible-galaxy install -p roles -r requirements.yml
+
+    - name: Vault password
+      shell: bash
+      run: echo "$VAULT_PASSWORD" >.vault-password.txt
+
+    - name: Run playbook
+      shell: bash
+      run: ansible-playbook --limit $TARGET_HOSTNAME galaxy.yml

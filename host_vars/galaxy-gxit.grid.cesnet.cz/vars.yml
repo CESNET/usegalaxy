@@ -1,0 +1,26 @@
+# where to put most of the data; we use RBD or NBD volumes
+galaxy_mutable_data_dir: /data/galaxy
+
+enable_flower: no
+enable_telegraf: no
+
+
+pulsar:
+  user_name: galaxyelixir
+  nfs_home: brno11-elixir
+  nfs_prefix: pulsar-gxit
+  pbs_queue: galaxyre
+  pbs_gpu_queue: galaxy_gpu
+
+pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
+
+copy_tools_from: usegalaxy.eu
+
+# just test
+#extra_certbot_domains:
+# - "nonexistent.domain"
+
+admin_ssh_keys: |
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCaGUfHM9igpBRvUtgx8Al1vfdJR4x6mx+ezXYX78m4ih9GTYJkeVHhgLqzLX+uQygO3Ugfz13eSn2bJj31HAJYt6aOf4H2tdg4G4GLcGuVPka2/CAzyNBPJ5fuY+hr9/zWJzU02xyQg/vjnqF7rOZK0VzTWJ3vTwa86uNEqa3T6TCViZJ2D7/LUZPkkIy/8zpcRBYNAz6XVkBezGiUYMKCODr5ROxunvy4H1VNdyeVfe3+mFPlwxfxHLAHmWjCFrvGpgFWO77l/0GD9iXSkhekjyq2t8HCj0GtebJdvTgh+k/4cjD4dxWD04t0mI7TyXyXe5jF7MVJM7xRcAwlV/2wNJIwCNBWh+kELUeYUbKaZsVi9Nx5DAsmq+A5mAXzzvXHxGh5AwtN08hcnpfqkxwywqgaQugK5CAO57LiqOyb+sR9vgK6awlhR1reavMCCErbwbbixSX2nZsu/iPxFGS04gwngHK8Mrg5HJhqzyxeQT8OmPGkWFNt62XVqbnE3a8= ljocha@abiff
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCscnBHx46RNH0xgJGFQDuRvcjsf+0KE4lHMZuxhY3z70/kR3oJFZ0ns6/26QGCmhKVlSePKIO8idC1U5hqDXqhRB+Kpx/4yDcUNMtU4Xklmfqqv47uyq6/oylNjJgAbD691K21SZQSGP8nEz2LZlB3d9eNx131mVfMegyyQnnSLXqvQn1PGpwq9yCeV7RstAI67dL+ilglFWIUwkmwr7V6AKSPwYgFZE/uZJ0qfZ6+PBhS6+/zsDcq1N9OhtsHNsM1esglvWwu5zW83uuqB2p2FaG/Aoy3+70vDiwhjvgiXor/2jOx4Vzfv1c/55X8gmsOWT/WmQwoE2ernbFBFc8h ljocha@hiram.ics.muni.cz
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAfdMuyDmA84qskMECxjuep3V5tCAwPHYs10Qr5GQFR3wywJuarAVoFj4YR31mcmKR3ZkYRAOKJZepSGm11ojT9n5F+ctMrGhC5RmxlXhDF6RNadfx5QVkkRfldjkR4G+2iCtm4CA9bdSU57jQHtqXyyaw7+NqPiJmq6s+OIqCew6Mick+lCVCgwpbjm6Zg4E3fAYvxKPaB8fClpC+YM+wyBnG6dgq5Qb3qXMVrC0db1xpbQQbt91YWWzG6IAxFO/as1CRw/y4qS+60UlTjBp0umD5iK0ZDqfXI/aQrahOFZXQyobEGaiS1e8qcKEl+mFOxbkQpdXLZIdvgWrw6/LAS6i918lrOFrR/vtn67CP/yFwRqWcgXDRhlafmKL2LpKg61OsuJYP1fD4ccFyl+lTLs6yaR5i6HScbw5qtfWBYjFFdYRpiPw0YEPhFzwFsWRFB/FTxgjgVb0Ek+CWHRPTsRKCVtotUTgsAMO7mDvIre9y0ONkokS65bpGvBVMptk= action@github

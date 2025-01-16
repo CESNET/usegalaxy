@@ -1,0 +1,14 @@
+# galaxy_build_client: false
+galaxy_commit_id: release_24.2
+
+csnt_brand: QA2-TEST
+# csnt_enable_account_interface: false
+csnt_log_level: DEBUG
+
+pulsar:
+  user_name: galaxy-qa1
+  nfs_home: brno11-elixir
+  nfs_prefix: pulsar-qa2
+  pbs_queue: galaxyqa
+  pbs_gpu_queue: galaxy_gpu
+pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"

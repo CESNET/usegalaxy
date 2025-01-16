@@ -1,18 +1,32 @@
 ---
 # Galaxy
+galaxy_manage_systemd: no
 galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
 galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
 galaxy_manage_paths: true # False by default as your administrator might e.g. have root_squash enabled on NFS. Here we can create the directories so it's fine.
-galaxy_manage_cleanup: true
+galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-# galaxy_commit_id: 1ad49865fbeb03551cf7774dc0c12e5cd27ff797 # release_23.0
-galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
+galaxy_commit_id: release_24.1
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
+miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'defaults']
+
+# defaults for host-specific vars
+csnt_brand: ""
+csnt_short_term_storage_dir: short_term_web_storage
+csnt_enable_account_interface: true
+csnt_log_level: WARNING
+csnt_allow_user_deletion: false
+csnt_enable_oidc: true
+csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
+csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+admin_ssh_keys: false
+copy_tools_from: false
+enable_telegraf: false
+enable_flower: false
 
 # Galaxy Job Configuration
 galaxy_job_config:
@@ -23,7 +37,7 @@ galaxy_job_config:
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
-      amqp_url: "pyamqp://pulsar:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
+      amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
       amqp_consumer_timeout: 2
@@ -45,7 +59,8 @@ galaxy_job_config:
         rules_module: tpv.rules
         tpv_config_files:
           - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
-          - "{{ tpv_config_dir }}/tpv_rules_local.yml"
+          - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
+          - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   resources:
     default: default
     groups:
@@ -66,22 +81,21 @@ galaxy_config:
   galaxy:
     # Main Configuration
     # To not bother the main disk
-    new_file_path: "/rbd/data/tmp"
-    # nginx_upload_job_files_store: "/rbd/data/_upload_job_files"
-    # nginx_upload_job_files_path: "/_job_files"
+    new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
-    enable_oidc: true
-    oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
-    oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+    enable_oidc: "{{ csnt_enable_oidc }}"
+    oidc_config_file: "{{ csnt_oidc_config_file }}"
+    enable_oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users:
-    - admin@example.org
     - 499542@muni.cz
     - 325073@mail.muni.cz
-    - demko@cesnet.cz
+    - Demko.Martin@cesnet.cz
     - galaxy@usegalaxy.cz
+    - ljocha@ics.muni.cz
     - Martin.Cech@cesnet.cz
+    - galaxy@cesnet.cz
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
@@ -89,14 +103,14 @@ galaxy_config:
     allow_user_creation: false
     require_login: true
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
-    file_path: /rbd/data/datasets
-    job_working_directory: /rbd/data/jobs
-    cluster_files_directory: "/rbd/data/pbs"
-    short_term_storage_dir: "/rbd/data/short_term_web_storage"
+    file_path: "{{ galaxy_mutable_data_dir }}/datasets"
+    short_term_storage_dir: "{{ csnt_short_term_storage_dir }}"
+    job_working_directory: "{{ galaxy_mutable_data_dir }}/jobs"
     object_store_store_by: uuid
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
-    tool_config_file: 
+    vault_config_file: vault_conf.yml
+    tool_config_file:
     - "{{ galaxy_config_dir }}/tool_conf.xml"
     - "{{ galaxy_config_dir }}/local_tool_conf.xml"
     tool_data_path: "/rbd/data/tool_data"
@@ -108,10 +122,12 @@ galaxy_config:
     # File serving Performance
     nginx_x_accel_redirect_base: /_x_accel_redirect
     # Automation / Ease of Use / User-facing features
+    brand: "{{ csnt_brand }}"
+    enable_account_interface: "{{ csnt_enable_account_interface }}"
     watch_job_rules: 'auto'
     allow_path_paste: true
     enable_quotas: true
-    allow_user_deletion: true
+    allow_user_deletion: "{{ csnt_allow_user_deletion }}"
     show_welcome_with_login: true
     expose_user_name: true
     expose_dataset_path: true
@@ -119,8 +135,8 @@ galaxy_config:
     # NFS workarounds
     retry_job_output_collection: 3
     # Debugging
-    cleanup_job: onsuccess
     allow_user_impersonation: true
+    log_level= "{{ csnt_log_level }}"
     # Tool security
     outputs_to_working_directory: true
     new_user_dataset_access_role_default_private: true # Make datasets private by default
@@ -132,21 +148,19 @@ galaxy_config:
     - /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml
     - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
-    dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
     container_resolvers:
     -   type: explicit_singularity
     -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-#    -   cache_directory: /rbd/data/singularity
         type: cached_mulled_singularity
     -   auto_install: true
         type: mulled_singularity
     -   auto_install: false
         type: build_mulled_singularity   
         cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-#        cache_directory: /rbd/data/singularity/mulled
+#        cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
 #    library_import_dir: "/rbd/data/library_import_dir" # likely to be here
-    library_import_dir: /libraries/admin 
+    library_import_dir: /libraries/admin
     user_library_import_dir: /libraries/user
     # Celery
     amqp_internal_connection: "pyamqp://galaxy:{{ vault_rabbitmq_password_galaxy }}@localhost:5671/galaxy_internal?ssl=1"
@@ -157,7 +171,7 @@ galaxy_config:
     statsd_host: localhost
     statsd_influxdb: true
     # FTP
-    ftp_upload_dir: /rbd/data/uploads
+    ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
   gravity:
     process_manager: systemd
@@ -203,7 +217,7 @@ galaxy_config:
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
 galaxy_config_files_public:
-  - src: files/galaxy/static/welcome.html
+  - src: templates/{{ inventory_hostname }}/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
   - src: files/galaxy/static/usegalaxy-cz.png
     dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
@@ -219,27 +233,32 @@ galaxy_config_files_public:
 galaxy_config_files:
   - src: files/galaxy/themes.yml
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
+  - src: "files/{{ inventory_hostname }}/tpv_rules_local.yml"
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
+  - src: files/{{ inventory_hostname }}/file_sources_conf.yml
+    dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
+  - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
+    dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
+  - src: "{{ lookup('first_found', [{'path': 'templates/'+inventory_hostname+'/config/tool_conf.xml.j2'}, {'path': 'files/galaxy/config/tool_conf.xml'}]) }}"
+    dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
+  - src: files/galaxy/config/oidc_config.xml
+    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
 
 galaxy_config_templates:
-  - src: templates/galaxy/config/dependency_resolvers_conf.xml
-    dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
   - src: templates/galaxy/config/job_resource_params_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.job_resource_params_file }}"
-  - src: templates/galaxy/config/reports.yml
+  - src: templates/galaxy/config/reports.yml.j2
     dest: "{{ galaxy_config.gravity.reports.config_file }}"
-  - src: templates/galaxy/config/oidc_config.xml
-    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
-  - src: templates/galaxy/config/oidc_backends_config.xml
+  - src: "{{ lookup('first_found', [{'path': 'templates/'+inventory_hostname+'/config/oidc_backends_config.xml.j2'}, {'path': 'templates/galaxy/config/oidc_backends_config.xml.j2'}]) }}"
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
-  - src: templates/galaxy/config/object_store_conf.xml.j2
+  - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
-  - src: templates/galaxy/config/tool_conf.xml.j2
-    dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
-  - src: templates/galaxy/config/local_tool_conf.xml.j2
+  - src: "templates/{{ inventory_hostname }}/config/local_tool_conf.xml.j2"
     dest: "{{ galaxy_config.galaxy.tool_config_file[1] }}"
-  - src: templates/galaxy/config/tpv_rules_local.yml.j2
-    dest: "{{ tpv_mutable_dir }}/tpv_rules_local.yml"
-
+  - src: templates/galaxy/config/tpv_rules_meta.yml.j2
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
+  - src: "templates/galaxy/config/vault_conf.yml.j2"
+    dest: "{{ galaxy_config_dir }}/vault_conf.yml"
 
 galaxy_extra_dirs:
   - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
@@ -271,10 +290,7 @@ certbot_post_renewal: |
     docker restart rabbit_hole || true
     systemctl restart proftpd || true
 # the order in domain names matter, rabbitMQ role takes the first entry for path to letsencrypt certificates
-certbot_domains:
- - "{{ inventory_hostname }}"
- - "galaxy-cz.grid.cesnet.cz"
- - "galaxy.metacentrum.cz"
+certbot_domains: "{{ [ inventory_hostname ] + (extra_certbot_domains | default([]) ) }}"
 certbot_expand: true
 certbot_agree_tos: --agree-tos
 
@@ -287,7 +303,7 @@ nginx_ssl_servers:
 #  - sentry
 nginx_enable_default_server: false
 nginx_conf_http:
-  client_max_body_size: 1g
+  client_max_body_size: 50g
   # gzip: "on" # This is enabled by default in Ubuntu, and the duplicate directive will cause a crash.
   gzip_proxied: "any"
   gzip_static: "on"   # The ngx_http_gzip_static_module module allows sending precompressed files with the ".gz" filename extension instead of regular files.
@@ -310,6 +326,8 @@ nginx_conf_http:
       image/png
       image/svg+xml
       image/x-icon
+
+# default Let's encrypt, override in host_vars eventually
 nginx_ssl_role: usegalaxy_eu.certbot
 nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
 nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
@@ -317,15 +335,22 @@ nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/p
 #Install pip docker package for ansible
 pip_install_packages:
   - name: docker
+
 # RabbitMQ
 rabbitmq_hostname: "{{ inventory_hostname }}"
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.11-management
+  image: rabbitmq:3.13-management
   hostname: "{{ inventory_hostname }}"
 
 rabbitmq_plugins:
   - rabbitmq_management
+
+# ok for noletsencrypt
+#rabbitmq_conf_ssl_certificate: /etc/ssl/certs/cert.pem
+
+rabbitmq_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
+rabbitmq_conf_ssl_certificate_key: /etc/ssl/user/privkey-999:999.pem
 
 rabbitmq_config:
   listeners:
@@ -334,10 +359,13 @@ rabbitmq_config:
     default: 5671
   ssl_options:
     verify: verify_peer
-    cacertfile: /etc/ssl/certs/fullchain.pem
-    certfile: /etc/ssl/certs/cert.pem
-    keyfile: /etc/ssl/user/privkey-999:999.pem
+    cacertfile: /etc/ssl/certs/ca-certificates.crt
+    certfile: "{{ rabbitmq_conf_ssl_certificate }}"
+    keyfile: "{{ rabbitmq_conf_ssl_certificate_key }}"
     fail_if_no_peer_cert: 'false'
+    versions:
+      - tlsv1.3
+      - tlsv1.2
   management_agent:
     disable_metrics_collector: "false"
   management:
@@ -354,7 +382,7 @@ rabbitmq_users:
     password: "{{ rabbitmq_users_password.mqadmin }}"
     tags: administrator
     vhost: /
-  - user: pulsar
+  - user: "{{ pulsar.user_name }}"
     password: "{{ rabbitmq_users_password.pulsar }}"
     vhost: pulsar
   - user: galaxy
@@ -367,7 +395,7 @@ rabbitmq_users:
 
 # TUS
 galaxy_tusd_port: 1080
-galaxy_tus_upload_store: /rbd/data/tus
+galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus" # /mnt/data/tus
 
 #Redis
 galaxy_additional_venv_packages:
@@ -419,6 +447,9 @@ tiaas_info:
   owner_site: "https://{{ inventory_hostname }}"
 tiaas_send_email_to_requester: true
 
+# XXX: from Galaxy 24.1, disappered from /static/style/, but galaxyproject.tiaas2/defaults/main.yml is not updated yet
+tiaas_galaxy_stylesheet: "{{ galaxy_server_dir }}/client/dist/base.css"
+
 # Proftpd:
 proftpd_galaxy_auth: yes
 galaxy_ftp_upload_dir: "{{ galaxy_config.galaxy.ftp_upload_dir }}"
@@ -441,4 +472,3 @@ proftpd_global_options:
   - PassivePorts: 56000 60000
 proftpd_use_mod_tls_shmcache: false
 proftpd_tls_options: NoSessionReuseRequired
-

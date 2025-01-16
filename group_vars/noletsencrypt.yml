@@ -1,0 +1,13 @@
+postgresql_objects_privileges: []
+
+nginx_ssl_role: "{{ undef() }}"
+nginx_ssl_src_dir: files/{{ inventory_hostname }}
+nginx_conf_ssl_certificate: cert.pem
+nginx_conf_ssl_certificate_key: key.pem
+
+rabbitmq_conf_ssl_certificate: /etc/ssl/cert.pem 
+rabbitmq_conf_ssl_certificate_key: /etc/ssl/key-999.pem
+
+proftpd_conf_ssl_certificate: /etc/nginx/ssl/cert.pem
+proftpd_conf_ssl_certificate_key: /etc/nginx/ssl/key.pem
+
