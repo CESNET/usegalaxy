@@ -1,0 +1,33 @@
+<tool id="testing_rosettafold2" name="Test of RoseTTAFold2">
+    <command detect_errors="exit_code">
+        <![CDATA[
+echo SCRATCH=\${SCRATCH} &&
+export PATH=/scratch.ssd/galaxyeu/permanent/miniconda3/envs/RF2/bin:/scratch.ssd/galaxyeu/permanent/miniconda3/condabin:/scratch.ssd/galaxyeu/permanent/miniconda3/bin:\${PATH} &&
+echo PATH=\${PATH} &&
+\$(which time) --verbose /scratch.ssd/galaxyeu/permanent/RoseTTAFold2/run_RF2.sh -o \${SCRATCH}/rosettafold_out $pair
+#if $symmgroup.symmgroup_value:
+ --symm '$symmgroup.symmgroup_type'
+#end if
+ "$input1" &&
+cp \${SCRATCH}/rosettafold_out/models/*pdb "$output1"
+]]>
+    </command>
+    <inputs>
+        <param name="input1" type="data" format="fasta" label="Input fasta sequences"/>
+        <param name="pair" type="boolean" checked="true" truevalue="" falsevalue="--pair" label="If predicted structure is homomeric" help="If more than one chain is provided, pair MSAs based on taxonomy ID."/>
+        <conditional name="symmgroup">
+            <param name="symmgroup_value" type="boolean" checked="false" label="If predicted structure contains symmetric group" help="(BETA) run with the specified spacegroup."/>
+            <when value="false"/>
+            <when value="true">
+                <param name="symmgroup_type" type="text" area="false" value="" label="Type of symmetric group" help="Tool understands Cn, Dn, T, I, O (with n an integer).">
+<!--                <validator type="expression" message="Understands only Cn, Dn, T, I, O (with n an integer)">-->
+<!--value.startswith('C') or value.startswith('D') or value.startswith('T') or value.startswith('I') or value.startswith('O')-->
+<!--                </validator>-->
+                </param>
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+        <data name="output1" format="pdb" label="${tool.name} on ${on_string}: PDB model"/>
+    </outputs>
+</tool>

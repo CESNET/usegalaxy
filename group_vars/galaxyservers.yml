@@ -76,9 +76,6 @@ galaxy_job_config:
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local_env
-    - id: testing
-      environment: tpv_dispatcher
-      resources: testing
 
 galaxy_config:
   galaxy:
@@ -116,6 +113,7 @@ galaxy_config:
     tool_config_file:
     - "{{ galaxy_config_dir }}/tool_conf.xml"
     - "{{ galaxy_config_dir }}/local_tool_conf.xml"
+    tool_data_path: "/rbd/data/tool_data"
     job_resource_params_file: "{{ galaxy_config_dir }}/job_resource_params_conf.xml"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # SQL Performance
@@ -146,19 +144,20 @@ galaxy_config:
     galaxy_infrastructure_url: "https://{{ inventory_hostname }}"
     tus_upload_store: "{{ galaxy_tus_upload_store }}"
     # CVMFS
-    tool_data_table_config_path: /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml,/cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
+    tool_data_table_config_path: 
+    - /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml
+    - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
     container_resolvers:
     -   type: explicit_singularity
     -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-#    -   cache_directory: /rbd/data/singularity
         type: cached_mulled_singularity
     -   auto_install: true
         type: mulled_singularity
     -   auto_install: false
-        type: build_mulled_singularity
-#        cache_directory: /rbd/data/singularity/mulled
-        cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
+        type: build_mulled_singularity   
+        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+#        cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
 #    library_import_dir: "/rbd/data/library_import_dir" # likely to be here
     library_import_dir: /libraries/admin
@@ -250,7 +249,6 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.job_resource_params_file }}"
   - src: templates/galaxy/config/reports.yml.j2
     dest: "{{ galaxy_config.gravity.reports.config_file }}"
-#  - src: "templates/galaxy/config/oidc_backends_config.xml.j2"
   - src: "{{ lookup('first_found', [{'path': 'templates/'+inventory_hostname+'/config/oidc_backends_config.xml.j2'}, {'path': 'templates/galaxy/config/oidc_backends_config.xml.j2'}]) }}"
     dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
   - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
@@ -446,7 +444,7 @@ tiaas_info:
   owner: "Metacentrum"
   domain: "{{ inventory_hostname }}"
   owner_email: "regalaxy@rt.cesnet.cz"
-  owner_site: "http://{{ inventory_hostname }}"
+  owner_site: "https://{{ inventory_hostname }}"
 tiaas_send_email_to_requester: true
 
 # XXX: from Galaxy 24.1, disappered from /static/style/, but galaxyproject.tiaas2/defaults/main.yml is not updated yet
