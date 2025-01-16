@@ -6,6 +6,7 @@
         <redirect_uri>https://{{ inventory_hostname }}/authnz/keycloak/callback</redirect_uri>
         <url>https://login.e-infra.cz/oidc</url>
         <icon>https://www.e-infra.cz/img/logo.svg</icon>
+        <!-- <extra_scopes>offline_access</extra_scopes> -->
     </provider>
     <provider name="Elixir">
         <client_id>{{ elixir_client_id }}</client_id>
@@ -13,5 +14,6 @@
         <redirect_uri>https://{{ inventory_hostname }}/authnz/elixir/callback</redirect_uri>
         <url>https://login.e-infra.cz/oidc</url>
         <icon>https://lifescience-ri.eu/fileadmin/lifescience-ri/media/Images/login-grey-wide.jpg.png</icon>
+        <!-- <extra_scopes>offline_access</extra_scopes> -->
     </provider>
 </OIDC>
