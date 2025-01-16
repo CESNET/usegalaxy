@@ -29,8 +29,7 @@ galaxy_job_config:
       amqp_consumer_timeout: 2
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
-      manager: tpv
-#      manager: _default_
+      manager: _default_
   handling:
     assign: ['db-skip-locked']
   execution:
