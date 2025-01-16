@@ -1,6 +1,6 @@
 #! vim: ts=2 expandtab:
 
-name: install-tools
+name: install-tools-playbook
 
 runs:
   using: 'composite'

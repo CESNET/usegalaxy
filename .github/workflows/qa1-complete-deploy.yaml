@@ -1,0 +1,41 @@
+#! vim: ts=2 expandtab:
+
+name: qa1-complete-deploy
+
+# TODO: run automatically on push to main
+on: [ workflow_dispatch ]
+
+jobs:
+  call-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout actions
+        uses: actions/checkout@v3
+        
+      - name: Call run-infrastructure-playbook action
+        uses: ./.github/actions/run-infrastructure-playbook
+        env:
+          TARGET_HOSTNAME: galaxy-qa1.galaxy.cloud.e-infra.cz
+          TARGET_USER: debian
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_QA1 }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_QA1 }}
+
+      - name: Sleep for 3 minutes
+        shell: bash
+        run: sleep 180s
+        
+      - name: Call run-install-tools-playbook action
+        uses: ./.github/actions/run-install-tools-playbook
+        env:
+          TARGET_HOSTNAME: galaxy-qa1.galaxy.cloud.e-infra.cz
+          TARGET_USER: debian
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_QA1 }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_QA1 }}
+        
+      - name: Call run-test-tools-playbook action
+        uses: ./.github/actions/run-test-tools-playbook
+        env:
+          TARGET_HOSTNAME: galaxy-qa1.galaxy.cloud.e-infra.cz
+          TARGET_USER: debian
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD_QA1 }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_QA1 }}
