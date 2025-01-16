@@ -4,7 +4,6 @@
     <tool file="data_source/upload.xml" />
     <tool file="/opt/galaxy/custom-tools/test/seek.xml" labels="beta" />
     <tool file="data_source/ucsc_tablebrowser.xml" />
-    <!-- <tool file="data_source/ucsc_tablebrowser_test.xml" /> -->
     <tool file="data_source/ucsc_tablebrowser_archaea.xml" />
     <tool file="data_source/ncbi_datasets.xml" />
     <tool file="/opt/galaxy/custom-tools/test/lftp.xml" />
@@ -20,7 +19,6 @@
     <tool file="data_source/fly_modencode.xml" />
     <tool file="data_source/intermine.xml" />
     <tool file="data_source/flymine.xml" />
-    <!-- <tool file="data_source/flymine_test.xml" /> -->
     <tool file="data_source/modmine.xml" />
     <tool file="data_source/mousemine.xml" />
     <tool file="data_source/ratmine.xml" />
@@ -28,7 +26,6 @@
     <tool file="data_source/metabolicmine.xml" />
     <tool file="data_source/worm_modencode.xml" />
     <tool file="data_source/wormbase.xml" />
-    <!-- <tool file="data_source/wormbase_test.xml" /> -->
     <tool file="data_source/zebrafishmine.xml" />
     <tool file="data_source/eupathdb.xml" />
     <tool file="data_source/hbvar.xml" />
@@ -36,18 +33,21 @@
   </section>
   <section id="send_data" name="Send Data">
     <tool file="data_export/send.xml" />
-    <tool file="data_export/export_remote.xml" />
   </section>
   <section id="collection_operations" name="Collection Operations">
     <tool file="${model_tools_path}/unzip_collection.xml" />
     <tool file="${model_tools_path}/zip_collection.xml" />
     <tool file="${model_tools_path}/filter_failed_collection.xml" />
     <tool file="${model_tools_path}/filter_empty_collection.xml" />
+    <tool file="${model_tools_path}/filter_null.xml" />
     <tool file="${model_tools_path}/flatten_collection.xml" />
     <tool file="${model_tools_path}/merge_collection.xml" />
     <tool file="${model_tools_path}/relabel_from_file.xml" />
     <tool file="${model_tools_path}/filter_from_file.xml" />
     <tool file="${model_tools_path}/sort_collection_list.xml" />
+    <tool file="${model_tools_path}/harmonize_two_collections_list.xml" />
+    <tool file="${model_tools_path}/cross_product_flat.xml" />
+    <tool file="${model_tools_path}/cross_product_nested.xml" />
     <tool file="${model_tools_path}/tag_collection_from_file.xml" />
     <tool file="${model_tools_path}/apply_rules.xml" />
     <tool file="${model_tools_path}/build_list.xml" />
@@ -57,7 +57,6 @@
   </section>
   <section id="expression_tools" name="Expression Tools">
     <tool file="expression_tools/parse_values_from_file.xml"/>
-    <tool file="expression_tools/pick_value.xml"/>
   </section>
   <label id="general_text_label" text="General Text Tools" />
   <section id="text_manipulation" name="Text Manipulation">
@@ -111,7 +110,7 @@
     <tool file="stats/grouping.xml" />
   </section>
 
-  <label id="genomic_manip_label" text="Genomic File Manipulation"  />
+  <label id="genomic_manip_label" text="Genomic File Manipulation" />
   <section id="convert_formats" name="Convert Formats">
     <tool file="filters/axt_to_concat_fasta.xml" />
     <tool file="filters/axt_to_fasta.xml" />
@@ -195,10 +194,10 @@
     <tool file="/opt/galaxy/custom-tools/test/onto-perl-toolkit/obo2owl.xml" hidden="True" />
     <tool file="/opt/galaxy/custom-tools/test/onto-perl-toolkit/term_id_vs_term_def.xml" hidden="True" />
     <tool file="/opt/galaxy/custom-tools/test/onto-perl-toolkit/term_id_vs_term_name.xml" hidden="True" />
-	<tool file="/opt/galaxy/custom-tools/xviz/mauve.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/xviz/mauve.xml" hidden="True" />
   </section>
   <section id="assembly" name="Assembly" version="">
-  <!--
+    <!--
   Keep this section commented until it includes tools that
   will be hosted on test/main.  The velvet wrappers have been
   included in the distribution but will not be hosted on our
@@ -217,7 +216,7 @@
     <label id="snpeff_label" text="snpeff" />
     <label id="snpsift_label" text="snpsift" />
   </section>
-  <section id="genome_editing" name="Genome editing" >
+  <section id="genome_editing" name="Genome editing">
   </section>
   <section id="rna_seq" name="RNA-Seq">
     <!--label id="rna_seq" text="RNA-seq" /-->
@@ -236,15 +235,15 @@
   <section id="rna_analysis" name="RNA Analysis" />
   <section id="peak_calling" name="Peak Calling">
     <label id="macs2" text="MACS2" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_callpeak.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgbroadcall.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgcmp.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgdiff.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgpeakcall.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_filterdup.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_predictd.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_randsample.xml"  hidden="True" />
-    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_refinepeak.xml"  hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_callpeak.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgbroadcall.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgcmp.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgdiff.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_bdgpeakcall.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_filterdup.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_predictd.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_randsample.xml" hidden="True" />
+    <tool file="/opt/galaxy/custom-tools/galaxytools/macs2/macs2_refinepeak.xml" hidden="True" />
     <tool file="/opt/galaxy/custom-tools/test/p_clip_peaks/p_clip_peaks.xml" />
   </section>
   <section id="epigenetics" name="Epigenetics">
@@ -257,7 +256,7 @@
     <!--tool file="/opt/galaxy/custom-tools/dna_methylation/smooth.xml" /-->
     <!--tool file="/opt/galaxy/custom-tools/dna_methylation/correlation_matrix.xml" /-->
   </section>
-  <section id="phylogenetics" name="Phylogenetics" >
+  <section id="phylogenetics" name="Phylogenetics">
   </section>
   <section id="phenotype_association" name="Phenotype Association">
     <tool file="evolution/codingSnps.xml" />
@@ -271,7 +270,7 @@
     <tool file="phenotype_association/beam.xml" />
     <tool file="phenotype_association/lps.xml" />
     <tool file="phenotype_association/master2pg.xml" />
-    </section>
+  </section>
   <section id="single-cell" name="Single-cell">
   </section>
   <section id="single-cell-section-scdata" name="Import/manipulate sc data">
@@ -290,7 +289,7 @@
   </section>
   <section id="single-cell-section-cell-spatial" name="Spatial">
   </section>
-  <section id="spatial_omics" name="Spatial Omics" />  
+  <section id="spatial_omics" name="Spatial Omics" />
   <!-- HCA Single Cell tools -->
   <section id="hca_sc_get-scrna" name="Get scRNAseq data">
   </section>
@@ -321,7 +320,7 @@
   </section>
   <section id="rad_seq" name="RAD-seq">
   </section>
-  <section id="graphclust" name="GraphClust" >
+  <section id="graphclust" name="GraphClust">
   </section>
   <section id="mimodd" name="MiModD">
   </section>
@@ -369,7 +368,7 @@
   </section>
   <section id="machine_learning" name="Machine Learning">
   </section>
-  <section id="graph_display_data" name="Graph/Display Data" >
+  <section id="graph_display_data" name="Graph/Display Data">
     <tool file="plotting/bar_chart.xml" />
     <tool file="plotting/boxplot.xml" />
     <tool file="visualization/LAJ.xml" />
@@ -420,7 +419,7 @@
   <section id="motif_tools" name="Motif Tools">
     <tool file="meme/meme.xml" hidden="True" />
     <tool file="meme/fimo.xml" hidden="True" />
-    </section>
+  </section>
   <section id="test_tools" name="Test Tools">
     <tool file="/opt/galaxy/custom-tools/test/zarr/xarray_netcdf2zarr.xml" />
     <tool file="/opt/galaxy/custom-tools/test/interactivetool_zeppelin.xml" labels="alpha" />
@@ -447,11 +446,11 @@
     <tool file="/opt/galaxy/custom-tools/tombo/tombo_text_output.xml" labels="alpha" />
     <tool file="/opt/galaxy/custom-tools/tombo/tombo_detect_modifications.xml" labels="alpha" />
     <tool file="/opt/galaxy/custom-tools/tombo/tombo_plot_most_significant.xml" labels="alpha" />
-    <tool file="/opt/galaxy/custom-tools/tombo/tombo_plot_genome_locations.xml" labels="alpha" />	  
-	  
-    <tool file="/opt/galaxy/custom-tools/test/tpp/peptide_prophet.xml"  labels="beta" />
+    <tool file="/opt/galaxy/custom-tools/tombo/tombo_plot_genome_locations.xml" labels="alpha" />
+
+    <tool file="/opt/galaxy/custom-tools/test/tpp/peptide_prophet.xml" labels="beta" />
     <tool file="/opt/galaxy/custom-tools/test/tpp/pepxml_and_protxml_to_table.xml" />
-    <tool file="/opt/galaxy/custom-tools/test/tpp/protein_prophet.xml"  />
+    <tool file="/opt/galaxy/custom-tools/test/tpp/protein_prophet.xml" />
     <tool file="/opt/galaxy/custom-tools/test/tpp/interprophet.xml" />
 
     <!--tool file="/opt/galaxy/custom-tools/test/ml/discriminant.xml" />
@@ -511,13 +510,13 @@
     <tool file="/opt/galaxy/custom-tools/test/lfoldz/rnalfoldz.xml" />
 
     <!--tool file="/opt/galaxy/custom-tools/test/chem/transfs.xml" hidden="True" /-->
-	  
+
     <!--tool file="/opt/galaxy/custom-tools/test/OpenMS25/OpenSwathAssayGenerator.xml" />
     <tool file="/opt/galaxy/custom-tools/test/OpenMS25/OpenSwathDecoyGenerator.xml" />
     <tool file="/opt/galaxy/custom-tools/test/OpenMS25/OpenSwathWorkflow.xml" />
     <tool file="/opt/galaxy/custom-tools/test/OpenMS25/TargetedFileConverter.xml" /-->
 
-	  
+
     <tool file="/opt/galaxy/custom-tools/test/imaging/he_maldi_image_registration/he_maldi_image_registration.xml" />
     <!--tool file="/opt/galaxy/custom-tools/test/imaging/overlay_moving_and_fixed_image/overlay_moving_and_fixed_image.xml" />
     <tool file="/opt/galaxy/custom-tools/test/imaging/projective_transformation/projective_transformation.xml" />
@@ -529,10 +528,10 @@
   <section id="gis_data_handling" name="GIS Data Handling" />
   <section id="animal_detection_on_acoustic_recordings" name="Animal Detection on Acoustic Recordings" />
   <section id="compute_indicators_for_satellite_remote_sensing" name="Compute indicators for satellite remote sensing" />
-  
-  <section id="regional_variation" name="Regional Variation" >
+
+  <section id="regional_variation" name="Regional Variation">
   </section>
-  <section id="genome_diversity" name="Genome Diversity" >
+  <section id="genome_diversity" name="Genome Diversity">
   </section>
 
   <!-- Hidden Tools + UNused Sections -->
@@ -556,58 +555,58 @@
   <section id="ecoregionalization" name="Ecoregionalization" />
   <section id="astronomy" name="Astronomy" />
   <section id="interactivetools" name="Interactive tools">
-        <tool file="interactive/interactivetool_source.xml" />
-        <tool file="interactive/interactivetool_tadviewer.xml" />
-        <tool file="interactive/interactivetool_qgis.xml" />
-	<tool file="interactive/interactivetool_qupath.xml" />
-    	<tool file="interactive/interactivetool_pampa.xml" />
-        <tool file="interactive/interactivetool_odv.xml" />
-        <tool file="interactive/interactivetool_ilastik.xml" />
-        <tool file="interactive/interactivetool_metashrimps.xml" />
-  	<tool file="interactive/interactivetool_hdfview.xml" />
-        <tool file="interactive/interactivetool_scoop3.xml" />
-        <tool file="interactive/interactivetool_divand.xml" />
-        <tool file="interactive/interactivetool_blobtoolkit.xml" />
-        <tool file="interactive/interactivetool_pavian.xml" />
-        <tool file="interactive/interactivetool_mgnify_notebook.xml" />
-        <tool file="interactive/interactivetool_mgnify_notebook_1.2.2.xml" />
-        <tool file="interactive/interactivetool_jupyter_notebook.xml" />
-        <tool file="interactive/interactivetool_jupyter_notebook_1.0.0.xml" />
-        <tool file="interactive/interactivetool_ml_jupyter_notebook.xml" />
-        <tool file="interactive/interactivetool_ml_jupyter_notebook_0.2.xml" />
-        <tool file="interactive/interactivetool_climate_notebook.xml" />
-        <tool file="interactive/interactivetool_pangeo_notebook.xml" />
-        <tool file="interactive/interactivetool_pangeo_ml_notebook.xml" />
-        <tool file="interactive/interactivetool_rstudio.xml" />
-        <tool file="interactive/interactivetool_rstudio_0_3.xml" />
-	<tool file="interactive/interactivetool_pyiron.xml" />
-	<tool file="interactive/interactivetool_higlass.xml" /> 
-	<tool file="interactive/interactivetool_openrefine.xml" />
-        <tool file="interactive/interactivetool_panoply.xml" />
-	<tool file="interactive/interactivetool_askomics.xml" />
-	<tool file="interactive/interactivetool_cellxgene.xml" />
-	<tool file="interactive/interactivetool_cellxgene_1.1.1.xml" />
-	<tool file="interactive/interactivetool_bam_iobio.xml" />
-	<tool file="interactive/interactivetool_vcf_iobio.xml" />	
-	<tool file="interactive/interactivetool_neo4j.xml" />
-	<tool file="interactive/interactivetool_phinch.xml" />
-	<tool file="interactive/interactivetool_paraview.xml" />
-	<tool file="interactive/interactivetool_askomics.xml" />
-	<tool file="interactive/interactivetool_wilson.xml" />
-	<tool file="interactive/interactivetool_wallace.xml" />
-	<tool file="interactive/interactivetool_geoexplorer.xml" />
-	<tool file="interactive/interactivetool_radiant.xml" />
-	<tool file="interactive/interactivetool_ethercalc.xml" />
-	<tool file="interactive/interactivetool_vrm_editor.xml" />
-	<tool file="interactive/interactivetool_simtext_app.xml" />
-	<tool file="interactive/interactivetool_isee.xml" />
-	<tool file="interactive/interactivetool_metashark.xml" labels="beta" />
-	<tool file="interactive/interactivetool_audiolabeler.xml" />
- 	<tool file="interactive/interactivetool_genenotebook.xml" />
+    <tool file="interactive/interactivetool_source.xml" />
+    <tool file="interactive/interactivetool_tadviewer.xml" />
+    <tool file="interactive/interactivetool_qgis.xml" />
+    <tool file="interactive/interactivetool_qupath.xml" />
+    <tool file="interactive/interactivetool_pampa.xml" />
+    <tool file="interactive/interactivetool_odv.xml" />
+    <tool file="interactive/interactivetool_ilastik.xml" />
+    <tool file="interactive/interactivetool_metashrimps.xml" />
+    <tool file="interactive/interactivetool_hdfview.xml" />
+    <tool file="interactive/interactivetool_scoop3.xml" />
+    <tool file="interactive/interactivetool_divand.xml" />
+    <tool file="interactive/interactivetool_blobtoolkit.xml" />
+    <tool file="interactive/interactivetool_pavian.xml" />
+    <tool file="interactive/interactivetool_mgnify_notebook.xml" />
+    <tool file="interactive/interactivetool_mgnify_notebook_1.2.2.xml" />
+    <tool file="interactive/interactivetool_jupyter_notebook.xml" />
+    <tool file="interactive/interactivetool_jupyter_notebook_1.0.0.xml" />
+    <tool file="interactive/interactivetool_ml_jupyter_notebook.xml" />
+    <tool file="interactive/interactivetool_ml_jupyter_notebook_0.2.xml" />
+    <tool file="interactive/interactivetool_climate_notebook.xml" />
+    <tool file="interactive/interactivetool_pangeo_notebook.xml" />
+    <tool file="interactive/interactivetool_pangeo_ml_notebook.xml" />
+    <tool file="interactive/interactivetool_rstudio.xml" />
+    <tool file="interactive/interactivetool_rstudio_0_3.xml" />
+    <tool file="interactive/interactivetool_pyiron.xml" />
+    <tool file="interactive/interactivetool_higlass.xml" />
+    <tool file="interactive/interactivetool_openrefine.xml" />
+    <tool file="interactive/interactivetool_panoply.xml" />
+    <tool file="interactive/interactivetool_askomics.xml" />
+    <tool file="interactive/interactivetool_cellxgene.xml" />
+    <tool file="interactive/interactivetool_cellxgene_1.1.1.xml" />
+    <tool file="interactive/interactivetool_bam_iobio.xml" />
+    <tool file="interactive/interactivetool_vcf_iobio.xml" />
+    <tool file="interactive/interactivetool_neo4j.xml" />
+    <tool file="interactive/interactivetool_phinch.xml" />
+    <tool file="interactive/interactivetool_paraview.xml" />
+    <tool file="interactive/interactivetool_askomics.xml" />
+    <tool file="interactive/interactivetool_wilson.xml" />
+    <tool file="interactive/interactivetool_wallace.xml" />
+    <tool file="interactive/interactivetool_geoexplorer.xml" />
+    <tool file="interactive/interactivetool_radiant.xml" />
+    <tool file="interactive/interactivetool_ethercalc.xml" />
+    <tool file="interactive/interactivetool_vrm_editor.xml" />
+    <tool file="interactive/interactivetool_simtext_app.xml" />
+    <tool file="interactive/interactivetool_isee.xml" />
+    <tool file="interactive/interactivetool_metashark.xml" labels="beta" />
+    <tool file="interactive/interactivetool_audiolabeler.xml" />
+    <tool file="interactive/interactivetool_genenotebook.xml" />
   </section>
-  
-<!-- Earth-system subdomain -->
-<label id="earth-system-label-interactive-tools" text="General interactive tools" />  
+
+  <!-- Earth-system subdomain -->
+  <label id="earth-system-label-interactive-tools" text="General interactive tools" />
   <section id="earth-system-section-interactivetools" name="Interactive tools">
     <tool file="interactive/interactivetool_jupyter_notebook.xml" />
     <tool file="interactive/interactivetool_jupyter_notebook_1.0.0.xml" />
