@@ -3,7 +3,7 @@ extra_certbot_domains:
  - "galaxy.metacentrum.cz"
 
 # where to put most of the data; we use RBD or NBD volumes
-galaxy_mutable_data_dir: /data/galaxy
+galaxy_mutable_data_dir: /rbd/data
 
 enable_flower: yes
 enable_telegraf: yes

@@ -91,7 +91,7 @@ tools:
       walltime: 96
       scratch: 100
 
-  __SET_.*: 
+  __SET_.*:
     inherits: local_running_tools
 
   .*/data_manager_.*:
@@ -130,7 +130,6 @@ destinations:
       LC_ALL: C
       # The cache directory holds the docker containers that get converted
       SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
-#      SINGULARITY_CACHEDIR: "{{ galaxy_mutable_data_dir }}/singularity"
       # Singularity uses a temporary directory to build the squashfs filesystem
       SINGULARITY_TMPDIR: "{{ galaxy_mutable_data_dir }}/tmp"
     scheduling:
@@ -170,11 +169,11 @@ destinations:
     env:
       LC_ALL: C
       TMPDIR: $SCRATCHDIR
-      TMP: $SCRATCHDIR 
+      TMP: $SCRATCHDIR
       TEMP: $SCRATCHDIR
       SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
-      SINGULARITY_TMPDIR: "$SCRATCHDIR"
-      XDG_CACHE_HOME: "$SCRATCHDIR"
+      SINGULARITY_TMPDIR: $SCRATCHDIR
+      XDG_CACHE_HOME: $SCRATCHDIR
     scheduling:
       require:
       - pulsar
@@ -199,8 +198,8 @@ destinations:
       require:
         - alphafold
   tpv_pulsar_training:
-    inherits: tpv_pulsar   
+    inherits: tpv_pulsar
     runner: pulsar_tpv_runner
     scheduling:
-      require:   
+      require:
         - training
