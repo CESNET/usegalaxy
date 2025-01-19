@@ -1,1 +1,5 @@
-
+- type: dropbox
+  id: dropbox1
+  label: Dropbox files (configure access in user preferences)
+  doc: Your Dropbox files - configure an access token via the user preferences
+  access_token: ${user.preferences['dropbox|access_token']}
