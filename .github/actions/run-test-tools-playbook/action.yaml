@@ -5,6 +5,14 @@ name: test-tools-playbook
 runs:
   using: 'composite'
   steps:
+    - name: Make SSH connection
+      shell: bash
+      run: |
+        mkdir -p $HOME/.ssh
+        install -m 600 -D /dev/null $HOME/.ssh/id_rsa
+        echo "$SSH_PRIVATE_KEY" > $HOME/.ssh/id_rsa
+        ssh -f -o StrictHostKeyChecking=no $TARGET_USER@$TARGET_HOSTNAME hostname
+
     - name: Create vault password
       shell: bash
       run: echo "$VAULT_PASSWORD" >.vault-password.txt
