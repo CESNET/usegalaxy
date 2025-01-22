@@ -89,13 +89,9 @@ galaxy_config:
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users:
-    - 499542@muni.cz
-    - 325073@mail.muni.cz
-    - Demko.Martin@cesnet.cz
-    - galaxy@usegalaxy.cz
-    - ljocha@ics.muni.cz
-    - Martin.Cech@cesnet.cz
-    - galaxy@cesnet.cz
+    {% for item in vault_admin_users %}
+      - {{ item }}
+    {% endfor %}
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
