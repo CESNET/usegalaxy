@@ -246,6 +246,7 @@ galaxy_config_templates:
 
 galaxy_extra_dirs:
   - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
+  - "{{ galaxy_root }}/var"
 
 galaxy_extra_privsep_dirs:
   - "{{ tpv_mutable_dir }}"
