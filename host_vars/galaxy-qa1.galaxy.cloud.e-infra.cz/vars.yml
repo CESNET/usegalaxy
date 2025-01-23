@@ -1,4 +1,5 @@
 galaxy_commit_id: release_24.1
+galaxy_build_client: false
 
 csnt_brand: QA1-TEST
 csnt_log_level: DEBUG
