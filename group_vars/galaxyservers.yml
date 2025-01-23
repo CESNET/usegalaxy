@@ -178,7 +178,7 @@ galaxy_config:
     virtualenv: "{{ galaxy_venv_dir }}"
     gunicorn:
       # listening options
-      bind: "unix:{{ galaxy_mutable_config_dir }}/gunicorn.sock"
+      bind: "unix:{{ galaxy_root }}/var/gunicorn.sock"
       # performance options
       workers: 2
       # Other options that will be passed to gunicorn
@@ -209,7 +209,7 @@ galaxy_config:
     reports:
       enable: true
       url_prefix: /reports
-      bind: "unix:{{ galaxy_mutable_config_dir }}/reports.sock"
+      bind: "unix:{{ galaxy_root }}/var/reports.sock"
       config_file: "{{ galaxy_config_dir }}/reports.yml"
 
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
