@@ -4,6 +4,8 @@ galaxy_commit_id: release_24.2
 csnt_brand: QA2-TEST
 # csnt_enable_account_interface: false
 csnt_log_level: DEBUG
+csnt_edam_panel_views: operations,topics
+csnt_default_panel_view: all_tools
 
 pulsar:
   user_name: galaxy-qa1
@@ -26,3 +28,5 @@ galaxy_config_files:
     dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
   - src: files/galaxy/config/oidc_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
+  - src: "files/{{ inventory_hostname }}/all_tools.yml"
+    dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"

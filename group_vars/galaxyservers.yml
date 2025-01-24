@@ -23,6 +23,8 @@ csnt_allow_user_deletion: false
 csnt_enable_oidc: true
 csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
 csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+csnt_edam_panel_views: ""
+csnt_default_panel_view: default
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -131,6 +133,9 @@ galaxy_config:
     expose_user_name: true
     expose_dataset_path: true
     expose_potentially_sensitive_job_metrics: true
+    edam_panel_views: "{{ csnt_edam_panel_views }}"
+    default_panel_view: "{{ csnt_default_panel_view }}"
+    panel_views_dir: "{{ galaxy_config_dir }}/plugins/activities"
     # NFS workarounds
     retry_job_output_collection: 3
     # Debugging
@@ -247,6 +252,7 @@ galaxy_config_templates:
 galaxy_extra_dirs:
   - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
   - "{{ galaxy_root }}/var"
+  - "{{ galaxy_config_dir }}/plugins/activities"
 
 galaxy_extra_privsep_dirs:
   - "{{ tpv_mutable_dir }}"
