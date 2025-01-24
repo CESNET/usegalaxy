@@ -66,7 +66,7 @@ tools:
           # Only allow the tool to be executed if the user is an admin
           admin_users = app.config.admin_users
           # last line in block must evaluate to a value - which determines whether the TPV if conditional matches or not
-          not user or user.email not in admin_users
+          not user or (user.email not in admin_users and user.email not in ['galaxy@cesnet.cz','galaxy@usegalaxy.cz'])
         fail: Unauthorized. Only admins can execute this tool.
 
       - id: resource_params_defined
