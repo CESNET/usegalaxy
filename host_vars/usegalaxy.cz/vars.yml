@@ -14,8 +14,6 @@ csnt_log_level: DEBUG
 enable_flower: no
 enable_telegraf: no
 
-miniconda_version: 24.11.1
-
 csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
 
 pulsar:
