@@ -6,15 +6,13 @@ extra_certbot_domains:
 galaxy_mutable_data_dir: /rbd/data
 
 galaxy_commit_id: release_23.0
-galaxy_build_client: false
+#galaxy_build_client: false
 
 copy_tools_from: usegalaxy.eu
 csnt_log_level: DEBUG
 
 enable_flower: no
 enable_telegraf: no
-
-miniconda_version: 24.11.1
 
 csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
 

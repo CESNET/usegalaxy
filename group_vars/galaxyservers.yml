@@ -11,7 +11,7 @@ galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: release_24.1
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
+miniconda_version: 24.11.1
 miniconda_channels: ['conda-forge', 'defaults']
 
 # defaults for host-specific vars
@@ -23,6 +23,7 @@ csnt_allow_user_deletion: false
 csnt_enable_oidc: true
 csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
 csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+csnt_enable_reports: false
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -178,7 +179,7 @@ galaxy_config:
     virtualenv: "{{ galaxy_venv_dir }}"
     gunicorn:
       # listening options
-      bind: "unix:{{ galaxy_root }}/var/gunicorn.sock"
+      bind: "unix:{{ galaxy_mutable_config_dir }}/gunicorn.sock"
       # performance options
       workers: 2
       # Other options that will be passed to gunicorn
@@ -207,9 +208,9 @@ galaxy_config:
           - job-handlers
           - workflow-schedulers
     reports:
-      enable: false
+      enable: "{{ csnt_enable_reports }}"
       url_prefix: /reports
-      bind: "unix:{{ galaxy_root }}/var/reports.sock"
+      bind: "unix:{{ galaxy_mutable_config_dir }}/reports.sock"
       config_file: "{{ galaxy_config_dir }}/reports.yml"
 
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
@@ -245,11 +246,11 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
 
 galaxy_extra_dirs:
-  - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
-  - "{{ galaxy_root }}/var"
+  - "{{ tpv_config_dir }}"
 
 galaxy_extra_privsep_dirs:
   - "{{ tpv_mutable_dir }}"
+  - "{{ galaxy_mutable_config_dir }}"
 tpv_privsep: true
 
 galaxy_local_tools:
