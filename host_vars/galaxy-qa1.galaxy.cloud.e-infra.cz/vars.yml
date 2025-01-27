@@ -1,8 +1,6 @@
 galaxy_commit_id: release_24.1
 galaxy_build_client: false
 
-miniconda_version: 24.11.1
-
 csnt_brand: QA1-TEST
 csnt_log_level: DEBUG
 
