@@ -89,10 +89,7 @@ galaxy_config:
     enable_oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
-    admin_users:
-    {% for item in vault_admin_users %}
-      - {{ item }}
-    {% endfor %}
+    admin_users: "{{ vault_admin_users }}"
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
