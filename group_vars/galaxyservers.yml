@@ -11,7 +11,7 @@ galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: release_24.1
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
+miniconda_version: 24.11.1
 miniconda_channels: ['conda-forge', 'defaults']
 
 # defaults for host-specific vars
