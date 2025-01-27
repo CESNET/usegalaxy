@@ -34,6 +34,16 @@ galaxy_job_config:
     local_runner:
       load: galaxy.jobs.runners.local:LocalJobRunner
       workers: 4
+    pulsar_tpv_runner:
+      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+      galaxy_url: "https://{{ rabbitmq_hostname }}"
+      amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
+      amqp_acknowledge: true
+      amqp_ack_republish_time: 1200
+      amqp_consumer_timeout: 2
+      amqp_publish_retry: true
+      amqp_publish_retry_max_retries: 60
+      manager: _default_
     tes_runner:
       load: galaxy.jobs.runners.tes:TESJobRunner
   handling:
@@ -43,6 +53,16 @@ galaxy_job_config:
     environments:
       local_env:
         runner: local_runner
+        tmp_dir: true
+      tpv_dispatcher:
+        runner: dynamic
+        type: python
+        function: map_tool_to_destination
+        rules_module: tpv.rules
+        tpv_config_files:
+          - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
+          - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
+          - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
       tesp_env:
         runner: tes_runner
         tes_master_addr: http://147.251.255.46:8080
