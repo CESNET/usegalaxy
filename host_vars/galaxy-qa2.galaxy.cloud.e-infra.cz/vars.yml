@@ -1,5 +1,5 @@
 galaxy_build_client: false
-galaxy_commit_id: release_24.2
+galaxy_commit_id: 7e360e2c17c06048198bb2fe4c23ce3403509a69
 
 csnt_brand: QA2-TEST
 # csnt_enable_account_interface: false
@@ -26,3 +26,5 @@ galaxy_config_files:
     dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
   - src: files/galaxy/config/oidc_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
+
+galaxy_repo: "https://github.com/BorisYourich/galaxy.git"
