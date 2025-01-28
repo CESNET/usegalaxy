@@ -12,11 +12,9 @@ galaxy_commit_id: release_24.1
 #galaxy_build_client: false
 
 copy_tools_from: usegalaxy.eu
-csnt_log_level: DEBUG
 
-enable_flower: no
-enable_telegraf: no
-
+# csnt_log_level: DEBUG
+csnt_enable_notification_system: true
 csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
 
 pulsar:
