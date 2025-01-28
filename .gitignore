@@ -14,3 +14,6 @@ ansible.log
 
 # Macs
 .DS_Store
+
+# ideally no local roles changes are present
+roles
