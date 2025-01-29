@@ -87,7 +87,7 @@ galaxy_config:
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: "{{ csnt_enable_oidc }}"
     oidc_config_file: "{{ csnt_oidc_config_file }}"
-    enable_oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
+    oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users: "{{ vault_admin_users }}"
