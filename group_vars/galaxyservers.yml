@@ -132,6 +132,7 @@ galaxy_config:
     - 325073@mail.muni.cz
     - demko@cesnet.cz
     - galaxy@galaxy-umsa.grid.cesnet.cz
+    - Martin.Cech@cesnet.cz
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
     allow_user_creation: False
@@ -157,6 +158,7 @@ galaxy_config:
     allow_path_paste: true
     enable_quotas: true
     allow_user_deletion: true
+    enable_notification_system: true
     show_welcome_with_login: true
     expose_user_name: true
     expose_dataset_path: true
