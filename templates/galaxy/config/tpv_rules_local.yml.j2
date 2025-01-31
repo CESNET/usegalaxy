@@ -169,14 +169,7 @@ destinations:
       ssh_host: "{{ inventory_hostname }}"
       ssh_port: 22
       ssh_key: |
-        -----BEGIN OPENSSH PRIVATE KEY-----
-        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-        QyNTUxOQAAACAgk0kwh/FalUlHlw1Ztb/Kc/po8ZCn0PorX4JBj0ohFgAAAKhnd6TMZ3ek
-        zAAAAAtzc2gtZWQyNTUxOQAAACAgk0kwh/FalUlHlw1Ztb/Kc/po8ZCn0PorX4JBj0ohFg
-        AAAECxn8TgLWKJI0q7TojMafkXM28iMgXntKkZ3KZUG3DcWSCTSTCH8VqVSUeXDVm1v8pz
-        +mjxkKfQ+itfgkGPSiEWAAAAJWdhbGF4eXVtc2FAZ2FsYXh5LXVtc2EuZ3JpZC5jZXNuZX
-        QuY3o=
-        -----END OPENSSH PRIVATE KEY-----
+        {{ pulsar_ssh_key | indent(width=8,first=False) }}
       dependency_resolution: remote
       jobs_directory: "{{ pulsar_staging_dir }}"
       persistence_directory: "{{ pulsar_persistence_dir }}"
