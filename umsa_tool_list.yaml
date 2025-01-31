@@ -10,11 +10,38 @@ tools:
   revisions:
   - e188c9826e0f
   tool_panel_section_label: Text Manipulation
+
 - name:  table_compute
   owner: iuc
   revisions:
   - 3bf5661c0280
-  tool_panel_section_label: Text Manipulation
+  tool_panel_section_label: Table Manipulation
+- name:  table_pandas_arithmetics
+  owner: recetox
+  revisions:
+  - d4bacc06365e
+  tool_panel_section_label: Table Manipulation
+- name:  table_pandas_rename_column
+  owner: recetox
+  revisions:
+  - 3f54cd56a65e
+  tool_panel_section_label: Table Manipulation
+- name:  table_pandas_rename_columns_regex
+  owner: recetox
+  revisions:
+  - 505a8e975968
+  tool_panel_section_label: Table Manipulation
+- name:  table_pandas_transform
+  owner: recetox
+  revisions:
+  - b722dba91064
+  tool_panel_section_label: Table Manipulation
+- name:  table_scipy_interpolate
+  owner: recetox
+  revisions:
+  - 0112f08c95ed
+  tool_panel_section_label: Table Manipulation
+
 - name: split_file_to_collection
   owner: bgruening
   revisions:
