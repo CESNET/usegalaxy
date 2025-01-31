@@ -32,6 +32,9 @@ tools:
       reject:
       - pulsar
 
+  .*/tp_cut_tool/.*:
+    mem: 1
+
   .*/mfassignr_mfassign.*:
     mem: 16
     context:
@@ -57,10 +60,14 @@ tools:
     cores: 1
     mem: 10
 
+  .*/recetox_aplcms_generate_feature_table/.*:
+    cores: 1
+    mem: 4
+
   .*/ms2deepscore_training/.*:
     mem: 16
 
-  .*/target_screen/.*:                      
+  .*/target_screen/.*:
     mem: 16
 
   .*testing.*:
@@ -86,14 +93,10 @@ tools:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
   .*/fastqc/.*:
-    cores: 1 
+    cores: 2 
+    mem: 16
     context:
       walltime: 2
-    scheduling:
-      require:
-      - tesp
-      - pulsar
-      - singularity
 
   __IMPORT_HISTORY__: 
      inherits: local_running_tools
@@ -131,6 +134,9 @@ destinations:
         - singularity
   tpv_singularity:
     runner: local_runner
+    max_cores: 1
+    max_mem: 4
+    max_accepted_gpus: 0
     params:
       require_container: true
       singularity_enabled: true
@@ -141,7 +147,7 @@ destinations:
       # The cache directory holds the docker containers that get converted
       SINGULARITY_CACHEDIR: "{{ singularity_local_cache_dir }}"
       # Singularity uses a temporary directory to build the squashfs filesystem
-      SINGULARITY_TMPDIR: "/tmp"
+      SINGULARITY_TMPDIR: "{{ galaxy_data_prefix }}/tmp"
     scheduling:
       require:
         - local
@@ -157,8 +163,20 @@ destinations:
     max_mem: 160
     max_gpus: 0
     params:
-      default_file_action: remote_transfer
-      transport: curl
+      default_file_action: remote_rsync_transfer
+      transport: rsync
+      ssh_user: "{{ galaxy_user_name }}"
+      ssh_host: "{{ inventory_hostname }}"
+      ssh_port: 22
+      ssh_key: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACAgk0kwh/FalUlHlw1Ztb/Kc/po8ZCn0PorX4JBj0ohFgAAAKhnd6TMZ3ek
+        zAAAAAtzc2gtZWQyNTUxOQAAACAgk0kwh/FalUlHlw1Ztb/Kc/po8ZCn0PorX4JBj0ohFg
+        AAAECxn8TgLWKJI0q7TojMafkXM28iMgXntKkZ3KZUG3DcWSCTSTCH8VqVSUeXDVm1v8pz
+        +mjxkKfQ+itfgkGPSiEWAAAAJWdhbGF4eXVtc2FAZ2FsYXh5LXVtc2EuZ3JpZC5jZXNuZX
+        QuY3o=
+        -----END OPENSSH PRIVATE KEY-----
       dependency_resolution: remote
       jobs_directory: "{{ pulsar_staging_dir }}"
       persistence_directory: "{{ pulsar_persistence_dir }}"
