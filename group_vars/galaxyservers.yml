@@ -11,7 +11,7 @@ galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: release_24.1
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 24.4.0 # 23.5.2 # 23.5.0 # 4.12.0
+miniconda_version: 24.11.1
 miniconda_channels: ['conda-forge', 'defaults']
 
 # defaults for host-specific vars
@@ -20,9 +20,11 @@ csnt_short_term_storage_dir: short_term_web_storage
 csnt_enable_account_interface: true
 csnt_log_level: WARNING
 csnt_allow_user_deletion: false
+csnt_enable_notification_system: false
 csnt_enable_oidc: true
 csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
 csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+csnt_enable_reports: false
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -94,14 +96,7 @@ galaxy_config:
     enable_oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
-    admin_users:
-    - 499542@muni.cz
-    - 325073@mail.muni.cz
-    - Demko.Martin@cesnet.cz
-    - galaxy@usegalaxy.cz
-    - ljocha@ics.muni.cz
-    - Martin.Cech@cesnet.cz
-    - galaxy@cesnet.cz
+    admin_users: "{{ vault_admin_users }}"
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
@@ -129,6 +124,7 @@ galaxy_config:
     # Automation / Ease of Use / User-facing features
     brand: "{{ csnt_brand }}"
     enable_account_interface: "{{ csnt_enable_account_interface }}"
+    enable_notification_system: "{{ csnt_enable_notification_system }}"
     watch_job_rules: 'auto'
     allow_path_paste: true
     enable_quotas: true
@@ -213,7 +209,7 @@ galaxy_config:
           - job-handlers
           - workflow-schedulers
     reports:
-      enable: true
+      enable: "{{ csnt_enable_reports }}"
       url_prefix: /reports
       bind: "unix:{{ galaxy_mutable_config_dir }}/reports.sock"
       config_file: "{{ galaxy_config_dir }}/reports.yml"
@@ -251,10 +247,11 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
 
 galaxy_extra_dirs:
-  - "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
+  - "{{ tpv_config_dir }}"
 
 galaxy_extra_privsep_dirs:
   - "{{ tpv_mutable_dir }}"
+  - "{{ galaxy_mutable_config_dir }}"
 tpv_privsep: true
 
 galaxy_local_tools:
@@ -341,6 +338,8 @@ rabbitmq_plugins:
 
 rabbitmq_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
 rabbitmq_conf_ssl_certificate_key: /etc/ssl/user/privkey-999:999.pem
+
+rabbitmq_container_pause: 60
 
 rabbitmq_config:
   listeners:

@@ -4,12 +4,20 @@ extra_certbot_domains:
 
 # where to put most of the data; we use RBD or NBD volumes
 galaxy_mutable_data_dir: /rbd/data
+galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
+galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
+galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
 
-galaxy_commit_id: release_23.0
+galaxy_commit_id: release_24.1
+#galaxy_build_client: false
 
-enable_flower: yes
-enable_telegraf: yes
+copy_tools_from: usegalaxy.eu
+csnt_log_level: DEBUG
 
+enable_flower: no
+enable_telegraf: no
+
+csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
 
 pulsar:
   user_name: galaxyeu
@@ -17,6 +25,8 @@ pulsar:
   nfs_prefix: pulsar-cz
   pbs_queue: galaxycz
   pbs_gpu_queue: galaxy_gpu
+
+pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
 galaxy_config_files:
   - src: files/galaxy/themes.yml
@@ -27,10 +37,3 @@ galaxy_config_files:
     dest: "{{ galaxy_config.galaxy.tool_config_file[0] }}"
   - src: files/galaxy/config/oidc_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
-
-pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
-
-copy_tools_from: usegalaxy.eu
-
-admin_ssh_keys: |
-  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAfdMuyDmA84qskMECxjuep3V5tCAwPHYs10Qr5GQFR3wywJuarAVoFj4YR31mcmKR3ZkYRAOKJZepSGm11ojT9n5F+ctMrGhC5RmxlXhDF6RNadfx5QVkkRfldjkR4G+2iCtm4CA9bdSU57jQHtqXyyaw7+NqPiJmq6s+OIqCew6Mick+lCVCgwpbjm6Zg4E3fAYvxKPaB8fClpC+YM+wyBnG6dgq5Qb3qXMVrC0db1xpbQQbt91YWWzG6IAxFO/as1CRw/y4qS+60UlTjBp0umD5iK0ZDqfXI/aQrahOFZXQyobEGaiS1e8qcKEl+mFOxbkQpdXLZIdvgWrw6/LAS6i918lrOFrR/vtn67CP/yFwRqWcgXDRhlafmKL2LpKg61OsuJYP1fD4ccFyl+lTLs6yaR5i6HScbw5qtfWBYjFFdYRpiPw0YEPhFzwFsWRFB/FTxgjgVb0Ek+CWHRPTsRKCVtotUTgsAMO7mDvIre9y0ONkokS65bpGvBVMptk= action@github
