@@ -1,20 +1,19 @@
 tools:
-- name: iedb_api
-  owner: iuc
+- name: fastqc
+  owner: devteam
   revisions:
-  - 7ed6dda64a81
-  tool_panel_section_label: Get Data
+  - 5ec9f6bceaee
+  tool_panel_section_label: FASTA/FASTQ
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: dbbuilder
-  owner: galaxyp
+- name: bwa
+  owner: devteam
   revisions:
-  - 983bf725dfc2
-  tool_panel_section_label: Get Data
+  - 2477830927ec
+  tool_panel_section_label: Mapping
   tool_shed_url: toolshed.g2.bx.psu.edu
-- name: sra_tools
-  owner: iuc
+- name: alphafold2
+  owner: galaxy-australia
   revisions:
-  - 734abc7ac21d
-  - f5ea3ce9b9b0
-  tool_panel_section_label: Get Data
+  - 3f188450ca4f
+  tool_panel_section_label: ChemicalToolBox
   tool_shed_url: toolshed.g2.bx.psu.edu

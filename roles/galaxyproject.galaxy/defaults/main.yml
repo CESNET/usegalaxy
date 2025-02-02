@@ -206,7 +206,7 @@ galaxy_tmpclean_command: "{{ _galaxy_tmpclean_command[(ansible_os_family | lower
 #galaxy_node_version: "XX.YY.Z"
 
 # Where to clone Galaxy from. Backwards compatibility with galaxy_git_repo
-galaxy_repo: "{{ galaxy_git_repo | default('https://github.com/galaxyproject/galaxy.git') }}"
+# galaxy_repo: "{{ galaxy_git_repo | default('https://github.com/galaxyproject/galaxy.git') }}"
 
 # Automatically delete things in the repo that do not belong there
 galaxy_force_checkout: no
@@ -220,7 +220,6 @@ galaxy_commit_id: "{{ galaxy_changeset_id | default('master') }}"
 
 # Download URL (if used)
 galaxy_download_url: "{{ galaxy_repo | replace('.git', '') }}/archive/{{ galaxy_commit_id }}.tar.gz"
-
 #
 # Path and Galaxy configuration
 #

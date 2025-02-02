@@ -46,10 +46,12 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: _default_
+    tes_runner:
+      load: galaxy.jobs.runners.tes:TESJobRunner
   handling:
     assign: ['db-skip-locked']
   execution:
-    default: tpv_dispatcher
+    default: tesp_env
     environments:
       local_env:
         runner: local_runner
@@ -63,6 +65,10 @@ galaxy_job_config:
           - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
           - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
           - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
+      tesp_env:
+        runner: tes_runner
+        tes_master_addr: http://147.251.255.46:8080
+        default_docker_image: hub.cerit.io/josef_handl/tesp-test-image
   resources:
     default: default
     groups:
