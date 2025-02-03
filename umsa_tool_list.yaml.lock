@@ -803,11 +803,13 @@ tools:
   owner: lecorguille
   revisions:
   - 11ab2081bd4a
+  - 35b6fe4d481c
   - 6de175c1f6ef
   tool_panel_section_label: XCMS
 - name: xcms_xcmsset
   owner: lecorguille
   revisions:
+  - 3990a65b45a4
   - 6550698fe60f
   - b02d1992a43a
   tool_panel_section_label: XCMS
@@ -815,11 +817,13 @@ tools:
   owner: lecorguille
   revisions:
   - 018a9771de28
+  - 1ae878634ab3
   - 444e3ed135e3
   tool_panel_section_label: XCMS
 - name: xcms_retcor
   owner: lecorguille
   revisions:
+  - 33c0ca93f3ee
   - aa252eec9229
   - d2b82d89f848
   tool_panel_section_label: XCMS
@@ -827,6 +831,7 @@ tools:
   owner: lecorguille
   revisions:
   - 024974037c4e
+  - 9291271ec4d9
   - c8bef8f6a1cb
   tool_panel_section_label: XCMS
 - name: xcms_merge
@@ -834,10 +839,12 @@ tools:
   revisions:
   - 5bd125a3f3b0
   - 6d475a389abc
+  - ae28a753a6f8
   tool_panel_section_label: XCMS
 - name: xcms_group
   owner: lecorguille
   revisions:
+  - 3820e3f3b1cb
   - 71572faf938e
   - d45a786cbc40
   tool_panel_section_label: XCMS
@@ -845,6 +852,7 @@ tools:
   owner: lecorguille
   revisions:
   - 26d77e9ceb49
+  - a8d866a71ba1
   - ec9aebabc1d2
   tool_panel_section_label: XCMS
 - name: xcms_export_samplemetadata
@@ -852,6 +860,7 @@ tools:
   revisions:
   - 4ea32e46b2d6
   - 94eb263cfab4
+  - e13c7bc91c63
   tool_panel_section_label: XCMS
 - name: secimtools
   owner: malex
@@ -874,6 +883,7 @@ tools:
   revisions:
   - 090b33a9981c
   - 20f8ebc3a391
+  - 6c2798bce3eb
   tool_panel_section_label: W4M
 - name: qualitymetrics
   owner: ethevenot
