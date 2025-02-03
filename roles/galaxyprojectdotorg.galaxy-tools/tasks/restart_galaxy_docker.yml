@@ -1,3 +1,0 @@
-- name: Restart Galaxy in docker container
-  command: "docker exec {{ galaxy_docker_container_id }} supervisorctl restart galaxy:"
-  ignore_errors: yes

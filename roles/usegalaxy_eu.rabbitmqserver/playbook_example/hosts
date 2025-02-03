@@ -1,2 +1,0 @@
-[rabbitmq]
-your_node_fqdn ansible_ssh_user=centos

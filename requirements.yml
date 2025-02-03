@@ -1,58 +1,47 @@
-# Galaxy, Postgres, Nginx
 - src: galaxyproject.galaxy
-  version: 0.10.14
+  version: 0.11.1
 - src: galaxyproject.nginx
   version: 0.7.1
 - src: galaxyproject.postgresql
-  version: 1.1.2
+  version: 1.1.7
 - src: galaxyproject.postgresql_objects
   version: 1.2.0
 - src: galaxyproject.miniconda
   version: 0.3.1
 - src: usegalaxy_eu.certbot
   version: 0.1.11
-# gxadmin (used in cleanup, and later monitoring.)
-- src: galaxyproject.gxadmin
-  version: 0.0.12
-# TUS (uploads)
-- name: galaxyproject.tusd
+- src: galaxyproject.tusd
   version: 0.0.1
-# CVMFS Support role
 - src: galaxyproject.cvmfs
-  version: 0.2.22
-# Singularity/Apptainer
+  version: 0.3.0
 - src: usegalaxy_eu.apptainer
-  version: 0.0.1
-# TPV Linting
-- name: usegalaxy_eu.tpv_auto_lint
+  version: main
+- src: usegalaxy_eu.tpv_auto_lint
   version: 0.4.4
-# RabbitMQ for Pulsar
 - src: geerlingguy.docker
-  version: 6.1.0
+  version: 7.4.4
 - src: usegalaxy_eu.rabbitmqserver
-  version: 1.4.4
-# Celery, Redis, and Flower (dashboard)
-- name: geerlingguy.redis
-  version: 1.8.0
-- name: usegalaxy_eu.flower
-  version: 1.0.2
+  version: 1.4.5
+- src: geerlingguy.redis
+  version: 1.9.0
+- src: usegalaxy_eu.flower
+  version: 2.0.0
 - src: galaxyproject.gxadmin
-  version: 0.0.12
+  version: 0.0.13
 - src: usegalaxy_eu.influxdb
-  version: v6.0.7
-# Monitoring
+  version: v6.0.8
+#- name: dj-wasabi.telegraf
+#  src: https://github.com/dj-wasabi/ansible-telegraf
+#  version: 6f6fdf7f5ead491560783d52528b79e9e088bd5b
 - name: dj-wasabi.telegraf
   src: https://github.com/dj-wasabi/ansible-telegraf
-  version: 6f6fdf7f5ead491560783d52528b79e9e088bd5b
-- src: cloudalchemy.grafana
   version: 0.14.2
-# Training Infrastructure as a Service
+- src: cloudalchemy.grafana
+  version: 0.18.0
 - src: galaxyproject.tiaas2
-  version: 2.2.0
-# Sentry
+  version: 2.2.2
 - name: mvdbeek.sentry_selfhosted
   src: https://github.com/mvdbeek/ansible-role-sentry/archive/main.tar.gz
-# Our FTP Server
 - src: galaxyproject.proftpd
   version: 0.3.1
 
