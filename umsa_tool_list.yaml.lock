@@ -1261,6 +1261,7 @@ tools:
   revisions:
   - 4af67edd5aef
   - 5a45e6ac9aae
+  tool_panel_section_label: OpenMS
 - name: recetox_aplcms_merge_known_table
   owner: recetox
   revisions:
@@ -1348,3 +1349,8 @@ tools:
   revisions:
   - 8aa0014a5ad4
   tool_panel_section_label: Target Data Processing
+- name: bioconductor_scp
+  owner: recetox
+  revisions:
+  - cd2f3a280463
+  tool_panel_section_label: Others

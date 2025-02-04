@@ -1240,7 +1240,7 @@ tools:
   owner: galaxyp
   revisions:
   - 4af67edd5aef
-  tool_panel_section_label: 
+  tool_panel_section_label: OpenMS
 
 
 # =========================
@@ -1331,3 +1331,18 @@ tools:
   tool_panel_section_label: Target Data Processing
   revisions:
   - 8aa0014a5ad4
+
+
+# =========================
+# Others
+# =========================
+- name: bioconductor_scp
+  owner: recetox
+  tool_panel_section_label: Others
+  revisions:
+  - cd2f3a280463
+
+
+# =========================
+# Testing
+# =========================
