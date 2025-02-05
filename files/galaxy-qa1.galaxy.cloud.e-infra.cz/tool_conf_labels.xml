@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+<toolbox>
+    <section id="getext" name="Get Data" version="" />
+    <section id="send" name="Send Data" version="" />
+    <section id="collection_operations" name="Collection Operations" version="" />
+    <section id="expression_tools" name="Expression Tools" version="" />
+
+    <section id="textutil" name="Text Manipulation" version="" />
+    <section id="convert" name="Convert Formats" version="" />
+    <section id="filter" name="Filter and Sort" version="" />
+    <section id="join__subtract_and_group" name="Join, Subtract and Group" version="" />
+    <section id="group" name="Join, Subtract and Group" version="" />
+
+    <section id="fasta/fastq" name="FASTA/FASTQ" version="" />
+    <section id="quality_control" name="Quality Control" version="" />
+    <section id="sam/bam" name="SAM/BAM" version="" />
+    <section id="bed" name="BED" version="" />
+    <section id="vcf/bcf" name="VCF/BCF" version="" />
+    <section id="nanopore" name="Nanopore" version="" />
+    <section id="liftOver" name="Lift-Over" version="" />
+    <section id="extract_features" name="Extract Features" version="" />
+
+    <section id="bxops" name="Operate on Genomic Intervals" version="" />
+    <section id="fetchAlignSeq" name="Fetch Alignments/Sequences" version="" />
+    <section id="fetch_sequences_/_alignments" name="Fetch Sequences / Alignments" version="" />
+
+    <section id="assembly" name="Assembly" version="" />
+    <section id="annotation" name="Annotation" version="" />
+    <section id="mapping" name="Mapping" version="" />
+    <section id="variant_calling" name="Variant Calling" version="" />
+    <section id="rna_analysis" name="RNA Analysis" version="" />
+    <section id="multiple_alignments" name="Multiple Alignments" version="" />
+    <section id="hgv" name="Phenotype Association" version="" />
+    <section id="evolution" name="Evolution" version="" />
+    <section id="regional_variation" name="Regional Variation" version="" />
+    <section id="biodiversity_data_exploration" name="Biodiversity data exploration" version="" />
+    <section id="genome_diversity" name="Genome Diversity" version="" />
+
+    <section id="stats" name="Statistics" version="" />
+    <section id="machine_learning" name="Machine Learning" version="" />
+    <section id="plots" name="Graph/Display Data" version="" />
+
+    <section id="mothur" name="Mothur" version="" />
+    <section id="qiime" name="Qiime" version="" />
+    <section id="qiime_2" name="QIIME 2" version="" />
+    <section id="picard" name="Picard" version="" />
+    <section id="deeptools" name="deepTools" version="" />
+    <section id="emboss" name="EMBOSS" version="" />
+    <section id="ncbi_blast" name="NCBI Blast" version="" />
+    <section id="mimodd" name="MiModD" version="" />
+    <section id="scanpy" name="Scanpy" version="" />
+    <section id="hicexplorer" name="HiCExplorer" version="" />
+    <section id="gemini" name="Gemini" version="" />
+    <section id="motif_tools" name="Motif Tools" version="" />
+    <section id="gatk_tools" name="GATK Tools" version="" />
+    <section id="rad-seq" name="RAD-seq" version="" />
+    <section id="sanger_sequencing" name="Sanger Sequencing" version="" />
+    <section id="genome_editing" name="Genome editing" version="" />
+    <section id="dna_metabarcoding" name="DNA Metabarcoding" version="" />
+    <section id="peak_calling" name="Peak Calling" version="" />
+    <section id="phylogenetics" name="Phylogenetics" version="" />
+    <section id="apollo" name="Apollo" version="" />
+
+    <section id="virology" name="Virology" version="" />
+    <section id="metagenomic_analysis" name="Metagenomic Analysis" version="" />
+    <section id="single-cell" name="Single-cell" version="" />
+    <section id="hca-single_cell" name="HCA-Single Cell" version="" />
+    <section id="proteomics" name="Proteomics" version="" />
+    <section id="metabolomics" name="Metabolomics" version="" />
+    <section id="muon_spectroscopy" name="Muon Spectroscopy" version="" />
+    <section id="chemicaltoolbox" name="ChemicalToolBox" version="" />
+    <section id="astronomy" name="Astronomy" version="" />
+    <section id="imaging" name="Imaging" version="" />
+    <section id="climate_analysis" name="Climate Analysis" version="" />
+    <section id="gis_data_handling" name="GIS Data Handling" version="" />
+    <section id="epigenetics" name="Epigenetics" version="" />
+    <section id="spatial_omics" name="Spatial Omics" version="" />
+    <section id="compute_indicators_for_satellite_remote_sensing" name="Compute indicators for satellite remote sensing" version="" />
+    <section id="compute_indicators_for_turnover_boulders_fields" name="Compute indicators for turnover boulders fields" version="" />
+    <section id="animal_detection_on_acoustic_recordings" name="Animal Detection on Acoustic Recordings" version="" />
+    <section id="ecoregionalization" name="Ecoregionalization" version="" />
+    <section id="graphclust" name="GraphClust" version="" />
+    <section id="species_abundance" name="Species abundance" version="" />
+    <section id="obo_ontology_manipulation" name="OBO Ontology manipulation" version="" />
+    <section id="data_and_metadata_management" name="Data and Metadata Management" version="" />
+
+    <section id="other_tools" name="Other Tools" version="" />
+
+    <section id="local_tools" name="Local Tools" version="" />
+    <section id="test_tools" name="Test Tools" version="" />
+</toolbox>
