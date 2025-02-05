@@ -5,12 +5,14 @@
     <section id="collection_operations" name="Collection Operations" version="" />
     <section id="expression_tools" name="Expression Tools" version="" />
 
+    <label id="general_text_tools_label" text="General Text Tools" />
     <section id="textutil" name="Text Manipulation" version="" />
     <section id="convert" name="Convert Formats" version="" />
     <section id="filter" name="Filter and Sort" version="" />
     <section id="join__subtract_and_group" name="Join, Subtract and Group" version="" />
     <section id="group" name="Join, Subtract and Group" version="" />
 
+    <label id="genomic_file_manipulation_label" text="Genomic File Manipulation" />
     <section id="fasta/fastq" name="FASTA/FASTQ" version="" />
     <section id="quality_control" name="Quality Control" version="" />
     <section id="sam/bam" name="SAM/BAM" version="" />
@@ -20,10 +22,12 @@
     <section id="liftOver" name="Lift-Over" version="" />
     <section id="extract_features" name="Extract Features" version="" />
 
+    <label id="common_genomics_tools_label" text="Common Genomics Tools" />
     <section id="bxops" name="Operate on Genomic Intervals" version="" />
     <section id="fetchAlignSeq" name="Fetch Alignments/Sequences" version="" />
     <section id="fetch_sequences_/_alignments" name="Fetch Sequences / Alignments" version="" />
 
+    <label id="genomics_analysis_label" text="Genomics Analysis" />
     <section id="assembly" name="Assembly" version="" />
     <section id="annotation" name="Annotation" version="" />
     <section id="mapping" name="Mapping" version="" />
@@ -36,10 +40,12 @@
     <section id="biodiversity_data_exploration" name="Biodiversity data exploration" version="" />
     <section id="genome_diversity" name="Genome Diversity" version="" />
 
+    <label id="statistics_and_visualization_label" text="Statistics and Visualization" />
     <section id="stats" name="Statistics" version="" />
     <section id="machine_learning" name="Machine Learning" version="" />
     <section id="plots" name="Graph/Display Data" version="" />
 
+    <label id="genomics_toolkits_label" text="Genomics Toolkits" />
     <section id="mothur" name="Mothur" version="" />
     <section id="qiime" name="Qiime" version="" />
     <section id="qiime_2" name="QIIME 2" version="" />
@@ -61,6 +67,7 @@
     <section id="phylogenetics" name="Phylogenetics" version="" />
     <section id="apollo" name="Apollo" version="" />
 
+    <label id="domain_tools_label" text="Domain Tools" />
     <section id="virology" name="Virology" version="" />
     <section id="metagenomic_analysis" name="Metagenomic Analysis" version="" />
     <section id="single-cell" name="Single-cell" version="" />
@@ -84,8 +91,10 @@
     <section id="obo_ontology_manipulation" name="OBO Ontology manipulation" version="" />
     <section id="data_and_metadata_management" name="Data and Metadata Management" version="" />
 
+    <label id="other_tools_label" text="Other Tools" />
     <section id="other_tools" name="Other Tools" version="" />
 
+    <label id="testing_tools_label" text="Testing Tools" />
     <section id="local_tools" name="Local Tools" version="" />
     <section id="test_tools" name="Test Tools" version="" />
 </toolbox>
