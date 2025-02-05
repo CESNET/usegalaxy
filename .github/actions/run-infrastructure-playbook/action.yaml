@@ -19,7 +19,7 @@ runs:
 
     - name: Create vault password
       shell: bash
-      run: echo "$VAULT_PASSWORD" >.vault-password.txt
+      run: echo "$VAULT_PASSWORD" > .vault-password.txt
 
     - name: Run galaxy.yaml playbook
       shell: bash
