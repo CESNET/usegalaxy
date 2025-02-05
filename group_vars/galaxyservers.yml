@@ -225,8 +225,6 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/style/additional_styles.css"
 
 galaxy_config_templates:
-  - src: templates/galaxy/config/job_resource_params_conf.xml.j2
-    dest: "{{ galaxy_config.galaxy.job_resource_params_file }}"
   - src: templates/galaxy/config/reports.yml.j2
     dest: "{{ galaxy_config.gravity.reports.config_file }}"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/oidc_backends_config.xml.j2', 'templates/galaxy/config/oidc_backends_config.xml.j2']) }}"
