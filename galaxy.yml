@@ -1,11 +1,13 @@
 ---
 - hosts: all
-  name: apt update & pip
+  name: apt update, python, pip
   become: true
   become_user: root
   tasks:
     - ansible.builtin.apt:
-        name: python3-pip
+        name:
+        - python3-pip
+        - python-is-python3
         update_cache: yes
       when: ansible_os_family == 'Debian'
 
@@ -74,33 +76,6 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
-#    - ansible.builtin.group:
-#        name: galaxy
-#    - ansible.builtin.user:
-#        name: galaxy
-#        group: galaxy
-#        comment: Galaxy system user
-#    - name: Create the data storage directory
-#      file:
-#        owner: galaxy
-#        group: galaxy
-#        path: "{{ galaxy_mutable_data_dir }}"
-#        state: directory
-#        mode: '0755'
-#    - name: Create the nginx upload job files store
-#      file:
-#        owner: www-data
-#        group: galaxy
-#        path: "{{ datastore }}/data/_upload_job_files"
-#        state: directory
-#        mode: '0775'
-#    - name: Create the client body temp path
-#      file:
-#        owner: www-data
-#        group: galaxy
-#        path: "{{ datastore }}/data/nginx_upload_store"
-#        state: directory
-#        mode: '0775'
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
@@ -136,7 +111,7 @@
       ansible.builtin.cron:
         name: "chmod on _files for ngnix access"
         minute: "2"
-        hour: "*" 
+        hour: "*"
         #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'
         job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -type d -mmin -180 -maxdepth 0 -exec chmod -R g+rw '{}' ';'"
       become: yes
@@ -157,14 +132,6 @@
         minute: "0"
         hour: "*"
         job: "python3 {{ playbook_dir }}/extra_scripts/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
-
-#    - name: Setup CVMFS cache cleaning
-#      ansible.builtin.cron:
-#        name: "CVMFS cache cleaning"
-#        user: root
-#        minute: "0"
-#        hour: "*/12"
-#        job: "cvmfs_talk -i singularity.galaxyproject.org cleanup {{ cvmfs_quota_limit }}"
 
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:

@@ -1,6 +1,0 @@
----
-
-roles: []
-collections:
-  - name: community.postgresql
-    version: ">=2.2.0,<3"
