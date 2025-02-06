@@ -5,7 +5,7 @@ csnt_brand: QA1-TEST
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
 csnt_edam_panel_views: operations,topics
-# csnt_default_panel_view: all_tools
+csnt_default_panel_view: all_tools
 
 pulsar:
   user_name: galaxy-qa1

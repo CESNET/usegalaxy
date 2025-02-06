@@ -1,4 +1,4 @@
-name: All Tools
+name: Tools
 type: generic
 id: all_tools
 items:
@@ -7,7 +7,6 @@ items:
   - send
   - collection_operations
   - expression_tools
-
 - id: general_text_tools_label
   text: General Text Tools
   type: label
@@ -16,9 +15,7 @@ items:
   - convert
   - filter
   - group
-  - join__subtract_and_group
   - convert_formats
-
 - id: genomic_file_manipulation_label
   text: Genomic File Manipulation
   type: label
@@ -31,15 +28,12 @@ items:
   - nanopore
   - lift_over
   - extract_features
-
 - id: common_genomics_tools_label
   text: Common Genomics Tools
   type: label
 - sections:
   - bxops
   - fetchAlignSeq
-  - fetch_sequences_/_alignments
-
 - id: genomics_analysis_label
   text: Genomics Analysis
   type: label
@@ -55,7 +49,6 @@ items:
   - regional_variation
   - biodiversity_data_exploration
   - genome_diversity
-
 - id: statistics_and_visualization_label
   text: Statistics and Visualization
   type: label
@@ -64,7 +57,6 @@ items:
   - machine_learning
   - plots
   - interactive_tools
-
 - id: genomics_toolkits_label
   text: Genomics Toolkits
   type: label
@@ -89,7 +81,6 @@ items:
   - peak_calling
   - phylogenetics
   - apollo
-
 - id: domain_tools_label
   text: Domain Tools
   type: label
@@ -116,19 +107,11 @@ items:
   - species_abundance
   - obo_ontology_manipulation
   - data_and_metadata_management
-
 - id: other_tools_label
   text: Other Tools
   type: label
 - sections:
   - other_tools
-
-- id: deprecated_tools_label
-  text: Deprecated Tools
-  type: label
-- sections:
-  - rna_analysis__deprecated_
-
 - id: testing_tools_label
   text: Testing Tools
   type: label
