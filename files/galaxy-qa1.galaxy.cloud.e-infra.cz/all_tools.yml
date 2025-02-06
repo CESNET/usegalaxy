@@ -1,0 +1,120 @@
+name: Tools
+type: generic
+id: all_tools
+items:
+- sections:
+  - getext
+  - send
+  - collection_operations
+  - expression_tools
+- id: general_text_tools_label
+  text: General Text Tools
+  type: label
+- sections:
+  - textutil
+  - convert
+  - filter
+  - group
+  - convert_formats
+- id: genomic_file_manipulation_label
+  text: Genomic File Manipulation
+  type: label
+- sections:
+  - fasta/fastq
+  - quality_control
+  - sam/bam
+  - bed
+  - vcf/bcf
+  - nanopore
+  - lift_over
+  - extract_features
+- id: common_genomics_tools_label
+  text: Common Genomics Tools
+  type: label
+- sections:
+  - bxops
+  - fetchAlignSeq
+- id: genomics_analysis_label
+  text: Genomics Analysis
+  type: label
+- sections:
+  - assembly
+  - annotation
+  - mapping
+  - variant_calling
+  - rna_analysis
+  - multiple_alignments
+  - hgv
+  - evolution
+  - regional_variation
+  - biodiversity_data_exploration
+  - genome_diversity
+- id: statistics_and_visualization_label
+  text: Statistics and Visualization
+  type: label
+- sections:
+  - stats
+  - machine_learning
+  - plots
+  - interactive_tools
+- id: genomics_toolkits_label
+  text: Genomics Toolkits
+  type: label
+- sections:
+  - mothur
+  - qiime
+  - qiime_2
+  - picard
+  - deeptools
+  - emboss
+  - ncbi_blast_
+  - mimodd
+  - scanpy
+  - hicexplorer
+  - gemini
+  - motif_tools
+  - gatk_tools
+  - rad-seq
+  - sanger_sequencing
+  - genome_editing
+  - dna_metabarcoding
+  - peak_calling
+  - phylogenetics
+  - apollo
+- id: domain_tools_label
+  text: Domain Tools
+  type: label
+- sections:
+  - virology
+  - metagenomic_analysis
+  - single-cell
+  - hca-single_cell
+  - proteomics
+  - metabolomics
+  - muon_spectroscopy
+  - chemicaltoolbox
+  - astronomy
+  - imaging
+  - climate_analysis
+  - gis_data_handling
+  - epigenetics
+  - spatial_omics
+  - compute_indicators_for_satellite_remote_sensing
+  - compute_indicators_for_turnover_boulders_fields
+  - animal_detection_on_acoustic_recordings
+  - ecoregionalization
+  - graphclust
+  - species_abundance
+  - obo_ontology_manipulation
+  - data_and_metadata_management
+- id: other_tools_label
+  text: Other Tools
+  type: label
+- sections:
+  - other_tools
+- id: testing_tools_label
+  text: Testing Tools
+  type: label
+- sections:
+  - local_tools
+  - test_tools
