@@ -69,6 +69,7 @@ galaxy_job_config:
         runner: tes_runner
         tes_master_addr: http://147.251.255.46:8080
         default_docker_image: hub.cerit.io/josef_handl/tesp-test-image
+        docker_enabled: true
   resources:
     default: default
     groups:
@@ -89,6 +90,8 @@ galaxy_config:
   galaxy:
     # Main Configuration
     # To not bother the main disk
+    conda_auto_install: false
+    conda_auto_init: false
     new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     enable_oidc: "{{ csnt_enable_oidc }}"
@@ -150,13 +153,13 @@ galaxy_config:
     - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
     container_resolvers:
-    -   type: explicit_singularity
+    -   type: explicit #_singularity
     -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-        type: cached_mulled_singularity
+        type: cached_mulled #_singularity
     -   auto_install: true
-        type: mulled_singularity
+        type: mulled #_singularity
     -   auto_install: false
-        type: build_mulled_singularity
+        type: build_mulled #_singularity
 #        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
         cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories

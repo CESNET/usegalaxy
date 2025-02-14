@@ -1,5 +1,5 @@
 galaxy_build_client: false
-galaxy_commit_id: latest
+galaxy_commit_id: c3e1d5e3c8e3a35ff82fc06b7caf08c044d4ed00
 
 csnt_brand: QA2-TEST
 # csnt_enable_account_interface: false
