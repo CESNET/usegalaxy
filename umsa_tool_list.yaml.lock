@@ -5,11 +5,12 @@ tools:
   revisions:
   - 90981f86000f
   tool_panel_section_label: Collection Operations
-- name: compose_text_param
-  owner: iuc
+- name: split_file_to_collection
+  owner: bgruening
   revisions:
-  - e188c9826e0f
-  tool_panel_section_label: Text Manipulation
+  - 2dae863c8f42
+  - 6cbe2f30c2d7
+  tool_panel_section_label: Collection Operations
 - name: table_compute
   owner: iuc
   revisions:
@@ -40,12 +41,30 @@ tools:
   revisions:
   - 0112f08c95ed
   tool_panel_section_label: Table Manipulation
-- name: split_file_to_collection
+- name: datamash_transpose
+  owner: iuc
+  revisions:
+  - 22c2a1ac7ae3
+  - a513e3fbb4c5
+  tool_panel_section_label: Table Manipulation
+- name: compose_text_param
+  owner: iuc
+  revisions:
+  - e188c9826e0f
+  tool_panel_section_label: Text Manipulation
+- name: diff
   owner: bgruening
   revisions:
-  - 2dae863c8f42
-  - 6cbe2f30c2d7
-  tool_panel_section_label: Collection Operations
+  - 10ef1bf99074
+  - 95a9dc82fc9a
+  tool_panel_section_label: Text Manipulation
+- name: text_processing
+  owner: bgruening
+  revisions:
+  - 86755160afbf
+  - ddf54b12c295
+  - fbf99087e067
+  tool_panel_section_label: Text Manipulation
 - name: scatterplot
   owner: devteam
   revisions:
@@ -87,125 +106,79 @@ tools:
   - 5298e06f14f9
   - e3a675da7fd0
   tool_panel_section_label: Visualization
-- name: datamash_transpose
-  owner: iuc
+- name: rcx_boxplot
+  owner: recetox
   revisions:
-  - 22c2a1ac7ae3
-  - a513e3fbb4c5
-  tool_panel_section_label: Text Manipulation
-- name: diff
-  owner: bgruening
+  - 92325ed91115
+  tool_panel_section_label: Visualization
+- name: heatmap
+  owner: ethevenot
   revisions:
-  - 10ef1bf99074
-  - 95a9dc82fc9a
-  tool_panel_section_label: Text Manipulation
-- name: text_processing
-  owner: bgruening
-  revisions:
-  - 86755160afbf
-  - ddf54b12c295
-  - fbf99087e067
-  tool_panel_section_label: Text Manipulation
+  - b1667c118127
+  tool_panel_section_label: Visualization
 - name: split_file_on_column
   owner: bgruening
   revisions:
   - ff2a81aa3f08
   tool_panel_section_label: Filter and Sort
+- name: generic_filter
+  owner: melpetera
+  revisions:
+  - cfd7c4aa5c26
+  tool_panel_section_label: Filter and Sort
+- name: intensity_checks
+  owner: melpetera
+  revisions:
+  - ec75de7f1e08
+  tool_panel_section_label: Statistics
+- name: mixmodel4repeated_measures
+  owner: workflow4metabolomics
+  revisions:
+  - a4d89d47646f
+  tool_panel_section_label: Statistics
+- name: anova
+  owner: lecorguille
+  revisions:
+  - 102049093b7d
+  tool_panel_section_label: Statistics
+- name: multivariate
+  owner: ethevenot
+  revisions:
+  - 5526f8258e8a
+  tool_panel_section_label: Statistics
+- name: univariate
+  owner: ethevenot
+  revisions:
+  - 5687435b182c
+  tool_panel_section_label: Statistics
+- name: asca
+  owner: marie-tremblay-metatoul
+  revisions:
+  - 93312041f1d5
+  tool_panel_section_label: Statistics
 - name: recetox_msfinder
   owner: recetox
   revisions:
   - e7eff0c9baa3
-  tool_panel_section_label: RECETOX
+  tool_panel_section_label: Spectral Library Building & Maintenance
 - name: msmetaenhancer
   owner: recetox
   revisions:
   - 3e2cb0bc6959
   - b5467dead5b1
-  tool_panel_section_label: RECETOX
-- name: xtb_molecular_optimization
-  owner: recetox
-  revisions:
-  - 6e1ef071fffc
-  - d5633eaf3552
-  tool_panel_section_label: RECETOX
-- name: recetox_xmsannotator_advanced
-  owner: recetox
-  revisions:
-  - 6b5dec818827
-  - cfd2e19f00a9
-  tool_panel_section_label: RECETOX
-- name: waveica
-  owner: recetox
-  revisions:
-  - 6480c6d5fa36
-  - bf32ae95a06f
-  tool_panel_section_label: RECETOX
-- name: ramclustr
-  owner: recetox
-  revisions:
-  - 050cfef6ba65
-  - da7722f665f4
-  tool_panel_section_label: RECETOX
-- name: rmassbank
-  owner: recetox
-  revisions:
-  - 0b28816c1c2c
-  - 5a6bb93ec656
-  tool_panel_section_label: RECETOX
-- name: biotransformer
-  owner: recetox
-  revisions:
-  - 0b86600b715e
-  - 6cd2a9e6ac49
-  tool_panel_section_label: RECETOX
-- name: spec2vec_training
-  owner: recetox
-  revisions:
-  - 9d917de87cca
-  tool_panel_section_label: RECETOX
-- name: spec2vec_similarity
-  owner: recetox
-  revisions:
-  - 721a4e666191
-  tool_panel_section_label: RECETOX
-- name: ms2deepscore_config_generator
-  owner: recetox
-  revisions:
-  - 7e4ac334fc33
-  tool_panel_section_label: RECETOX
-- name: ms2deepscore_similarity
-  owner: recetox
-  revisions:
-  - 58c95171a0d3
-  tool_panel_section_label: RECETOX
-- name: ms2deepscore_training
-  owner: recetox
-  revisions:
-  - 0a0529822d91
-  tool_panel_section_label: RECETOX
-- name: riassigner
-  owner: recetox
-  revisions:
-  - af25aa61c611
-  - c702620c22b1
-  tool_panel_section_label: RECETOX
+  tool_panel_section_label: Spectral Library Building & Maintenance
 - name: assign_ri_from_comment
   owner: recetox
   revisions:
   - 6975af39ba79
   - 7226eba9c09d
   - 97ccdb1ba47c
-  tool_panel_section_label: RECETOX
-- name: ramclustr_define_experiment
+  tool_panel_section_label: Spectral Library Building & Maintenance
+- name: riassigner
   owner: recetox
   revisions:
-  - 25625114618e
-  - f2c1d0bbb074
-  tool_panel_section_label: RECETOX
-- name: msp_split
-  owner: recetox
-  revisions:
-  - ae0263faa819
+  - af25aa61c611
+  - c702620c22b1
   tool_panel_section_label: RECETOX
 - name: filter_compounds
   owner: recetox
@@ -213,27 +186,286 @@ tools:
   - 6c5df3eeb768
   - 72b687d21f65
   tool_panel_section_label: RECETOX
-- name: thermo_raw_file_converter
-  owner: galaxyp
-  revisions:
-  - 19e45916daf9
-  tool_panel_section_label: RECETOX
-- name: rename_annotated_feature
+- name: matchms_subsetting
   owner: recetox
   revisions:
-  - 268fcec93d9c
-  tool_panel_section_label: RECETOX
+  - 5bbd1a8404f5
+  - a598091029ad
+  tool_panel_section_label: matchms
+- name: matchms_metadata_merge
+  owner: recetox
+  revisions:
+  - 1fd950c5586a
+  - ec25de0f0c58
+  tool_panel_section_label: matchms
+- name: matchms_add_key
+  owner: recetox
+  revisions:
+  - 51da674b945d
+  - a5d41764722d
+  tool_panel_section_label: matchms
+- name: matchms_metadata_export
+  owner: recetox
+  revisions:
+  - 8832425b1ff6
+  - cbadbec49b5d
+  tool_panel_section_label: matchms
+- name: matchms_convert
+  owner: recetox
+  revisions:
+  - 9e83636da9d3
+  - bff7bfcf975e
+  tool_panel_section_label: matchms
+- name: matchms_filtering
+  owner: recetox
+  revisions:
+  - 83c4b4359ac4
+  - da15e8ea3b28
+  tool_panel_section_label: matchms
+- name: matchms_remove_spectra
+  owner: recetox
+  revisions:
+  - 80df426e7e47
+  - d50ce2f51fc0
+  tool_panel_section_label: matchms
+- name: matchms_split
+  owner: recetox
+  revisions:
+  - ea6c5636c0cf
+  - fc1bc38ede0b
+  tool_panel_section_label: matchms
+- name: matchms_remove_key
+  owner: recetox
+  revisions:
+  - 0a64e2bcce96
+  - fbdb2ae524df
+  tool_panel_section_label: matchms
+- name: xtb_molecular_optimization
+  owner: recetox
+  revisions:
+  - 6e1ef071fffc
+  - d5633eaf3552
+  tool_panel_section_label: Spectra Prediction
+- name: metfrag_vis
+  owner: computational-metabolomics
+  revisions:
+  - 3dbe79671820
+  tool_panel_section_label: Spectra Prediction
+- name: metfrag
+  owner: computational-metabolomics
+  revisions:
+  - f151ee133612
+  tool_panel_section_label: Spectra Prediction
+- name: sirius_csifingerid
+  owner: computational-metabolomics
+  revisions:
+  - 8dac4cef0a22
+  tool_panel_section_label: Spectra Prediction
+- name: frag_hires_mass
+  owner: ljocha
+  revisions:
+  - 8a608fabb6fd
+  tool_panel_section_label: Spectra Prediction
+- name: recetox_xmsannotator_advanced
+  owner: recetox
+  revisions:
+  - 6b5dec818827
+  - cfd2e19f00a9
+  tool_panel_section_label: Annotation
+- name: rmassbank
+  owner: recetox
+  revisions:
+  - 0b28816c1c2c
+  - 5a6bb93ec656
+  tool_panel_section_label: Annotation
 - name: camera_annotate
   owner: lecorguille
   revisions:
   - 75a1b3f7bacc
   - abf1775ac14d
-  tool_panel_section_label: CAMERA
+  tool_panel_section_label: Annotation
 - name: camera_combinexsannos
   owner: mmonsoor
   revisions:
   - 961089e21ae2
-  tool_panel_section_label: CAMERA
+  tool_panel_section_label: Annotation
+- name: mfassignr_isofiltr
+  owner: recetox
+  revisions:
+  - 079ae9aa6ed5
+  - 1c199c3d5993
+  tool_panel_section_label: Annotation
+- name: mfassignr_mfassign
+  owner: recetox
+  revisions:
+  - 22c80f584bb1
+  - 5aa9380f397b
+  tool_panel_section_label: Annotation
+- name: mfassignr_mfassigncho
+  owner: recetox
+  revisions:
+  - 11949bd6837a
+  - da64d663694b
+  tool_panel_section_label: Annotation
+- name: ramclustr
+  owner: recetox
+  revisions:
+  - 050cfef6ba65
+  - da7722f665f4
+  tool_panel_section_label: Deconvolution
+- name: ramclustr_define_experiment
+  owner: recetox
+  revisions:
+  - 25625114618e
+  - f2c1d0bbb074
+  tool_panel_section_label: Deconvolution
+- name: metams_plot
+  owner: workflow4metabolomics
+  revisions:
+  - ba609408eee9
+  tool_panel_section_label: Deconvolution
+- name: metams_rungc
+  owner: yguitton
+  revisions:
+  - 93508ea69eb5
+  tool_panel_section_label: Deconvolution
+- name: spec2vec_training
+  owner: recetox
+  revisions:
+  - 9d917de87cca
+  tool_panel_section_label: Spectral Library Search
+- name: spec2vec_similarity
+  owner: recetox
+  revisions:
+  - 721a4e666191
+  tool_panel_section_label: Spectral Library Search
+- name: ms2deepscore_config_generator
+  owner: recetox
+  revisions:
+  - 7e4ac334fc33
+  tool_panel_section_label: Spectral Library Search
+- name: ms2deepscore_similarity
+  owner: recetox
+  revisions:
+  - 58c95171a0d3
+  tool_panel_section_label: Spectral Library Search
+- name: ms2deepscore_training
+  owner: recetox
+  revisions:
+  - 0a0529822d91
+  tool_panel_section_label: Spectral Library Search
+- name: matchms_networking
+  owner: recetox
+  revisions:
+  - 3cd1cf3034d1
+  - f04b378325e5
+  tool_panel_section_label: Spectral Library Search
+- name: matchms_metadata_match
+  owner: recetox
+  revisions:
+  - 05a7fc94e66c
+  - 330b0dfae8da
+  tool_panel_section_label: Spectral Library Search
+- name: matchms_spectral_similarity
+  owner: recetox
+  revisions:
+  - 44e7027714d7
+  - 7ba589b01dbc
+  tool_panel_section_label: Spectral Library Search
+- name: matchms_fingerprint_similarity
+  owner: recetox
+  revisions:
+  - 1d3ee4f9f63d
+  - fd890f162ce6
+  tool_panel_section_label: Spectral Library Search
+- name: thermo_raw_file_converter
+  owner: galaxyp
+  revisions:
+  - 19e45916daf9
+  tool_panel_section_label: Pre-processing
+- name: msconvert
+  owner: galaxyp
+  revisions:
+  - 6153e8ada1ee
+  - ab6c14374bc0
+  tool_panel_section_label: Pre-processing
+- name: rcx_tk
+  owner: recetox
+  revisions:
+  - 54401f9d1a30
+  tool_panel_section_label: Pre-processing
+- name: mfassignr_snplot
+  owner: recetox
+  revisions:
+  - 6a34bc7afd61
+  - f19c0631b9e5
+  tool_panel_section_label: Pre-processing
+- name: mfassignr_histnoise
+  owner: recetox
+  revisions:
+  - 9654573e6889
+  - faf7108f3b48
+  tool_panel_section_label: Pre-processing
+- name: mfassignr_kmdnoise
+  owner: recetox
+  revisions:
+  - a7a823839ae3
+  - f60df05dd038
+  tool_panel_section_label: Pre-processing
+- name: bioconductor_msnbase_centroid
+  owner: recetox
+  revisions:
+  - 4018639dc0a5
+  tool_panel_section_label: Pre-processing
+- name: bioconductor_msnbase_smooth_chromatogram
+  owner: recetox
+  revisions:
+  - 492350f45be9
+  tool_panel_section_label: Pre-processing
+- name: bioconductor_msnbase_smooth_mz
+  owner: recetox
+  revisions:
+  - 00e058234fbf
+  tool_panel_section_label: Pre-processing
+- name: openms_baselinefilter
+  owner: galaxyp
+  revisions:
+  - 84bd73e60367
+  - ddbae9eb797e
+  tool_panel_section_label: Pre-processing
+- name: openms_noisefiltergaussian
+  owner: galaxyp
+  revisions:
+  - 464f7877215b
+  - 47982606f542
+  tool_panel_section_label: Pre-processing
+- name: openms_noisefiltersgolay
+  owner: galaxyp
+  revisions:
+  - 35468667de97
+  - cf86c9091cb3
+  tool_panel_section_label: Pre-processing
+- name: rename_annotated_feature
+  owner: recetox
+  revisions:
+  - 268fcec93d9c
+  tool_panel_section_label: Post-processing
+- name: qualitymetrics
+  owner: ethevenot
+  revisions:
+  - acdf51018708
+  tool_panel_section_label: Post-processing
+- name: matchms_formatter
+  owner: recetox
+  revisions:
+  - a5a5b147da70
+  - f76a397afbe1
+  tool_panel_section_label: Post-processing
+- name: tablemerge
+  owner: melpetera
+  revisions:
+  - e44c5246247a
+  tool_panel_section_label: Post-processing
 - name: rem_complex
   owner: recetox
   revisions:
@@ -245,12 +477,6 @@ tools:
   revisions:
   - 4e3b2049a4d3
   - f70b83b730ac
-  tool_panel_section_label: ChemicalToolBox
-- name: msconvert
-  owner: galaxyp
-  revisions:
-  - 6153e8ada1ee
-  - ab6c14374bc0
   tool_panel_section_label: ChemicalToolBox
 - name: smina
   owner: earlhaminst
@@ -799,18 +1025,26 @@ tools:
   revisions:
   - 7f958f54468e
   tool_panel_section_label: ISA tools
+- name: isa2w4m
+  owner: prog
+  revisions:
+  - 1facef3ba64a
+  tool_panel_section_label: ISA tools
+- name: isaextractor
+  owner: prog
+  revisions:
+  - 975585306dc4
+  tool_panel_section_label: ISA tools
 - name: msnbase_readmsdata
   owner: lecorguille
   revisions:
   - 11ab2081bd4a
   - 35b6fe4d481c
-  - 6de175c1f6ef
   tool_panel_section_label: XCMS
 - name: xcms_xcmsset
   owner: lecorguille
   revisions:
   - 3990a65b45a4
-  - 6550698fe60f
   - b02d1992a43a
   tool_panel_section_label: XCMS
 - name: xcms_summary
@@ -818,34 +1052,29 @@ tools:
   revisions:
   - 018a9771de28
   - 1ae878634ab3
-  - 444e3ed135e3
   tool_panel_section_label: XCMS
 - name: xcms_retcor
   owner: lecorguille
   revisions:
   - 33c0ca93f3ee
   - aa252eec9229
-  - d2b82d89f848
   tool_panel_section_label: XCMS
 - name: xcms_plot_chromatogram
   owner: lecorguille
   revisions:
   - 024974037c4e
   - 9291271ec4d9
-  - c8bef8f6a1cb
   tool_panel_section_label: XCMS
 - name: xcms_merge
   owner: lecorguille
   revisions:
   - 5bd125a3f3b0
-  - 6d475a389abc
   - ae28a753a6f8
   tool_panel_section_label: XCMS
 - name: xcms_group
   owner: lecorguille
   revisions:
   - 3820e3f3b1cb
-  - 71572faf938e
   - d45a786cbc40
   tool_panel_section_label: XCMS
 - name: xcms_fillpeaks
@@ -853,14 +1082,18 @@ tools:
   revisions:
   - 26d77e9ceb49
   - a8d866a71ba1
-  - ec9aebabc1d2
   tool_panel_section_label: XCMS
 - name: xcms_export_samplemetadata
   owner: lecorguille
   revisions:
-  - 4ea32e46b2d6
   - 94eb263cfab4
   - e13c7bc91c63
+  tool_panel_section_label: XCMS
+- name: xcms_refine
+  owner: workflow4metabolomics
+  revisions:
+  - 20f8ebc3a391
+  - 6c2798bce3eb
   tool_panel_section_label: XCMS
 - name: secimtools
   owner: malex
@@ -868,53 +1101,17 @@ tools:
   - 2e7d47c0b027
   - caba07f41453
   tool_panel_section_label: SECIMTools
-- name: metams_plot
-  owner: workflow4metabolomics
-  revisions:
-  - ba609408eee9
-  tool_panel_section_label: metaMS
-- name: metams_rungc
-  owner: yguitton
-  revisions:
-  - 93508ea69eb5
-  tool_panel_section_label: metaMS
-- name: xcms_refine
-  owner: workflow4metabolomics
-  revisions:
-  - 090b33a9981c
-  - 20f8ebc3a391
-  - 6c2798bce3eb
-  tool_panel_section_label: W4M
-- name: qualitymetrics
-  owner: ethevenot
-  revisions:
-  - acdf51018708
-  tool_panel_section_label: W4M
-- name: bank_inhouse
-  owner: fgiacomoni
-  revisions:
-  - 52798007c6b2
-  tool_panel_section_label: W4M
 - name: batchcorrection
   owner: melpetera
   revisions:
   - 23314e1192d4
-  tool_panel_section_label: W4M
-- name: metfrag_vis
-  owner: computational-metabolomics
+  tool_panel_section_label: Batch Effect Correction
+- name: waveica
+  owner: recetox
   revisions:
-  - 3dbe79671820
-  tool_panel_section_label: MetFrag
-- name: metfrag
-  owner: computational-metabolomics
-  revisions:
-  - f151ee133612
-  tool_panel_section_label: MetFrag
-- name: sirius_csifingerid
-  owner: computational-metabolomics
-  revisions:
-  - 8dac4cef0a22
-  tool_panel_section_label: SIRIUS
+  - 6480c6d5fa36
+  - bf32ae95a06f
+  tool_panel_section_label: Batch Effect Correction
 - name: mspurity_frag4feature
   owner: computational-metabolomics
   revisions:
@@ -981,31 +1178,26 @@ tools:
   - 69ed543767b2
   - 816bac69e03e
   tool_panel_section_label: msPurity
-- name: frag_hires_mass
-  owner: ljocha
-  revisions:
-  - 8a608fabb6fd
-  tool_panel_section_label: RECETOX-TEST
 - name: retip_apply
   owner: recetox
   revisions:
   - eaccaebf11cb
-  tool_panel_section_label: RECETOX-TEST
+  tool_panel_section_label: Retention Time Prediction
 - name: retip_descriptors
   owner: recetox
   revisions:
   - 70940eb0f6e7
-  tool_panel_section_label: RECETOX-TEST
+  tool_panel_section_label: Retention Time Prediction
 - name: retip_filter_rt
   owner: recetox
   revisions:
   - b7af3b9f5199
-  tool_panel_section_label: RECETOX-TEST
+  tool_panel_section_label: Retention Time Prediction
 - name: retip_train
   owner: recetox
   revisions:
   - fc3e026406c5
-  tool_panel_section_label: RECETOX-TEST
+  tool_panel_section_label: Retention Time Prediction
 - name: pyteomics_mztab2tsv
   owner: galaxyp
   revisions:
@@ -1058,29 +1250,11 @@ tools:
   - 401f500aae50
   - 6b01678ec2fc
   tool_panel_section_label: OpenMS
-- name: openms_noisefiltergaussian
-  owner: galaxyp
-  revisions:
-  - 464f7877215b
-  - 47982606f542
-  tool_panel_section_label: OpenMS
-- name: openms_noisefiltersgolay
-  owner: galaxyp
-  revisions:
-  - 35468667de97
-  - cf86c9091cb3
-  tool_panel_section_label: OpenMS
 - name: openms_filefilter
   owner: galaxyp
   revisions:
   - 86a9dd43dd09
   - fe4e4587d265
-  tool_panel_section_label: OpenMS
-- name: openms_baselinefilter
-  owner: galaxyp
-  revisions:
-  - 84bd73e60367
-  - ddbae9eb797e
   tool_panel_section_label: OpenMS
 - name: openms_fileinfo
   owner: galaxyp
@@ -1136,182 +1310,47 @@ tools:
   - 99d118321d5f
   - f92b1b64da93
   tool_panel_section_label: recetox-aplcms
-- name: matchms_subsetting
-  owner: recetox
-  revisions:
-  - 5bbd1a8404f5
-  - a598091029ad
-  tool_panel_section_label: matchms
-- name: matchms_metadata_merge
-  owner: recetox
-  revisions:
-  - 1fd950c5586a
-  - ec25de0f0c58
-  tool_panel_section_label: matchms
-- name: matchms_add_key
-  owner: recetox
-  revisions:
-  - 51da674b945d
-  - a5d41764722d
-  tool_panel_section_label: matchms
-- name: matchms_networking
-  owner: recetox
-  revisions:
-  - 3cd1cf3034d1
-  - f04b378325e5
-  tool_panel_section_label: matchms
-- name: matchms_metadata_match
-  owner: recetox
-  revisions:
-  - 05a7fc94e66c
-  - 330b0dfae8da
-  tool_panel_section_label: matchms
-- name: matchms_spectral_similarity
-  owner: recetox
-  revisions:
-  - 44e7027714d7
-  - 7ba589b01dbc
-  tool_panel_section_label: matchms
-- name: matchms_metadata_export
-  owner: recetox
-  revisions:
-  - 8832425b1ff6
-  - cbadbec49b5d
-  tool_panel_section_label: matchms
-- name: matchms_fingerprint_similarity
-  owner: recetox
-  revisions:
-  - 1d3ee4f9f63d
-  - fd890f162ce6
-  tool_panel_section_label: matchms
-- name: matchms_convert
-  owner: recetox
-  revisions:
-  - 9e83636da9d3
-  - bff7bfcf975e
-  tool_panel_section_label: matchms
-- name: matchms_filtering
-  owner: recetox
-  revisions:
-  - 83c4b4359ac4
-  - da15e8ea3b28
-  tool_panel_section_label: matchms
-- name: matchms_remove_spectra
-  owner: recetox
-  revisions:
-  - 80df426e7e47
-  - d50ce2f51fc0
-  tool_panel_section_label: matchms
-- name: matchms_split
-  owner: recetox
-  revisions:
-  - ea6c5636c0cf
-  - fc1bc38ede0b
-  tool_panel_section_label: matchms
-- name: matchms_remove_key
-  owner: recetox
-  revisions:
-  - 0a64e2bcce96
-  - fbdb2ae524df
-  tool_panel_section_label: matchms
-- name: matchms_formatter
-  owner: recetox
-  revisions:
-  - a5a5b147da70
-  - f76a397afbe1
-  tool_panel_section_label: matchms
-- name: matchms_matchms_export_skyline_transition_list
-  owner: recetox
-  revisions:
-  - 8aa0014a5ad4
-  tool_panel_section_label: matchms
-- name: mfassignr_snplot
-  owner: recetox
-  revisions:
-  - 6a34bc7afd61
-  - f19c0631b9e5
-  tool_panel_section_label: mfassignr
-- name: mfassignr_histnoise
-  owner: recetox
-  revisions:
-  - 9654573e6889
-  - faf7108f3b48
-  tool_panel_section_label: mfassignr
-- name: mfassignr_kmdnoise
-  owner: recetox
-  revisions:
-  - a7a823839ae3
-  - f60df05dd038
-  tool_panel_section_label: mfassignr
-- name: mfassignr_isofiltr
-  owner: recetox
-  revisions:
-  - 079ae9aa6ed5
-  - 1c199c3d5993
-  tool_panel_section_label: mfassignr
-- name: mfassignr_mfassign
-  owner: recetox
-  revisions:
-  - 22c80f584bb1
-  - 5aa9380f397b
-  tool_panel_section_label: mfassignr
-- name: mfassignr_mfassigncho
-  owner: recetox
-  revisions:
-  - 11949bd6837a
-  - da64d663694b
-  tool_panel_section_label: mfassignr
 - name: mfassignr_recal
   owner: recetox
   revisions:
   - 235878c45443
   - cfcf45ba58be
-  tool_panel_section_label: mfassignr
+  tool_panel_section_label: Mass Recalibration
 - name: mfassignr_recallist
   owner: recetox
   revisions:
   - 6c7b17d38a1d
   - 6e1813883a9a
-  tool_panel_section_label: mfassignr
+  tool_panel_section_label: Mass Recalibration
 - name: mfassignr_findrecalseries
   owner: recetox
   revisions:
   - 1b4881c150cc
   - a26b860d6ce7
-  tool_panel_section_label: mfassignr
-- name: rcx_tk
-  owner: recetox
-  revisions:
-  - 54401f9d1a30
-  tool_panel_section_label: RECETOX
+  tool_panel_section_label: Mass Recalibration
 - name: target_screen
   owner: recetox
   revisions:
   - d4c2d5bc0524
-  tool_panel_section_label: RECETOX
+  tool_panel_section_label: Target Data Processing
 - name: isolib
   owner: recetox
   revisions:
   - 2b1118bce0b1
-  tool_panel_section_label: RECETOX
-- name: qcxms_neutral_run
+  tool_panel_section_label: Target Data Processing
+- name: biotransformer
   owner: recetox
   revisions:
-  - 33b7a99b6de3
-  tool_panel_section_label: QCxMS
-- name: qcxms_production_run
+  - 0b86600b715e
+  - 6cd2a9e6ac49
+  tool_panel_section_label: Target Data Processing
+- name: matchms_matchms_export_skyline_transition_list
   owner: recetox
   revisions:
-  - 356f7916ac07
-  tool_panel_section_label: QCxMS
-- name: qcxms_getres
+  - 8aa0014a5ad4
+  tool_panel_section_label: Target Data Processing
+- name: bioconductor_scp
   owner: recetox
   revisions:
-  - 89b026d67e9f
-  tool_panel_section_label: QCxMS
-- name: xtb_molecular_optimization
-  owner: recetox
-  revisions:
-  - 6e1ef071fffc
-  - d5633eaf3552
-  tool_panel_section_label: QCxMS
+  - cd2f3a280463
+  tool_panel_section_label: Others
