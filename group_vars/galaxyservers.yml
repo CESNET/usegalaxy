@@ -94,7 +94,6 @@ galaxy_config:
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
-    email_from: "regalaxy@rt.cesnet.cz"
     allow_user_creation: false
     require_login: true
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
