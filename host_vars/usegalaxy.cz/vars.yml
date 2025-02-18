@@ -13,7 +13,7 @@ galaxy_commit_id: release_24.1
 
 copy_tools_from: usegalaxy.eu
 
-# csnt_log_level: DEBUG
+csnt_log_level: DEBUG
 csnt_enable_notification_system: true
 csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
 
