@@ -36,6 +36,8 @@ galaxy_job_config:
     local_runner:
       load: galaxy.jobs.runners.local:LocalJobRunner
       workers: 4
+    pulsar_tes:
+      load: galaxy.jobs.runners.pulsar:PulsarTesJobRunner
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
@@ -46,16 +48,23 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: _default_
-    tes_runner:
-      load: galaxy.jobs.runners.tes:TESJobRunner
   handling:
     assign: ['db-skip-locked']
   execution:
-    default: tesp_env
+    default: pulsar_tes_environment
     environments:
+      pulsar_tes_environment:
+        runner: pulsar_tes
+        tes_url: https://147.251.255.46:8080
+        docker_enabled: true
+        docker_default_container_id: busybox:ubuntu-14.04
+#        pulsar_app_config:
+#          message_queue_url: '${container_amqp_url}'
+        env:
+          - name: SOME_ENV_VAR
+            value: '42'
       local_env:
-        runner: local_runner
-        tmp_dir: true
+        runner: local_runner 
       tpv_dispatcher:
         runner: dynamic
         type: python
@@ -65,11 +74,6 @@ galaxy_job_config:
           - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
           - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
           - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
-      tesp_env:
-        runner: tes_runner
-        tes_master_addr: http://147.251.255.46:8080
-        default_docker_image: hub.cerit.io/josef_handl/tesp-test-image
-        docker_enabled: true
   resources:
     default: default
     groups:
