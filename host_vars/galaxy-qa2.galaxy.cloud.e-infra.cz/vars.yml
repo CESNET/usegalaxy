@@ -1,4 +1,4 @@
-galaxy_build_client: false
+#galaxy_build_client: false
 galaxy_commit_id: release_24.2
 
 csnt_brand: QA2-TEST
