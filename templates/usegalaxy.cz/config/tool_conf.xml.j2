@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <toolbox monitor="true">
-  <section id="get_data" name="Get Data">
+  <section id="upload_file" name="Upload Data">
     <tool file="data_source/upload.xml" />
+  </section>
+  <section id="data_source_tools" name="External Data">
     <tool file="data_source/ucsc_tablebrowser.xml" />
     <tool file="data_source/ucsc_tablebrowser_archaea.xml" />
     <tool file="data_source/ncbi_datasets.xml" />
@@ -30,6 +32,7 @@
   </section>
   <section id="send_data" name="Send Data">
     <tool file="data_export/send.xml" />
+    <!-- <tool file="data_export/export_remote.xml" /> -->
   </section>
   <section id="collection_operations" name="Collection Operations">
     <tool file="${model_tools_path}/unzip_collection.xml" />
@@ -74,16 +77,6 @@
     <tool file="filters/wc_gnu.xml" />
     <tool file="filters/secure_hash_message_digest.xml" />
   </section>
-  <section id="convert" name="Convert Formats">
-    <tool file="filters/bed2gff.xml" />
-    <tool file="filters/gff2bed.xml" />
-    <tool file="maf/maf_to_bed.xml" />
-    <tool file="maf/maf_to_interval.xml" />
-    <tool file="maf/maf_to_fasta.xml" />
-    <tool file="filters/sff_extractor.xml" />
-    <tool file="filters/wig_to_bigwig.xml" />
-    <tool file="filters/bed_to_bigbed.xml" />
-  </section>
   <section id="filter_and_sort" name="Filter and Sort">
     <tool file="stats/filtering_1_1_0.xml" />
     <tool file="stats/filtering.xml" />
@@ -120,26 +113,26 @@
     <tool file="extract/liftOver_wrapper.xml" />
   </section>
   <section id="fasta_fastq" name="FASTA/FASTQ" version="">
-    <label id="solid" text="AB-SOLiD data" />
-    <tool file="next_gen_conversion/solid2fastq.xml" />
-    <tool file="solid_tools/solid_qual_stats.xml" />
-    <tool file="solid_tools/solid_qual_boxplot.xml" />
+    <!-- <label id="solid" text="AB-SOLiD data" /> -->
+    <!-- <tool file="next_gen_conversion/solid2fastq.xml" /> -->
+    <!-- <tool file="solid_tools/solid_qual_stats.xml" /> -->
+    <!-- <tool file="solid_tools/solid_qual_boxplot.xml" /> -->
   </section>
   <section id="fastq_quality_control" name="FASTQ Quality Control" version="" />
   <section id="quality_control" name="Quality Control" version="" />
   <section id="sam_bam" name="SAM/BAM">
-    <label id="bamtools_label" text="bamtools" />
-    <label id="samtools_label" text="samtools" />
+    <!-- <label id="bamtools_label" text="bamtools" /> -->
+    <!-- <label id="samtools_label" text="samtools" /> -->
   </section>
   <section id="bed" name="BED">
   </section>
   <section id="vcf_bcf" name="VCF/BCF">
-    <label id="vcflib_label" text="vcflib" />
+    <!-- <label id="vcflib_label" text="vcflib" /> -->
   </section>
   <section id="nanopore" name="Nanopore">
-    <label id="nanopore_label" text="poretools" />
+    <!-- <label id="nanopore_label" text="poretools" /> -->
   </section>
-  <label id="genomics_label" text="Common Genomics Tools" />
+  <!-- <label id="genomics_label" text="Common Genomics Tools" /> -->
   <label id="single-cell-label-genomics" text="Single Cell Tools" />
   <section id="operate_on_genomic_intervals" name="Operate on Genomic Intervals">
     <tool file="stats/aggregate_binned_scores_in_intervals.xml" />
@@ -295,7 +288,7 @@
     <tool file="maf/vcf_to_maf_customtrack.xml" />
     <!-- <tool file="chromatra/chromatral.xml" /> -->
     <!-- <tool file="chromatra/chromatrat.xml" /> -->
-    <tool file="plotting/foldchanges_heatmap.xml" />
+    <!-- <tool file="plotting/foldchanges_heatmap.xml" /> -->
   </section>
   <section id="single-cell-section-interactivetools" name="Interactive tools">
   </section>
@@ -329,7 +322,7 @@
   <section id="genome_diversity" name="Genome Diversity">
   </section>
   <section id="deprecated" name="Deprecated">
-    <tool file="extract/extract_genomic_dna.xml" hidden="True" />
+    <!-- <tool file="extract/extract_genomic_dna.xml" hidden="True" /> -->
   </section>
   <section id="climate_analysis" name="Climate Analysis" />
   <section id="apollo" name="Apollo" />
