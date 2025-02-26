@@ -8,7 +8,7 @@ galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
 galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
 galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
 
-galaxy_commit_id: release_24.1
+galaxy_commit_id: release_24.2
 #galaxy_build_client: false
 
 copy_tools_from: usegalaxy.eu
