@@ -96,12 +96,6 @@ tools:
         context:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
 
-  .*/fastqc/.*:
-    cores: 2 
-    mem: 16
-    context:
-      walltime: 2
-
   __IMPORT_HISTORY__: 
      inherits: local_running_tools
 
