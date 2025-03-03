@@ -31,6 +31,7 @@ admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
 enable_flower: false
+enable_tiaas: true
 
 # Galaxy Job Configuration
 galaxy_job_config:
@@ -223,10 +224,6 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
   - src: files/galaxy/static/e-infra_logo.svg
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
-  - src: files/galaxy/static/gcc2024-banner-3.png
-    dest: "{{ galaxy_server_dir }}/static/gcc2024-banner-3.png"
-  - src: files/galaxy/static/style/additional_styles.css
-    dest: "{{ galaxy_server_dir }}/static/style/additional_styles.css"
 
 galaxy_config_templates:
   - src: templates/galaxy/config/reports.yml.j2
@@ -376,6 +373,7 @@ rabbitmq_users:
     vhost: galaxy_internal
 
 # TUS
+tusd_version: v2.6.0
 galaxy_tusd_port: 1080
 galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus" # /mnt/data/tus
 
