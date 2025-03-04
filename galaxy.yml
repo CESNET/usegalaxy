@@ -87,7 +87,8 @@
     - geerlingguy.redis
     - role: usegalaxy_eu.flower
       when: enable_flower | bool
-    - galaxyproject.tiaas2
+    - role: galaxyproject.tiaas2
+      when: enable_tiaas | bool
     - galaxyproject.nginx
     - galaxyproject.proftpd
     - geerlingguy.docker

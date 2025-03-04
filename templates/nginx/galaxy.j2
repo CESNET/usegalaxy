@@ -134,6 +134,10 @@ server {
 	}
 {% endif %}
 {% endblock grafana %}
+{% block tiaas %}
+{% if (enable_tiaas | default(false) ) %}
 	{{ tiaas_nginx_routes }}
+{% endif %}
+{% endblock tiaas %}
 
 }
