@@ -130,6 +130,7 @@
         src: "{{ playbook_dir }}/extra_scripts/add_group_users.py"
         dest: "/var/lib/postgresql/add_group_users.py"
         owner: postgres
+      when: "'usegalaxy.cz' in inventory_hostname"
     - name: Setup user - group association rutine
       ansible.builtin.cron:
         name: "Add E-infra users to E-infra group"
@@ -137,6 +138,7 @@
         minute: "0"
         hour: "*"
         job: "python3 /var/lib/postgresql/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+      when: "'usegalaxy.cz' in inventory_hostname"
 
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
