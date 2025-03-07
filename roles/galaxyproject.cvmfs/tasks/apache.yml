@@ -1,6 +1,0 @@
----
-- name: Ensure Apache is enabled and running
-  ansible.builtin.service:
-    name: "{{ cvmfs_apache_service_name }}"
-    state: started
-    enabled: true
