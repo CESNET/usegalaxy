@@ -125,13 +125,20 @@
         hour: "0"
         job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
 
+    - name: Copy user - group association script
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/extra_scripts/add_group_users.py"
+        dest: "/var/lib/postgresql/add_group_users.py"
+        owner: postgres
+      when: "'usegalaxy.cz' in inventory_hostname"
     - name: Setup user - group association rutine
       ansible.builtin.cron:
         name: "Add E-infra users to E-infra group"
         user: postgres # Run as the postgres user
         minute: "0"
         hour: "*"
-        job: "python3 {{ playbook_dir }}/extra_scripts/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+        job: "python3 /var/lib/postgresql/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+      when: "'usegalaxy.cz' in inventory_hostname"
 
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
