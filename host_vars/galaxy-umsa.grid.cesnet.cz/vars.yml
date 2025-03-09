@@ -1,6 +1,3 @@
-extra_certbot_domains:
- - "galaxy-umsa.grid.cesnet.cz"
-
 # where to put most of the data; we use RBD or NBD volumes
 galaxy_mutable_data_dir: /rbd/galaxy-umsa_data
 galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
