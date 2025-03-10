@@ -95,7 +95,6 @@ items:
 - sections:
   - virology
   - metagenomic_analysis
-  - single-cell
   - proteomics
   - metabolomics
   - muon_spectroscopy
