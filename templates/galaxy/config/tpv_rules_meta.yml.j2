@@ -112,6 +112,18 @@ tools:
   __SET_.*:
     inherits: local_running_tools
 
+  __IMPORT_HISTORY__:
+     inherits: local_running_tools
+
+  "Show .*":
+     inherits: local_running_tools
+
+  "Remove .*":
+     inherits: local_running_tools
+
+  cat1:
+     inherits: local_running_tools
+
   .*/data_manager_.*:
     inherits: local_sing_running_tools
 
@@ -141,6 +153,7 @@ destinations:
     max_cores: 1
     max_mem: 4
     params:
+      require_container: true
       singularity_enabled: true
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:

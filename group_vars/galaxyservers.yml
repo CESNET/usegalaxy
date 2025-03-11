@@ -27,6 +27,10 @@ csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xm
 csnt_enable_reports: false
 csnt_edam_panel_views: ""
 csnt_default_panel_view: default
+csnt_tool_config_file:
+  - "{{ galaxy_config_dir }}/tool_conf_labels.xml"
+  - "{{ galaxy_config_dir }}/tool_conf.xml"
+  - "{{ galaxy_config_dir }}/local_tool_conf.xml"
 admin_ssh_keys: false
 copy_tools_from: false
 enable_telegraf: false
@@ -107,10 +111,7 @@ galaxy_config:
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
     vault_config_file: vault_conf.yml
-    tool_config_file:
-    - "{{ galaxy_config_dir }}/tool_conf_labels.xml"
-    - "{{ galaxy_config_dir }}/tool_conf.xml"
-    - "{{ galaxy_config_dir }}/local_tool_conf.xml"
+    tool_config_file: "{{ csnt_tool_config_file }}"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # SQL Performance
     slow_query_log_threshold: 5
@@ -372,8 +373,8 @@ rabbitmq_users:
     tags: administrator
     vhost: galaxy_internal
 
+
 # TUS
-tusd_version: v2.6.0
 galaxy_tusd_port: 1080
 galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus" # /mnt/data/tus
 

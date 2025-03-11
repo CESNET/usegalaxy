@@ -73,6 +73,7 @@
         owner: www-data    # nginx on centos
         group: root
         mode: 0640
+      when: csnt_enable_reports
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
