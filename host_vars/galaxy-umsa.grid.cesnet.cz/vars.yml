@@ -34,7 +34,7 @@ galaxy_config_files:
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
   - src: "files/{{ inventory_hostname }}/tpv_rules_local.yml"
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
-  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/tool_conf.xml.j2', 'files/galaxy/config/tool_conf.xml']) }}"
+  - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
   - src: files/galaxy/config/oidc_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
