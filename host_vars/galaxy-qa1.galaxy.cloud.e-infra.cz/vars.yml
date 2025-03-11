@@ -1,5 +1,5 @@
 galaxy_commit_id: release_24.2
-galaxy_build_client: false
+# galaxy_build_client: false
 
 csnt_brand: QA1-TEST
 csnt_log_level: DEBUG
@@ -31,5 +31,3 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
   - src: "files/{{ inventory_hostname }}/all_tools.yml"
     dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
-
-copy_tools_from: usegalaxy.eu
