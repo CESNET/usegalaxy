@@ -8,7 +8,7 @@ galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: release_24.1
+galaxy_commit_id: release_24.2
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 24.11.1
