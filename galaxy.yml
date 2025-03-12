@@ -142,6 +142,31 @@
         job: "python3 /var/lib/postgresql/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
       when: "'usegalaxy.cz' in inventory_hostname"
 
+    - name: Ensure the tools cron script directory exists
+      ansible.builtin.file:
+        path: /srv/galaxy/cron/tools
+        state: directory
+        owner: galaxy
+        group: galaxy
+        mode: '0755'
+      when: "'galaxy-qa1.galaxy.cloud.e-infra.cz' in inventory_hostname"
+    - name: Template tool installation cron script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/{{ inventory_hostname }}/cron/install_tools.sh.j2"
+        dest: "/srv/galaxy/cron/tools/install_tools.sh"
+        owner: galaxy
+        group: galaxy
+        mode: '0755'
+      when: "'galaxy-qa1.galaxy.cloud.e-infra.cz' in inventory_hostname"
+    - name: Schedule tool installation script using cron
+      ansible.builtin.cron:
+        name: "Install tool updates"
+        user: galaxy
+        minute: "0"
+        hour: "3"
+        job: "URL={{ inventory_hostname }} API_KEY={{ api_key }} /bin/bash /srv/galaxy/cron/tools/install_tools.sh >> /srv/galaxy/cron/tools/cron.log 2>&1"
+      when: "'galaxy-qa1.galaxy.cloud.e-infra.cz' in inventory_hostname"
+
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
         path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
