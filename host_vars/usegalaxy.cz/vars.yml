@@ -11,13 +11,12 @@ galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
 galaxy_commit_id: release_24.2
 #galaxy_build_client: false
 
-copy_tools_from: usegalaxy.eu
-
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
 csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
 csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
+enable_tiaas: false
 
 pulsar:
   user_name: galaxyeu
@@ -33,11 +32,9 @@ galaxy_config_files:
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
   - src: "files/{{ inventory_hostname }}/tpv_rules_local.yml"
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
-  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/tool_conf.xml.j2', 'files/galaxy/config/tool_conf.xml']) }}"
+  - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
   - src: files/galaxy/config/oidc_config.xml
     dest: "{{ galaxy_config_dir }}/oidc_config.xml"
-  - src: "files/{{ inventory_hostname }}/tool_conf_labels.xml"
-    dest: "{{ galaxy_config_dir }}/tool_conf_labels.xml"
   - src: "files/{{ inventory_hostname }}/all_tools.yml"
     dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
