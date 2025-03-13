@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "$(date) - tool installation log entry"
+cd /srv/galaxy/cron/tools
+git -C "galaxy_tools" pull || git clone https://github.com/CESNET/galaxy_tools galaxy_tools
+cd /srv/galaxy/cron/tools/galaxy_tools
+python3 -m venv /srv/galaxy/cron/tools/galaxy_tools/.venv
+source /srv/galaxy/cron/tools/galaxy_tools/.venv/bin/activate
+pip install ephemeris
+find $URL -name '*.yml.lock' | xargs -n 1 -I {} shed-tools install --toolsfile {} --galaxy $URL --api_key $API_KEY --skip_install_resolver_dependencies
+echo "$(date) - tool installation finished"
