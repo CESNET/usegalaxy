@@ -147,6 +147,17 @@
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
 
+    - name: Create a file with key
+      ansible.builtin.copy:
+        content: |
+          {{ api_key }}
+        dest: "/home/{{ galaxy_user_name }}/.galaxy_api_key"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0600'
+      tags: cron
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+      no_log: true
     - name: Ensure the tools cron script directory exists
       ansible.builtin.file:
         path: "{{ galaxy_root }}/cron/tools"
@@ -171,7 +182,7 @@
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "3" # 3 am daily
-        job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY={{ api_key }} {{ galaxy_root }}/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
+        job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY=$(cat /home/{{ galaxy_user_name }}/.galaxy_api_key) {{ galaxy_root }}/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
       tags: cron
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
 
