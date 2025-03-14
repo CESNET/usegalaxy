@@ -149,7 +149,7 @@
 
     - name: Ensure the tools cron script directory exists
       ansible.builtin.file:
-        path: /srv/galaxy/cron/tools
+        path: "{{ galaxy_root }}/cron/tools"
         state: directory
         owner: "{{ galaxy_user_name }}"
         group: "{{ galaxy_user_group_name }}"
@@ -159,7 +159,7 @@
     - name: Template tool installation cron script
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/{{ inventory_hostname }}/cron/install_tools.sh.j2"
-        dest: "/srv/galaxy/cron/tools/install_tools.sh"
+        dest: "{{ galaxy_root }}/cron/tools/install_tools.sh"
         owner: "{{ galaxy_user_name }}"
         group: "{{ galaxy_user_group_name }}"
         mode: '0755'
@@ -171,7 +171,7 @@
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "3" # 3 am daily
-        job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY={{ api_key }} /srv/galaxy/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
+        job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY={{ api_key }} {{ galaxy_root }}/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
       tags: cron
       when: "'galaxy-qa1.galaxy.cloud.e-infra.cz' in inventory_hostname"
 
