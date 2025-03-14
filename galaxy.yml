@@ -73,6 +73,7 @@
         owner: www-data    # nginx on centos
         group: root
         mode: 0640
+      when: csnt_enable_reports
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
@@ -108,23 +109,38 @@
       ansible.builtin.systemd:
         state: restarted
         name: nginx
+
     - name: Creates entry in crontab "chmod on _files for ngnix access"
       ansible.builtin.cron:
         name: "chmod on _files for ngnix access"
         minute: "2"
-        hour: "*"
+        hour: "*" # 2nd minute every hour
         #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'
         job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -type d -mmin -180 -maxdepth 0 -exec chmod -R g+rw '{}' ';'"
       become: yes
       become_user: "{{ galaxy_user_name }}"
+      tags: cron
 
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
         name: "Cleanup Old User Data"
-        user: galaxy # Run as the Galaxy user
+        user: "{{ galaxy_user_name }}"
         minute: "0"
-        hour: "0"
+        hour: "0" # midnight daily
         job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
+      tags: cron
+
+    - name: Create a file with key for CRON jobs
+      ansible.builtin.copy:
+        content: |
+          {{ api_key }}
+        dest: "/home/{{ galaxy_user_name }}/.galaxy_api_key"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0600'
+      tags: cron
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+      no_log: true
 
     - name: Copy user - group association script
       ansible.builtin.copy:
@@ -132,14 +148,44 @@
         dest: "/var/lib/postgresql/add_group_users.py"
         owner: postgres
       when: "'usegalaxy.cz' in inventory_hostname"
+      tags: cron
     - name: Setup user - group association rutine
       ansible.builtin.cron:
         name: "Add E-infra users to E-infra group"
-        user: postgres # Run as the postgres user
+        user: postgres
         minute: "0"
-        hour: "*"
-        job: "python3 /var/lib/postgresql/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
+        hour: "*" # every hour
+        job: "python3 /var/lib/postgresql/add_group_users.py {{ inventory_hostname }} $(cat /home/{{ galaxy_user_name }}/.galaxy_api_key)"
       when: "'usegalaxy.cz' in inventory_hostname"
+      tags: cron
+
+    - name: Ensure the tools cron script directory exists
+      ansible.builtin.file:
+        path: "{{ galaxy_root }}/cron/tools"
+        state: directory
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0755'
+      tags: cron
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+    - name: Template tool installation cron script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/galaxy/cron/install_tools.sh.j2"
+        dest: "{{ galaxy_root }}/cron/tools/install_tools.sh"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0755'
+      tags: cron
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+    - name: Schedule tool installation script using cron
+      ansible.builtin.cron:
+        name: "Install tool updates"
+        user: "{{ galaxy_user_name }}"
+        minute: "0"
+        hour: "3" # 3 am daily
+        job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY=$(cat /home/{{ galaxy_user_name }}/.galaxy_api_key) {{ galaxy_root }}/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
+      tags: cron
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
 
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
@@ -158,7 +204,7 @@
 
     - name: Add pulsar public ssh key
       ansible.posix.authorized_key:
-        user: galaxy
+        user: "{{ galaxy_user_name }}"
         state: present
         key: "{{ lookup('file','files/{{ inventory_hostname }}/pulsar.pub') }}"
     - name: Restart galaxy

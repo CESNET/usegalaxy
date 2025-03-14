@@ -1,0 +1,49 @@
+global:
+  default_inherits: default
+
+tools:
+  .*/abims_xcms_fillPeaks/.*:
+    context:
+      walltime: 96
+
+  .*/tp_cut_tool/.*:
+    mem: 1
+
+  .*/mfassignr_mfassign.*:
+    mem: 16
+    context:
+      walltime: 48
+
+  .*/mfassignr_mfassignCHO/.*:
+    mem: 32
+
+  .*/mfassignr_isofiltr/.*:
+    mem: 32
+
+  .*/recetox_aplcms_align_features/.*:
+    mem: 150
+    cores: 8
+    context:
+      walltime: 72
+
+  .*/recetox_aplcms_compute_clusters/.*:
+    cores: 1
+    mem: 16
+
+  .*/recetox_aplcms_remove_noise/.*:
+    cores: 1
+    mem: 10
+
+  .*/recetox_aplcms_generate_feature_table/.*:
+    mem: 4
+
+  .*/ms2deepscore_training/.*:
+    mem: 16
+
+  .*/target_screen/.*:
+    mem: 16
+
+  .*/fastqc/.*:
+    cores: 1 
+    context:
+      walltime: 2

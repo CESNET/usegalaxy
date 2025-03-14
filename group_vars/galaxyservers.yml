@@ -8,7 +8,7 @@ galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: release_24.1
+galaxy_commit_id: release_24.2
 galaxy_force_checkout: true
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 24.11.1
@@ -27,8 +27,10 @@ csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xm
 csnt_enable_reports: false
 csnt_edam_panel_views: ""
 csnt_default_panel_view: default
+csnt_tool_config_file:
+  - "{{ galaxy_config_dir }}/tool_conf.xml"
+  - "{{ galaxy_config_dir }}/local_tool_conf.xml"
 admin_ssh_keys: false
-copy_tools_from: false
 enable_telegraf: false
 enable_flower: false
 enable_tiaas: true
@@ -107,10 +109,7 @@ galaxy_config:
     id_secret: "{{ vault_id_secret }}"
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
     vault_config_file: vault_conf.yml
-    tool_config_file:
-    - "{{ galaxy_config_dir }}/tool_conf_labels.xml"
-    - "{{ galaxy_config_dir }}/tool_conf.xml"
-    - "{{ galaxy_config_dir }}/local_tool_conf.xml"
+    tool_config_file: "{{ csnt_tool_config_file }}"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # SQL Performance
     slow_query_log_threshold: 5
@@ -372,8 +371,8 @@ rabbitmq_users:
     tags: administrator
     vhost: galaxy_internal
 
+
 # TUS
-tusd_version: v2.6.0
 galaxy_tusd_port: 1080
 galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus" # /mnt/data/tus
 
@@ -441,8 +440,8 @@ proftpd_display_connect: |
   Unauthorized access is prohibited
 proftpd_create_ftp_upload_dir: yes
 proftpd_options:
-  - User: galaxy
-  - Group: galaxy
+  - User: "{{ galaxy_user_name }}"
+  - Group: "{{ galaxy_user_group_name }}"
   - Port: 21
 proftpd_sql_db: galaxy@/var/run/postgresql
 proftpd_sql_user: galaxy
