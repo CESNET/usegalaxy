@@ -1,0 +1,2 @@
+galaxy_data_mount_point: /data
+rbd_cluster_code: CL4
