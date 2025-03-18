@@ -32,6 +32,7 @@ csnt_tool_config_file:
   - "{{ galaxy_config_dir }}/local_tool_conf.xml"
 csnt_library_import_dir: /libraries/admin
 csnt_user_library_import_dir: /libraries/user
+csnt_allow_path_paste: true
 admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
@@ -123,7 +124,7 @@ galaxy_config:
     enable_account_interface: "{{ csnt_enable_account_interface }}"
     enable_notification_system: "{{ csnt_enable_notification_system }}"
     watch_job_rules: 'auto'
-    allow_path_paste: true
+    allow_path_paste: "{{ csnt_allow_path_paste }}"
     enable_quotas: true
     allow_user_deletion: "{{ csnt_allow_user_deletion }}"
     show_welcome_with_login: true
@@ -160,8 +161,8 @@ galaxy_config:
 #        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
         cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
-    library_import_dir: csnt_library_import_dir
-    user_library_import_dir: csnt_user_library_import_dir
+    library_import_dir: "{{ csnt_library_import_dir }}"
+    user_library_import_dir: "{{ csnt_user_library_import_dir }}"
     # Celery
     amqp_internal_connection: "pyamqp://galaxy:{{ vault_rabbitmq_password_galaxy }}@localhost:5671/galaxy_internal?ssl=1"
     celery_conf:

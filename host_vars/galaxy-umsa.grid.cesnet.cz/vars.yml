@@ -17,6 +17,7 @@ csnt_tool_config_file:
 # csnt_default_panel_view: all_tools
 csnt_library_import_dir: null
 csnt_user_library_import_dir: null
+csnt_allow_path_paste: false
 enable_tiaas: false
 
 galaxy_user_name: galaxyumsa
