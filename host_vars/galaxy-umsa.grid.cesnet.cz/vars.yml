@@ -15,6 +15,7 @@ csnt_tool_config_file:
 - "{{ galaxy_config_dir }}/local_tool_conf.xml"
 # csnt_edam_panel_views: operations,topics
 # csnt_default_panel_view: all_tools
+csnt_allow_path_paste: true
 enable_tiaas: false
 
 galaxy_user_name: galaxyumsa
