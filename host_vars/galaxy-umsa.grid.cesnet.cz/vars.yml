@@ -18,7 +18,7 @@ csnt_tool_config_file:
 enable_tiaas: false
 
 galaxy_user_name: galaxyumsa
-galaxy_user_group: galaxyumsa
+galaxy_user_group_name: galaxyumsa
 
 pulsar:
   user_name: galaxyumsa
