@@ -46,7 +46,7 @@
   tasks:
     - name: Install production-specific dependencies
       package:
-        name: ['ceph-common']
+        name: ['ceph-common', 'xfsprogs']
     - name: Create the RBD mount directory
       file:
         path: "{{ rbd_mount_point }}"
@@ -90,13 +90,17 @@
         state: restarted
         name: rbdmap
       when: "not rbd_dev.stat.exists"
+    - name: Check again if RBD device exists
+      stat:
+        path: "{{ rbd_dev_name }}"
+      register: rbd_dev
+      when: "not rbd_dev.stat.exists"
     - name: Create file system on RBD
       community.general.filesystem:
         fstype: xfs
         dev: "{{ rbd_dev_name }}"
         opts: -K
         state: present
-      when: "rbd_dev.stat.exists"
     - name: Mount up RBD
       ansible.posix.mount:
         src: "{{ rbd_dev_name }}"
@@ -104,7 +108,6 @@
         fstype: xfs
         opts: rw,_netdev
         state: mounted
-      when: "rbd_dev.stat.exists"
     - name: Create galaxy mutable data directory
       file:
         owner: "{{ galaxy_user_name }}"
