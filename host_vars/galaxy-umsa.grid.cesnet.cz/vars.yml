@@ -1,6 +1,6 @@
 # where to put most of the data; we use RBD or NBD volumes
-galaxy_data_mount_point: /rbd
-galaxy_mutable_data_dir: "{{ galaxy_data_mount_point }}/galaxy-umsa_data"
+rbd_mount_point: /rbd
+galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy-umsa_data"
 galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
 galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
 galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"

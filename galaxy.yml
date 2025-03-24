@@ -49,7 +49,7 @@
         name: ['ceph-common']
     - name: Create the RBD mount directory
       file:
-        path: "{{ galaxy_data_mount_point }}"
+        path: "{{ rbd_mount_point }}"
         state: directory
         mode: '0755'
     - name: Copy ceph.conf
@@ -100,7 +100,7 @@
     - name: Mount up RBD
       ansible.posix.mount:
         src: "{{ rbd_dev_name }}"
-        path: "{{ galaxy_data_mount_point }}"
+        path: "{{ rbd_mount_point }}"
         fstype: xfs
         opts: rw,_netdev
         state: mounted
