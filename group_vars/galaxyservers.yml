@@ -52,7 +52,7 @@ galaxy_job_config:
       load: galaxy.jobs.runners.local:LocalJobRunner
     pulsar_tes:
       load: galaxy.jobs.runners.pulsar:PulsarTesJobRunner
-      amqp_url: "pyamqp://galaxy:{{ vault_rabbitmq_password_galaxy }}@{{ rabbitmq_hostname }}:5671/galaxy_internal?ssl=1"
+      amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       workers: 4
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
@@ -75,7 +75,7 @@ galaxy_job_config:
         docker_enabled: true
         docker_default_container_id: busybox:ubuntu-14.04
         pulsar_app_config:
-          message_queue_url: "pyamqp://galaxy:{{ vault_rabbitmq_password_galaxy }}@{{ rabbitmq_hostname }}:5671/galaxy_internal?ssl=1"
+          message_queue_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
         env:
           - name: SOME_ENV_VAR
             value: '42'
