@@ -11,35 +11,6 @@
         update_cache: yes
       when: ansible_os_family == 'Debian'
 
-- hosts: dbservers
-  become: true
-  become_user: root
-  pre_tasks:
-    - name: Install Dependencies
-      package:
-        name: ['acl', 'anacron']
-  roles:
-    - galaxyproject.postgresql
-    - role: galaxyproject.postgresql_objects
-      become: true
-      become_user: postgres
-
-- hosts: noletsencrypt
-  become: true
-  become_user: root
-  tasks:
-    - name: Certificate
-      copy:
-        src: "{{ nginx_ssl_src_dir }}/{{ nginx_conf_ssl_certificate | basename }}"
-        dest: "/etc/ssl/cert.pem"
-        mode: "0644"
-    - name: RabbitMQ key
-      copy:
-        content: "{{ sslkeys[nginx_conf_ssl_certificate_key | basename] }}"
-        dest: "{{ rabbitmq_conf_ssl_certificate_key }}"
-        owner: "999"
-        mode: "0400"
-
 - hosts: production
   become: true
   become_user: root
@@ -115,6 +86,35 @@
         path: "{{ galaxy_mutable_data_dir }}"
         state: directory
         mode: '0755'
+
+- hosts: dbservers
+  become: true
+  become_user: root
+  pre_tasks:
+    - name: Install Dependencies
+      package:
+        name: ['acl', 'anacron']
+  roles:
+    - galaxyproject.postgresql
+    - role: galaxyproject.postgresql_objects
+      become: true
+      become_user: postgres
+
+- hosts: noletsencrypt
+  become: true
+  become_user: root
+  tasks:
+    - name: Certificate
+      copy:
+        src: "{{ nginx_ssl_src_dir }}/{{ nginx_conf_ssl_certificate | basename }}"
+        dest: "/etc/ssl/cert.pem"
+        mode: "0644"
+    - name: RabbitMQ key
+      copy:
+        content: "{{ sslkeys[nginx_conf_ssl_certificate_key | basename] }}"
+        dest: "{{ rabbitmq_conf_ssl_certificate_key }}"
+        owner: "999"
+        mode: "0400"
 
 - hosts: galaxyservers
   become: true
