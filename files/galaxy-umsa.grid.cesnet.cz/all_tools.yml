@@ -1,0 +1,49 @@
+name: Tools
+type: generic
+id: all_tools
+items:
+- sections:
+  - upload_file
+  - collection_operations
+  - expression_tools
+- id: general_text_label
+  text: General Text Tools
+  type: label
+- sections:
+  - text_manipulation
+  - table_manipulation
+  - filter_and_sort
+  - convert
+  - convert_formats
+  - builtin_converters
+- id: stats_viz
+  text: Statistics and Visualization
+  type: label
+- sections:
+  - visualization
+  - statistics
+  - machine_learning
+- id: umsa_label
+  text: UMSA TOOLS
+  type: label
+- sections:
+  - recetox
+  - recetox_aplcms
+  - camera
+  - chemicaltoolbox
+  - isa_tools
+  - xcms
+  - secimtools
+  - metams
+  - w4m
+  - metfrag
+  - sirius
+  - mspurity
+  - openms
+  - matchms
+  - mfassignr
+  - qcxms
+  - pre_processing
+  - post_processing
+  - proteomics
+  - recetox_test
