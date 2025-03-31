@@ -18,6 +18,7 @@ items:
   - join__subtract_and_group
   - convert
   - convert_formats
+  - builtin_converters
 - id: genomic_manip_label
   text: Genomic File Manipulation
   type: label
