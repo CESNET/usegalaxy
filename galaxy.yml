@@ -11,6 +11,82 @@
         update_cache: yes
       when: ansible_os_family == 'Debian'
 
+- hosts: production
+  become: true
+  become_user: root
+  tasks:
+    - name: Install production-specific dependencies
+      package:
+        name: ['ceph-common', 'xfsprogs']
+    - name: Create the RBD mount directory
+      file:
+        path: "{{ rbd_mount_point }}"
+        state: directory
+        mode: '0755'
+    - name: Copy ceph.conf
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/ceph/ceph.{{ rbd_cluster_code }}.conf"
+        dest: "/etc/ceph/ceph.conf"
+        mode: '0644'
+    - name: Copy ceph.keyring
+      ansible.builtin.copy:
+        content: |
+          [client.{{ rbd_user }}]
+          key = {{ rbd_key }}
+        dest: "/etc/ceph/ceph.keyring"
+        mode: '0600'
+    - name: Copy rbdmap
+      ansible.builtin.copy:
+        content: |
+          # RbdDevice             Parameters
+          #poolname/imagename     id=client,keyring=/etc/ceph/ceph.client.keyring
+          {{ rbd_pool }}/{{ rbd_image }}     id={{ rbd_user }},keyring=/etc/ceph/ceph.keyring
+        dest: "/etc/ceph/rbdmap"
+        mode: '0644'
+    - name: Check RBD device list output
+      ansible.builtin.command: "rbd device list --format json"
+      register: rbd_devices
+    - name: Set RBD device list output as variable
+      set_fact:
+        rbd_dev_data: "{{ rbd_devices.stdout | from_json }}"
+    - name: Identify RBD device name
+      set_fact:
+        rbd_dev_name: "{{ rbd_dev_data | selectattr('name', 'equalto', rbd_image) | map(attribute='device') | first | default('/dev/rbd0') }}"
+    - name: Check if RBD device exists
+      stat:
+        path: "{{ rbd_dev_name }}"
+      register: rbd_dev
+    - name: Restart rbdmap.service
+      ansible.builtin.systemd:
+        state: restarted
+        name: rbdmap
+      when: "not rbd_dev.stat.exists"
+    - name: Check again if RBD device exists
+      stat:
+        path: "{{ rbd_dev_name }}"
+      register: rbd_dev
+      when: "not rbd_dev.stat.exists"
+    - name: Create file system on RBD
+      community.general.filesystem:
+        fstype: xfs
+        dev: "{{ rbd_dev_name }}"
+        opts: -K
+        state: present
+    - name: Mount up RBD
+      ansible.posix.mount:
+        src: "{{ rbd_dev_name }}"
+        path: "{{ rbd_mount_point }}"
+        fstype: xfs
+        opts: rw,_netdev
+        state: mounted
+    - name: Create galaxy mutable data directory
+      file:
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        path: "{{ galaxy_mutable_data_dir }}"
+        state: directory
+        mode: '0755'
+
 - hosts: dbservers
   become: true
   become_user: root
@@ -51,7 +127,7 @@
       when: admin_ssh_keys
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'ceph-common', 'squashfs-tools', 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'squashfs-tools', 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
