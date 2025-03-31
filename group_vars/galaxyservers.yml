@@ -33,6 +33,7 @@ csnt_tool_config_file:
 csnt_library_import_dir: null
 csnt_user_library_import_dir: null
 csnt_allow_path_paste: false
+csnt_tool_sheds_config_file: "{{ galaxy_root }}/server/config/tool_sheds_conf.xml.sample"
 admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
@@ -113,6 +114,7 @@ galaxy_config:
     job_config: "{{ galaxy_job_config }}" # Use the variable we defined above
     vault_config_file: vault_conf.yml
     tool_config_file: "{{ csnt_tool_config_file }}"
+    tool_sheds_config_file: "{{ csnt_tool_sheds_config_file }}"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
     # SQL Performance
     slow_query_log_threshold: 5
