@@ -215,7 +215,7 @@
         group: "{{ galaxy_user_group_name }}"
         mode: '0600'
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
       no_log: true
 
     - name: Copy user - group association script
@@ -243,7 +243,7 @@
         group: "{{ galaxy_user_group_name }}"
         mode: '0755'
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
     - name: Template tool installation cron script
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/galaxy/cron/install_tools.sh.j2"
@@ -252,7 +252,7 @@
         group: "{{ galaxy_user_group_name }}"
         mode: '0755'
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
     - name: Schedule tool installation script using cron
       ansible.builtin.cron:
         name: "Install tool updates"
@@ -261,7 +261,7 @@
         hour: "3" # 3 am daily
         job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY=$(cat /home/{{ galaxy_user_name }}/.galaxy_api_key) {{ galaxy_root }}/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
 
     - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
       replace:
