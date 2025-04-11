@@ -153,6 +153,11 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
+    - name: stop galaxy to free mem for client build
+      become: true
+      become_user: root
+      ansible.builtin.command: galaxyctl stop
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
