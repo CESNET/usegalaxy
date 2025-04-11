@@ -24,15 +24,17 @@
   version: 1.4.5
 - src: geerlingguy.redis
   version: 1.9.0
-- src: usegalaxy_eu.flower
-  version: 2.0.0
 - src: galaxyproject.gxadmin
   version: 0.0.13
+- src: galaxyproject.proftpd
+  version: 0.3.3
+# conditional reqs below
+# - name: mvdbeek.sentry_selfhosted
+#   src: https://github.com/mvdbeek/ansible-role-sentry/archive/main.tar.gz
+- src: usegalaxy_eu.flower
+  version: 2.0.0
 - src: usegalaxy_eu.influxdb
   version: v6.0.8
-#- name: dj-wasabi.telegraf
-#  src: https://github.com/dj-wasabi/ansible-telegraf
-#  version: 6f6fdf7f5ead491560783d52528b79e9e088bd5b
 - name: dj-wasabi.telegraf
   src: https://github.com/dj-wasabi/ansible-telegraf
   version: 0.14.2
@@ -40,8 +42,3 @@
   version: 0.18.0
 - src: galaxyproject.tiaas2
   version: 2.2.2
-- name: mvdbeek.sentry_selfhosted
-  src: https://github.com/mvdbeek/ansible-role-sentry/archive/main.tar.gz
-- src: galaxyproject.proftpd
-  version: 0.3.1
-
