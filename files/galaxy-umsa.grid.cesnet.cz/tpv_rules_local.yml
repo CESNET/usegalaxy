@@ -47,3 +47,21 @@ tools:
     cores: 1 
     context:
       walltime: 2
+
+  .*/qcxms_neutral_run/.*:
+    mem: 32
+    scheduling:
+      reject:
+      - docker
+
+  .*/qcxms_production_run/.*:
+    mem: 8
+    scheduling:
+      reject:
+      - docker
+
+  .*/recetox_msfinder/.*:
+    mem: 16
+    scheduling:
+      reject:
+      - docker
