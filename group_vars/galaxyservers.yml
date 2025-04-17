@@ -153,14 +153,15 @@ galaxy_config:
     - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
     container_resolvers:
+    -   type: cached_explicit_singularity
+        cache_directory: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/.singularity/cache/"
     -   type: explicit_singularity
-    -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-        type: cached_mulled_singularity
-    -   auto_install: true
-        type: mulled_singularity
-    -   auto_install: false
-        type: build_mulled_singularity
-#        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+    -   type: cached_mulled_singularity
+        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+    -   type: mulled_singularity
+        auto_install: true
+    -   type: build_mulled_singularity
+        auto_install: false
         cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
