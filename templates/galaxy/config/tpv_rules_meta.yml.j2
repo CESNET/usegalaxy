@@ -160,7 +160,7 @@ destinations:
       # Ensuring a consistent collation environment is good for reproducibility.
       LC_ALL: C
       # The cache directory holds the docker containers that get converted
-      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_CACHEDIR: "{{ galaxy_mutable_data_dir }}/singularity/cache"
       # Singularity uses a temporary directory to build the squashfs filesystem
       SINGULARITY_TMPDIR: "{{ galaxy_mutable_data_dir }}/tmp"
     scheduling:
@@ -202,7 +202,8 @@ destinations:
       TMPDIR: $SCRATCHDIR
       TMP: $SCRATCHDIR
       TEMP: $SCRATCHDIR
-      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      APPTAINER_CACHEDIR: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/.singularity/cache/"
+      SINGULARITY_CACHEDIR: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/.singularity/cache/"
       SINGULARITY_TMPDIR: $SCRATCHDIR
       XDG_CACHE_HOME: $SCRATCHDIR
     scheduling:
