@@ -1,7 +1,7 @@
 - type: inveniordm
   id: invenio_sandbox
   doc: This is the Sandbox instance of Invenio. It is used for testing purposes only, content is NOT preserved. DOIs created in this instance are not real and will not resolve.
-  label: Invenio RDM Sandbox Repository (TESTING)
+  label: InvenioRDM TESTING
   url: https://inveniordm.web.cern.ch/
   token: ${user.user_vault.read_secret('preferences/invenio_sandbox/token')}
   public_name: ${user.preferences['invenio_sandbox|public_name']}
