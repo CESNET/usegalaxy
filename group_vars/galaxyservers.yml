@@ -38,6 +38,7 @@ admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
 enable_tiaas: true
+shed_tools_shadowing: false
 
 # Galaxy Job Configuration
 galaxy_job_config:

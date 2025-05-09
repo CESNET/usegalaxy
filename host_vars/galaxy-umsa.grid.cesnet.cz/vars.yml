@@ -19,6 +19,7 @@ csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
 csnt_allow_path_paste: true
 enable_tiaas: false
+shed_tools_shadowing: true
 
 galaxy_user_name: galaxyumsa
 galaxy_user_group_name: galaxyumsa
