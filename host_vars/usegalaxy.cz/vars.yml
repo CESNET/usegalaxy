@@ -18,6 +18,7 @@ csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
 csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
 enable_tiaas: false
+shed_tools_shadowing: true
 
 pulsar:
   user_name: galaxyeu
