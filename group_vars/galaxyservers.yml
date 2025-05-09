@@ -27,6 +27,7 @@ csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xm
 csnt_enable_reports: false
 csnt_edam_panel_views: ""
 csnt_default_panel_view: default
+csnt_registered_user_jobs_limit: 10
 csnt_tool_config_file:
   - "{{ galaxy_config_dir }}/tool_conf.xml"
   - "{{ galaxy_config_dir }}/local_tool_conf.xml"
@@ -79,7 +80,7 @@ galaxy_job_config:
       testing: [cores, time]
   limits:
     - type: registered_user_concurrent_jobs
-      value: 10
+      value: "{ csnt_registered_user_jobs_limit }"
     - type: anonymous_user_concurrent_jobs
       value: 1
     - type: output_size
