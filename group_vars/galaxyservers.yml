@@ -1,19 +1,4 @@
 ---
-# Galaxy
-galaxy_manage_systemd: no
-galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
-galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
-galaxy_manage_paths: true # False by default as your administrator might e.g. have root_squash enabled on NFS. Here we can create the directories so it's fine.
-galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
-galaxy_layout: root-dir
-galaxy_root: /srv/galaxy
-galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: release_24.2
-galaxy_force_checkout: true
-miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 24.11.1
-miniconda_channels: ['conda-forge', 'defaults']
-
 # defaults for host-specific vars
 csnt_brand: ""
 csnt_short_term_storage_dir: short_term_web_storage
@@ -34,10 +19,30 @@ csnt_library_import_dir: null
 csnt_user_library_import_dir: null
 csnt_allow_path_paste: false
 csnt_tool_sheds_config_file: "{{ galaxy_root }}/server/config/tool_sheds_conf.xml.sample"
+csnt_galaxy_tmpclean_dirs:
+  - "{{ galaxy_config.galaxy.job_working_directory }}"
+  - "{{ galaxy_config.galaxy.new_file_path }}"
+  - "{{ galaxy_tus_upload_store if galaxy_config.gravity.tusd.enable else ' ' }}"
 admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
 enable_tiaas: true
+
+# Galaxy
+galaxy_manage_systemd: no
+galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
+galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
+galaxy_manage_paths: true # False by default as your administrator might e.g. have root_squash enabled on NFS. Here we can create the directories so it's fine.
+galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
+galaxy_tmpclean_dirs: "{{ csnt_galaxy_tmpclean_dirs }}"
+galaxy_layout: root-dir
+galaxy_root: /srv/galaxy
+galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
+galaxy_commit_id: release_24.2
+galaxy_force_checkout: true
+miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
+miniconda_version: 24.11.1
+miniconda_channels: ['conda-forge', 'defaults']
 
 # Galaxy Job Configuration
 galaxy_job_config:
