@@ -1,0 +1,105 @@
+---
+- hosts: galaxy-qa1.galaxy.cloud.e-infra.cz
+  become: true
+  become_user: root
+  vars:
+    galaxy_db_restore_version: 20250505T010001Z
+  tasks:
+    - name: Install production-specific dependencies
+      package:
+        name: ['rsync']
+
+# recover from WAL based on https://training.galaxyproject.org/training-material/topics/admin/tutorials/backup-cleanup/tutorial.html#restoration
+    ## Part responsible for recovering Galaxy DB from backup if exists (it should be in post_tasks of dbservers but NDB access needs to be set up first)
+    - name: Register psql data directory
+      ansible.builtin.shell:
+        cmd: psql -Atc 'show data_directory;'
+      register: psql_data_dir
+      become: true
+      become_user: postgres
+
+## Unsucessfull attempt to make a prompt with the list of all available backup versions
+#    - name: Gather Galaxy DB backup versions
+#      find:
+#        paths: "{{ postgresql_backup_dir }}"
+#        file_type: directory
+#        # You can also use file_type: 'file' for files only, or 'directory' for directories only
+#      register: db_versions
+#      become: true
+#      become_user: postgres
+#    - name: Set backup versions as a list
+#      set_fact:
+#        item_choices: "{{ db_versions.files | map(attribute='path') | list }}"
+#    - name: Select Galaxy DB backup version from a list
+#      vars_prompt:
+#        - name: "selected_version"
+#          prompt: "Select Galaxy DB version to restore"
+#          private: no
+#          choices: "{{ item_choices }}"
+#    - name: Print selected Galaxy DB backup versions
+#      debug:
+#        msg: "You selected {{ selected_version }} to restore"
+
+    - name: Print PostgreSQL data directory path
+      debug:
+        msg: "PostgreSQL data directory path: {{ psql_data_dir.stdout }}"
+    - name: Print Warning
+      debug:
+        msg: "No PostgreSQL data directory path! PSQL DB restore is not possible!"
+      when: psql_data_dir.stdout == ''
+
+    - name: Restore Galaxy DB backup - pick proper backup version
+      ansible.builtin.shell:
+        cmd: "if [ '{{ galaxy_db_restore_version }}' = 'latest' ]; then ls -dt {{ postgresql_backup_dir }}/20*Z | head -1; else ls -d {{ postgresql_backup_dir }}/{{ galaxy_db_restore_version }}; fi "
+      register: galaxy_db_restore_dir
+      become: true
+      become_user: postgres
+
+    - name: Restore Galaxy DB backup - print selected version
+      debug:
+        msg: "Backup version to be restored: {{ galaxy_db_restore_dir.stdout }}"
+
+    - name: Restore Galaxy DB backup - stop postgresql
+      ansible.builtin.systemd:
+        name: postgresql
+        state: stopped
+      become: true
+
+    - name: Restore Galaxy DB backup - backup current postgresql
+      ansible.builtin.shell:
+        cmd: "mv {{ psql_data_dir.stdout }} {{ psql_data_dir.stdout+'.backup_'+ansible_date_time.iso8601 }}"
+      ignore_errors: true
+      when: psql_data_dir.stdout != ''
+      become: true
+      become_user: postgres
+
+    - name: Restore Galaxy DB backup - copy proper backup version
+      ansible.builtin.shell:
+        cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
+      when: galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
+      become: true
+      become_user: postgres
+
+    - name: Restore Galaxy DB backup - fill postgresql.auto.conf
+      ansible.builtin.lineinfile:
+        path: "{{ psql_data_dir.stdout }}/postgresql.auto.conf"
+        insertafter: EOF
+        line: "restore_command = 'cp \"{{ postgresql_backup_dir }}/wal_archive/%f\" \"%p\"'"
+        state: present
+        create: true
+      when: psql_data_dir.stdout != ''
+      become: true
+      become_user: postgres
+
+    - name: Restore Galaxy DB backup - touch the signal file
+      ansible.builtin.shell:
+        cmd: "touch {{ psql_data_dir.stdout }}/recovery.signal "
+      when: psql_data_dir.stdout != ''
+      become: true
+      become_user: postgres
+
+    - name: Restore Galaxy DB backup - start postgresql
+      ansible.builtin.systemd:
+        name: postgresql
+        state: started
+      become: true
