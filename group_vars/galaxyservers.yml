@@ -85,7 +85,7 @@ galaxy_job_config:
       testing: [cores, time]
   limits:
     - type: registered_user_concurrent_jobs
-      value: "{ csnt_registered_user_jobs_limit }"
+      value: "{{ csnt_registered_user_jobs_limit }}"
     - type: anonymous_user_concurrent_jobs
       value: 1
     - type: output_size
