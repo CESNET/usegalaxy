@@ -75,7 +75,7 @@
 
     - name: Restore Galaxy DB backup - copy proper backup version
       ansible.builtin.shell:
-        cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
+        cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0700 {{ psql_data_dir.stdout }} "
       when: galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
       become: true
       become_user: postgres
