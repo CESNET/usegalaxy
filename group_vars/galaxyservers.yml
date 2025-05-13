@@ -71,7 +71,7 @@ galaxy_job_config:
     environments:
       pulsar_tes_environment:
         runner: pulsar_tes
-        tes_url: "http://147.251.255.46:8080"
+        tes_url: "http://78.128.235.66:8080"
         docker_enabled: true
         docker_default_container_id: busybox:ubuntu-14.04
         pulsar_app_config:
