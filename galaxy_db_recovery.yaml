@@ -3,7 +3,7 @@
   become: true
   become_user: root
   vars:
-    galaxy_db_restore_version: 20250505T010001Z
+    galaxy_db_restore_version: latest
   tasks:
     - name: Install production-specific dependencies
       package:
