@@ -42,9 +42,9 @@ galaxyservers:
 ## create vars file for your host
 
 Create `host_vars/<YOUR_HOST>/vars.yml`.
-Check out the `vars.yml` files of other hosts in this repo to get an idea of what is are the options.
+Check out the `vars.yml` files of other hosts in this repo to get an idea of what are the options.
 
-note: the same service user (`galaxy-qa1`) is used for both `pulsar-qa1` and `pulsar-qa2`
+note: The same service user (`galaxy-qa1`) is used for both `pulsar-qa1` and `pulsar-qa2` instances.
 
 ## create and fill ansible vault
 
@@ -112,7 +112,6 @@ Use `sudo apt install python3-docker` before running the `usegalaxy.rabbitmqserv
 ### influxdb
 
 For influxdb apt key error: https://www.influxdata.com/blog/linux-package-signing-key-rotation/
-
 
 ### flower
 
