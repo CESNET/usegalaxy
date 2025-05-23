@@ -14,12 +14,6 @@ pulsar:
   pbs_queue: galaxyqa
   pbs_gpu_queue: galaxy_gpu
 
-pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
-
-galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
-galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
-galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
-
 galaxy_config_files:
   - src: files/galaxy/themes.yml
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"

@@ -17,11 +17,11 @@ This playbook installs and configures Galaxy server on Metacentrum CZ infrastruc
 ```
 
 - Metacentrum service account (in the following examples `galaxy-qa1` is used)
-- OIDC secrets set up for federated login
+- OIDC client id and secret set up for federated login with proper scopes
 
 ## auth with the playbook
 
-Use your existing ssh key or generate new with `$ ssh-keygen -t ed25519`
+Use your existing ssh key or generate a new one with `$ ssh-keygen -t ed25519`
 
 - If you want to run the playbook through github action you need to add your key to your github profile.
 - For executing this from a local machine you can forward your sshkey to the host.
@@ -30,7 +30,7 @@ Use your existing ssh key or generate new with `$ ssh-keygen -t ed25519`
 
 For the purposes below the `<YOUR_HOST>` can be e.g. `galaxy-qa2.galaxy.cloud.e-infra.cz`
 
-Add an entry to the `hosts.yml` file which will look like this:
+Add an entry to the `hosts.yml` file which could look like this:
 
 ```
 galaxyservers:
@@ -41,25 +41,10 @@ galaxyservers:
 
 ## create vars file for your host
 
-Create `host_vars/<YOUR_HOST>/vars.yml`. It should contain the following vars:
+Create `host_vars/<YOUR_HOST>/vars.yml`.
+Check out the `vars.yml` files of other hosts in this repo to get an idea of what are the options.
 
-```
-galaxy_mutable_data_dir: /data/galaxy
-
-pulsar:
-  user_name: galaxy-qa1
-  nfs_home: brno11-elixir
-  nfs_prefix: pulsar-qa2
-  pbs_queue: galaxyqa
-  pbs_gpu_queue: galaxy_gpu
-
-pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
-
-# displayed in Galaxy's masthead
-csnt_brand: <YOUR_HOST>
-```
-
-note: the same service user (`galaxy-qa1`) is used for both `pulsar-qa1` and `pulsar-qa2`
+note: The same service user (`galaxy-qa1`) is used for both `pulsar-qa1` and `pulsar-qa2` instances.
 
 ## create and fill ansible vault
 
@@ -77,47 +62,30 @@ rabbitmq_users_password:
 vault_rabbitmq_password_galaxy: good-password-here
 oidc_client_id: string-with-client-id
 oidc_client_secret: string-with-client-secret
-
 # Galaxy admin API key for tool installation
 api_key: dont-be-lazy-a-really-long-password-here
-
 # see https://github.com/galaxyproject/galaxy/blob/dev/doc/source/admin/special_topics/vault.md
 vault_encryption_keys:
 - generated_key_NUDIABSUmny78sad8a7sby87av8dv=
-
 pulsar_ssh_key: |
   -----BEGIN OPENSSH PRIVATE KEY-----
   asdasdasdad
   -----END OPENSSH PRIVATE KEY-----
-
-tiaas_password: a-really-long-password-here
-vault_rabbitmq_password_flower: a-really-long-password-here
-vault_flower_user_password: a-really-long-password-here
-vault_sentry_password: a-really-long-password-here
-vault_reports_admin_password: a-really-long-password-here
 ```
-note: you should avoid having a `/` or `\` in your password as galaxy will interpret this as a path.
 
 ## running playbook
 `$ ansible-playbook --limit <YOUR_HOST> galaxy.yml`
 
+## creating service users
+
+At the moment our playbooks assume there is an admin's API key, so after a first run the vault needs to be updated with such a key.
+
+You also need to create a non-admin service user called `galaxy@cesnet.cz` for running tool tests and other non-admin automated tasks.
+
 ## tools
 
-Install ephemeris for tool management:
-```
-virtualenv -p python3 ~/ephemeris_venv
-. ~/ephemeris_venv/bin/activate
-pip install ephemeris
-```
-To obtain the list of tools from the [usegalaxy.eu](https://usegalaxy.eu) use:
-```
-get-tool-list -g "https://usegalaxy.eu" -o "eu_tool_list.yaml"
-```
-and then to install them:
-```
-shed-tools install -g https://your-galaxy -a <api-key> -t eu_tool_list.yaml
-```
-The api key can be found in the User -> Preferences -> Manage API Key in Galaxy menu.
+Instances' tools are managed by a combination of a cron script that installs them (deployed from this playbook) -- check out `[`the script`](templates/galaxy/cron/install_tools.sh.j2)
+and external repository that contains the lists of tools for every instance: https://github.com/CESNET/galaxy_tools.
 
 ## deployment troubleshooting
 
@@ -144,3 +112,7 @@ Use `sudo apt install python3-docker` before running the `usegalaxy.rabbitmqserv
 ### influxdb
 
 For influxdb apt key error: https://www.influxdata.com/blog/linux-package-signing-key-rotation/
+
+### flower
+
+Flower role 2.0 tries to install python `virtualenv` globally, which debian12 does not allow. You have to modify the role to prevent this.
