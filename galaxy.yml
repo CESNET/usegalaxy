@@ -174,7 +174,8 @@
     - galaxyproject.nginx
     - galaxyproject.proftpd
     - geerlingguy.docker
-    - usegalaxy_eu.rabbitmqserver
+#    - usegalaxy_eu.rabbitmqserver
+    - galaxyproject.rabbitmq
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
     - role: dj-wasabi.telegraf
