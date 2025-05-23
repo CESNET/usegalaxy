@@ -24,6 +24,7 @@ csnt_galaxy_tmpclean_dirs:
   - "{{ galaxy_config.galaxy.job_working_directory }}"
   - "{{ galaxy_config.galaxy.new_file_path }}"
   - "{{ galaxy_tus_upload_store if galaxy_config.gravity.tusd.enable else ' ' }}"
+
 admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
@@ -38,12 +39,21 @@ galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
 galaxy_tmpclean_dirs: "{{ csnt_galaxy_tmpclean_dirs }}"
 galaxy_layout: root-dir
 galaxy_root: /srv/galaxy
+galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
+galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
+galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: release_24.2
 galaxy_force_checkout: true
+galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
+
+# Miniconda
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
 miniconda_version: 24.11.1
 miniconda_channels: ['conda-forge', 'defaults']
+
+# Pulsar
+pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
 # Galaxy Job Configuration
 galaxy_job_config:
@@ -166,7 +176,6 @@ galaxy_config:
         type: mulled_singularity
     -   auto_install: false
         type: build_mulled_singularity
-#        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
         cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
@@ -223,7 +232,6 @@ galaxy_config:
       bind: "unix:{{ galaxy_mutable_config_dir }}/reports.sock"
       config_file: "{{ galaxy_config_dir }}/reports.yml"
 
-galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
 galaxy_config_files_public:
   - src: templates/{{ inventory_hostname }}/static/welcome.html
