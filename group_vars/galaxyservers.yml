@@ -1,6 +1,7 @@
 ---
 # defaults for host-specific vars
 csnt_brand: ""
+csnt_contact_email: "galaxy@cesnet.cz"
 csnt_short_term_storage_dir: short_term_web_storage
 csnt_enable_account_interface: true
 csnt_log_level: WARNING
@@ -118,7 +119,7 @@ galaxy_config:
     admin_users: "{{ vault_admin_users }}"
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
-    error_email_to: "regalaxy@rt.cesnet.cz"
+    error_email_to: "{{  csnt_contact_email  }}"
     allow_user_creation: false
     require_login: true
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
@@ -443,7 +444,7 @@ tiaas_admin_pass: "{{ tiaas_password }}"
 tiaas_info:
   owner: "Metacentrum"
   domain: "{{ inventory_hostname }}"
-  owner_email: "regalaxy@rt.cesnet.cz"
+  owner_email: "{{ csnt_contact_email  }}"
   owner_site: "https://{{ inventory_hostname }}"
 tiaas_send_email_to_requester: true
 tiaas_send_email_to: "{{ tiaas_info.owner_email }}"
