@@ -116,6 +116,29 @@
         owner: "999"
         mode: "0400"
 
+- hosts: cloudservers
+  become: true
+  tasks:
+    - name: Ensure docker.json starts with {
+      lineinfile:
+        path: /etc/docker/daemon.json
+        line: '{'
+        state: present
+        create: yes
+        insertafter: BOF
+    - name: Ensure docker.json contains proper mtu
+      lineinfile:
+        path: /etc/docker/daemon.json
+        line: '    "mtu": 1442,'
+        insertafter: '^{.*'
+        state: present
+    - name: Ensure docker.json ends with }
+      lineinfile:
+        path: /etc/docker/daemon.json
+        line: '}'
+        state: present
+        insertbefore: EOF
+
 - hosts: galaxyservers
   become: true
   become_user: root
