@@ -175,9 +175,6 @@ galaxy_config:
         type: cached_mulled_singularity
     -   auto_install: true
         type: mulled_singularity
-    -   auto_install: false
-        type: build_mulled_singularity
-        cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
