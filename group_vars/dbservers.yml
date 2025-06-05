@@ -12,7 +12,8 @@ postgresql_objects_privileges:
     roles: telegraf
     privs: SELECT
     objs: ALL_IN_SCHEMA
-
+postgresql_conf:
+  - timezone: "UTC"
 #  - database: galaxy
 #    roles: tiaas
 #    objs: galaxy_user,galaxy_session,job,history,workflow,workflow_invocation
