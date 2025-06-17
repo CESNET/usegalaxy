@@ -6,7 +6,6 @@
 
 ### Values and Secrets ###
 .vault-password.*
-hosts
 ansible.log
 
 # Python bytecode
@@ -14,6 +13,3 @@ ansible.log
 
 # Macs
 .DS_Store
-
-# ideally no local roles changes are present
-roles
