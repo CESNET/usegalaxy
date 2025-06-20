@@ -3,13 +3,11 @@
 *.retry
 .venv
 *.log
-
-### Values and Secrets ###
-.vault-password.*
-ansible.log
-
-# Python bytecode
+.DS_Store
 *.pyc
 
-# Macs
-.DS_Store
+# vault secrets
+.vault-password.*
+
+# installed roles
+roles
