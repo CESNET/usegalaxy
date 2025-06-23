@@ -7,8 +7,8 @@ TO=$2
 LIST=/tmp/dirs_to_move.$$
 
 cd "${FROM}"
-find shed_tools/ -type d -name '.hg' > ${LIST}
-find shed_tools/ -type d -name 'test-data' | grep -vF '.hg' >> ${LIST}
+find shed_tools/ -maxdepth 7 -type d -name '.hg' > ${LIST}
+find shed_tools/ -maxdepth 7 -type d -name 'test-data' | grep -vF '.hg' >> ${LIST}
 
 cat ${LIST} | while read DIR; do
     if [ -n "$DIR" ]; then
