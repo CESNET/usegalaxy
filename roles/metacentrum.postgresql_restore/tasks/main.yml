@@ -1,42 +1,17 @@
----
-- hosts: all
-  name: apt update, python, pip
-  become: true
-  become_user: root
-  tasks:
-    - ansible.builtin.apt:
-        name:
-        - python3-pip
-        - python-is-python3
-        update_cache: yes
-      when: ansible_os_family == 'Debian'
-
-- hosts: dbservers
-  become: true
-  become_user: root
-  vars:
-    galaxy_db_restore_version: '20250529T010001Z' # Example: '20250529T010001Z'; 'latest'
-    galaxy_db_restore_timestamp: '2025-05-29 02:30:00' # The point of return must have happened after DB base backup creation (version timestamp). Example: '2025-05-29 02:30:00'
-    galaxy_db_restore_timeline: 'current' # could be 'latest' (default) or 'current', which recovers along the same timeline that was current when the base backup was taken. Or using '0xID' for specific numeric timeline ID (hexadecimal number used in WAL file name)
-    galaxy_db_restore_action: 'promote' # could be 'promote' (to continue right after recovery) or 'pause' (by default) to manually check the DB state. To unpause PSQL DB use command 'psql -c "select * from pg_wal_replay_resume();"' as postgres user
-  pre_tasks:
     - name: Install Dependencies
       package:
-        name: ['acl', 'anacron', 'rsync']
-  roles:
-    - galaxyproject.postgresql
-    - role: galaxyproject.postgresql_objects
+        name: ['rsync']
       become: true
-      become_user: postgres
-  post_tasks:
+      when: galaxy_db_restore_version != ''
+
 # recover from WAL based on https://training.galaxyproject.org/training-material/topics/admin/tutorials/backup-cleanup/tutorial.html#restoration
-    ## Part responsible for recovering Galaxy DB from backup if exists (it should be in post_tasks of dbservers but RDB (or NDB) access needs to be set up first)
     - name: Register if galaxy exists
       ansible.builtin.shell:
         cmd: galaxyctl status
       register: galaxyctl_status
       ignore_errors: true
       become: true
+      when: galaxy_db_restore_version != ''
 
     - name: Register psql data directory
       ansible.builtin.shell:
@@ -44,6 +19,7 @@
       register: psql_data_dir
       become: true
       become_user: postgres
+      when: galaxy_db_restore_version != ''
 
 ## Unsucessfull attempt to make a prompt with the list of all available backup versions
 #    - name: Gather Galaxy DB backup versions
@@ -70,10 +46,12 @@
     - name: Print PostgreSQL data directory path
       debug:
         msg: "PostgreSQL data directory path: {{ psql_data_dir.stdout }}"
+      when: galaxy_db_restore_version != ''
+
     - name: Print Warning
       debug:
         msg: "No PostgreSQL data directory path! PSQL DB restore is not possible!"
-      when: psql_data_dir.stdout == ''
+      when: psql_data_dir.stdout == '' and galaxy_db_restore_version != ''
 
     - name: Restore Galaxy DB backup - pick proper backup version
       ansible.builtin.shell:
@@ -81,35 +59,38 @@
       register: galaxy_db_restore_dir
       become: true
       become_user: postgres
+      when: galaxy_db_restore_version != ''
 
     - name: Restore Galaxy DB backup - print selected version
       debug:
         msg: "Backup version to be restored: {{ galaxy_db_restore_dir.stdout }}"
+      when: galaxy_db_restore_version != ''
 
     - name: Restore Galaxy DB backup - stop Galaxy
       ansible.builtin.shell:
         cmd: galaxyctl stop
       become: true
-      when: galaxyctl_status.rc == 0
+      when: galaxyctl_status.rc == 0 and galaxy_db_restore_version != ''
 
     - name: Restore Galaxy DB backup - stop postgresql
       ansible.builtin.systemd:
         name: postgresql
         state: stopped
       become: true
+      when: galaxy_db_restore_version != ''
 
     - name: Restore Galaxy DB backup - backup current postgresql
       ansible.builtin.shell:
         cmd: "mv {{ psql_data_dir.stdout }} {{ psql_data_dir.stdout+'.backup_'+ansible_date_time.iso8601 }}"
       ignore_errors: true
-      when: psql_data_dir.stdout != ''
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_version != ''
       become: true
       become_user: postgres
 
     - name: Restore Galaxy DB backup - copy proper backup version
       ansible.builtin.shell:
         cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0700 {{ psql_data_dir.stdout }} "
-      when: galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
+      when: galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != '' and galaxy_db_restore_version != ''
       become: true
       become_user: postgres
 
@@ -120,7 +101,7 @@
         line: "restore_command = 'cp \"{{ postgresql_backup_dir }}/wal_archive/%f\" \"%p\"'"
         state: present
         create: true
-      when: psql_data_dir.stdout != ''
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_version != ''
       become: true
       become_user: postgres
 
@@ -131,7 +112,7 @@
         line: "recovery_target_time = '{{ galaxy_db_restore_timestamp }}'"
         state: present
         create: true
-      when: psql_data_dir.stdout != '' and galaxy_db_restore_timestamp != ''
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_timestamp != '' and galaxy_db_restore_version != ''
       become: true
       become_user: postgres
 
@@ -142,7 +123,7 @@
         line: "recovery_target_timeline = '{{ galaxy_db_restore_timeline }}'"
         state: present
         create: true
-      when: psql_data_dir.stdout != '' and galaxy_db_restore_timeline != ''
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_timeline != '' and galaxy_db_restore_version != ''
       become: true
       become_user: postgres
 
@@ -153,14 +134,14 @@
         line: "recovery_target_action = '{{ galaxy_db_restore_action }}'"
         state: present
         create: true
-      when: psql_data_dir.stdout != '' and galaxy_db_restore_action != ''
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_action != '' and galaxy_db_restore_version != ''
       become: true
       become_user: postgres
 
     - name: Restore Galaxy DB backup - touch the signal file
       ansible.builtin.shell:
         cmd: "touch {{ psql_data_dir.stdout }}/recovery.signal "
-      when: psql_data_dir.stdout != ''
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_version != ''
       become: true
       become_user: postgres
 
@@ -169,6 +150,7 @@
         name: postgresql
         state: started
       become: true
+      when: galaxy_db_restore_version != ''
 
     - name: Restore Galaxy DB backup - register if postgresql log exists
       ansible.builtin.shell:
@@ -176,27 +158,28 @@
       register: psql_log
       ignore_errors: true
       become: true
+      when: galaxy_db_restore_version != ''
 
     - name: Restore Galaxy DB backup - show the PSQL log tail
       ansible.builtin.shell:
         cmd: "tail -20 {{ psql_log.stdout }}"
-      when: psql_data_dir.stdout != '' and psql_log.rc == 0
+      when: psql_data_dir.stdout != '' and psql_log.rc == 0 and galaxy_db_restore_version != ''
       become: true
 
     - name: Restore Galaxy DB backup - wait to read the PSQL log
       ansible.builtin.pause:
         seconds: 10
-      when: psql_data_dir.stdout != '' and galaxy_db_restore_action == 'promote'
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_action == 'promote' and galaxy_db_restore_version != ''
       become: true
 
     - name: Restore Galaxy DB backup - wait for manual check of PSQL state
       ansible.builtin.pause:
         prompt: Please, manually check the DB state. To unpause PSQL DB use command 'psql -c "select * from pg_wal_replay_resume();"' as postgres user on the server.
-      when: psql_data_dir.stdout != '' and galaxy_db_restore_action != 'promote'
+      when: psql_data_dir.stdout != '' and galaxy_db_restore_action != 'promote' and galaxy_db_restore_version != ''
       become: true
 
     - name: Restore Galaxy DB backup - start Galaxy
       ansible.builtin.shell:
         cmd: galaxyctl start
       become: true
-      when: galaxyctl_status.rc == 0
+      when: galaxyctl_status.rc == 0 and galaxy_db_restore_version != ''

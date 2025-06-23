@@ -99,6 +99,7 @@
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
+    - role: metacentrum.postgresql_restore
 
 - hosts: noletsencrypt
   become: true
