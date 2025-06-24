@@ -325,7 +325,7 @@ certbot_post_renewal: |
     systemctl restart proftpd || true
 certbot_domains:
  - "{{ inventory_hostname }}"
- - galaxy-re.grid.cesnet.cz
+ - repeatexplorer-elixir.cerit-sc.cz
 certbot_expand: true
 certbot_agree_tos: --agree-tos
 
