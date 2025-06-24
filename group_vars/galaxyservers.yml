@@ -234,8 +234,8 @@ galaxy_config:
 galaxy_config_files_public:
   - src: templates/{{ inventory_hostname }}/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
-  - src: files/galaxy/static/usegalaxy-cz.png
-    dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
+  - src: files/galaxy/static/usegalaxycz_straight.svg
+    dest: "{{ galaxy_server_dir }}/static/usegalaxycz_straight.svg"
   - src: files/galaxy/static/elixir_logo.png
     dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
   - src: files/galaxy/static/eu_msmt_eosc.svg
