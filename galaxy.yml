@@ -176,11 +176,24 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
-    - name: stop galaxy to free mem for client build
-      become: true
-      become_user: root
-      ansible.builtin.command: galaxyctl stop
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+
+    # disabled for now because for release 25.0 this does not help anymore
+
+    # - name: stop galaxy to free mem for client build
+    #   become: true
+    #   become_user: root
+    #   ansible.builtin.command: galaxyctl stop
+    #   when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+
+    # this needs to be in the correct spot, not here, either via fork or enabling this configuration upstream
+
+    # - name: client building optimization for small machines
+    #   replace:
+    #     path: "{{ galaxy_root }}/server/client/webpack.config.js"
+    #     regexp: 'TerserPlugin\(\)'
+    #     replace: 'TerserPlugin({parallel: false,})'
+    #   when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
