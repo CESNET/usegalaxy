@@ -25,6 +25,7 @@ csnt_galaxy_tmpclean_dirs:
   - "{{ galaxy_config.galaxy.job_working_directory }}"
   - "{{ galaxy_config.galaxy.new_file_path }}"
   - "{{ galaxy_tus_upload_store if galaxy_config.gravity.tusd.enable else ' ' }}"
+csnt_require_login: true
 
 admin_ssh_keys: false
 enable_telegraf: false
@@ -121,7 +122,7 @@ galaxy_config:
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "{{  csnt_contact_email  }}"
     allow_user_creation: false
-    require_login: true
+    require_login: "{{ csnt_require_login }}"
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: "{{ galaxy_mutable_data_dir }}/datasets"
     short_term_storage_dir: "{{ csnt_short_term_storage_dir }}"

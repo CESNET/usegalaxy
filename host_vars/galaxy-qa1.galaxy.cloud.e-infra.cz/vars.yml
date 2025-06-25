@@ -1,11 +1,13 @@
-galaxy_commit_id: release_24.2
-# galaxy_build_client: false
+galaxy_commit_id: release_25.0
+galaxy_build_client: false
+galaxy_client_make_target: client-production
 
-csnt_brand: QA1-TEST
+csnt_brand: QA1-TEST-25.0
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
 csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
+csnt_require_login: true
 
 pulsar:
   user_name: galaxy-qa1
