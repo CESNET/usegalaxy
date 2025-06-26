@@ -5,12 +5,9 @@ extra_certbot_domains:
 # where to put most of the data; we use RBD or NBD volumes
 rbd_mount_point: /rbd
 galaxy_mutable_data_dir: "{{ rbd_mount_point }}/data"
-galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
-galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
-galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
 
-galaxy_commit_id: release_24.2
-#galaxy_build_client: false
+galaxy_commit_id: release_25.0
+# galaxy_build_client: false
 
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
@@ -25,8 +22,6 @@ pulsar:
   nfs_prefix: pulsar-cz
   pbs_queue: galaxycz
   pbs_gpu_queue: galaxy_gpu
-
-pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
 galaxy_config_files:
   - src: files/galaxy/themes.yml

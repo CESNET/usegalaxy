@@ -116,6 +116,29 @@
         owner: "999"
         mode: "0400"
 
+- hosts: cloudservers
+  become: true
+  tasks:
+    - name: Ensure docker.json starts with {
+      lineinfile:
+        path: /etc/docker/daemon.json
+        line: '{'
+        state: present
+        create: yes
+        insertafter: BOF
+    - name: Ensure docker.json contains proper mtu
+      lineinfile:
+        path: /etc/docker/daemon.json
+        line: '    "mtu": 1442,'
+        insertafter: '^{.*'
+        state: present
+    - name: Ensure docker.json ends with }
+      lineinfile:
+        path: /etc/docker/daemon.json
+        line: '}'
+        state: present
+        insertbefore: EOF
+
 - hosts: galaxyservers
   become: true
   become_user: root
@@ -153,11 +176,24 @@
     - git:
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
-    - name: stop galaxy to free mem for client build
-      become: true
-      become_user: root
-      ansible.builtin.command: galaxyctl stop
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+
+    # disabled for now because for release 25.0 this does not help anymore
+
+    # - name: stop galaxy to free mem for client build
+    #   become: true
+    #   become_user: root
+    #   ansible.builtin.command: galaxyctl stop
+    #   when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+
+    # this needs to be in the correct spot, not here, either via fork or enabling this configuration upstream
+
+    # - name: client building optimization for small machines
+    #   replace:
+    #     path: "{{ galaxy_root }}/server/client/webpack.config.js"
+    #     regexp: 'TerserPlugin\(\)'
+    #     replace: 'TerserPlugin({parallel: false,})'
+    #   when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+
   roles:
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
