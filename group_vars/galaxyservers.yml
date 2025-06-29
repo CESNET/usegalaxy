@@ -1,21 +1,7 @@
 ---
-# Galaxy
-galaxy_manage_systemd: no
-galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
-galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
-galaxy_manage_paths: true # False by default as your administrator might e.g. have root_squash enabled on NFS. Here we can create the directories so it's fine.
-galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
-galaxy_layout: root-dir
-galaxy_root: /srv/galaxy
-galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: release_24.2
-galaxy_force_checkout: true
-miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 24.11.1
-miniconda_channels: ['conda-forge', 'defaults']
-
 # defaults for host-specific vars
 csnt_brand: ""
+csnt_contact_email: "galaxy@cesnet.cz"
 csnt_short_term_storage_dir: short_term_web_storage
 csnt_enable_account_interface: true
 csnt_log_level: WARNING
@@ -27,6 +13,7 @@ csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xm
 csnt_enable_reports: false
 csnt_edam_panel_views: ""
 csnt_default_panel_view: default
+csnt_registered_user_jobs_limit: 10
 csnt_tool_config_file:
   - "{{ galaxy_config_dir }}/tool_conf.xml"
   - "{{ galaxy_config_dir }}/local_tool_conf.xml"
@@ -34,11 +21,42 @@ csnt_library_import_dir: null
 csnt_user_library_import_dir: null
 csnt_allow_path_paste: false
 csnt_tool_sheds_config_file: "{{ galaxy_root }}/server/config/tool_sheds_conf.xml.sample"
+csnt_galaxy_tmpclean_dirs:
+  - "{{ galaxy_config.galaxy.job_working_directory }}"
+  - "{{ galaxy_config.galaxy.new_file_path }}"
+  - "{{ galaxy_tus_upload_store if galaxy_config.gravity.tusd.enable else ' ' }}"
+csnt_require_login: true
+
 admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
 enable_tiaas: true
 shed_tools_shadowing: false
+
+# Galaxy
+galaxy_manage_systemd: no
+galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
+galaxy_separate_privileges: true # Best practices for security, configuration is owned by 'root' (or a different user) than the processes
+galaxy_manage_paths: true # False by default as your administrator might e.g. have root_squash enabled on NFS. Here we can create the directories so it's fine.
+galaxy_manage_cleanup: true # Requires tmpwatch(8) or tmpreaper(8) present
+galaxy_tmpclean_dirs: "{{ csnt_galaxy_tmpclean_dirs }}"
+galaxy_layout: root-dir
+galaxy_root: /srv/galaxy
+galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
+galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
+galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
+galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
+galaxy_commit_id: release_24.2
+galaxy_force_checkout: true
+galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
+
+# Miniconda
+miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
+miniconda_version: 24.11.1
+miniconda_channels: ['conda-forge', 'defaults']
+
+# Pulsar
+pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
 # Galaxy Job Configuration
 galaxy_job_config:
@@ -80,7 +98,7 @@ galaxy_job_config:
       testing: [cores, time]
   limits:
     - type: registered_user_concurrent_jobs
-      value: 10
+      value: "{{ csnt_registered_user_jobs_limit }}"
     - type: anonymous_user_concurrent_jobs
       value: 1
     - type: output_size
@@ -103,9 +121,9 @@ galaxy_config:
     admin_users: "{{ vault_admin_users }}"
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
-    error_email_to: "regalaxy@rt.cesnet.cz"
+    error_email_to: "{{  csnt_contact_email  }}"
     allow_user_creation: false
-    require_login: true
+    require_login: "{{ csnt_require_login }}"
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: "{{ galaxy_mutable_data_dir }}/datasets"
     short_term_storage_dir: "{{ csnt_short_term_storage_dir }}"
@@ -159,10 +177,6 @@ galaxy_config:
         type: cached_mulled_singularity
     -   auto_install: true
         type: mulled_singularity
-    -   auto_install: false
-        type: build_mulled_singularity
-#        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-        cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
@@ -218,15 +232,16 @@ galaxy_config:
       bind: "unix:{{ galaxy_mutable_config_dir }}/reports.sock"
       config_file: "{{ galaxy_config_dir }}/reports.yml"
 
-galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
 galaxy_config_files_public:
   - src: templates/{{ inventory_hostname }}/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
-  - src: files/galaxy/static/usegalaxy-cz.png
-    dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
+  - src: files/galaxy/static/usegalaxycz_straight.svg
+    dest: "{{ galaxy_server_dir }}/static/usegalaxycz_straight.svg"
   - src: files/galaxy/static/elixir_logo.png
     dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
+  - src: files/galaxy/static/eu_msmt_eosc.svg
+    dest: "{{ galaxy_server_dir }}/static/eu_msmt_eosc.svg"
   - src: files/galaxy/static/e-infra_logo.svg
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
 
@@ -428,7 +443,7 @@ tiaas_admin_pass: "{{ tiaas_password }}"
 tiaas_info:
   owner: "Metacentrum"
   domain: "{{ inventory_hostname }}"
-  owner_email: "regalaxy@rt.cesnet.cz"
+  owner_email: "{{ csnt_contact_email  }}"
   owner_site: "https://{{ inventory_hostname }}"
 tiaas_send_email_to_requester: true
 tiaas_send_email_to: "{{ tiaas_info.owner_email }}"
