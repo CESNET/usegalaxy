@@ -276,6 +276,25 @@
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
 
+    - name: Copy shed_tools shadowing script
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/extra_scripts/shed_tools_shadow_script.sh"
+        dest: "{{ galaxy_root }}/scripts/shed_tools_shadow_script.sh"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0755'
+      when: "shed_tools_shadowing"
+      tags: cron
+    - name: Setup shed_tools shadowing rutine
+      ansible.builtin.cron:
+        name: "Shadow shed-tools directories"
+        user: "{{ galaxy_user_name }}"
+        minute: "0"
+        hour: "2" # 2 am daily
+        job: "{{ galaxy_root }}/scripts/shed_tools_shadow_script.sh {{ galaxy_root }}/var {{ galaxy_mutable_data_dir }} 2>&1 | logger -t shed_tools_shadowing"
+      when: "shed_tools_shadowing"
+      tags: cron
+
     - name: Ensure the tools cron script directory exists
       ansible.builtin.file:
         path: "{{ galaxy_root }}/cron/tools"
