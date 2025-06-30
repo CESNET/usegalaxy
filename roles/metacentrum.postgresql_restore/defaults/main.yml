@@ -1,0 +1,6 @@
+# If galaxy_db_restore_version will be an empty string, no database restore will take place
+galaxy_db_restore_version: '' # Example: '20250529T010001Z'; 'latest'
+# The point of return must have happened after DB base backup creation (version timestamp)
+galaxy_db_restore_timestamp: '' # Example: '2025-05-29 02:30:00'
+galaxy_db_restore_timeline: 'latest' # could be 'latest' (default) or 'current', which recovers along the same timeline that was current when the base backup was taken. Or using '0xID' for specific numeric timeline ID (hexadecimal number used in WAL file name)
+galaxy_db_restore_action: 'pause' # could be 'promote' (to continue right after recovery) or 'pause' (by default) to manually check the DB state. To unpause PSQL DB use command 'psql -c "select * from pg_wal_replay_resume();"' as postgres user

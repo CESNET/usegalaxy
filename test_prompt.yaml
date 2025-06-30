@@ -1,0 +1,185 @@
+---
+- hosts: galaxy-qa1.galaxy.cloud.e-infra.cz
+  become: true
+  become_user: root
+  vars:
+    galaxy_db_restore_version: '20250529T010001Z' # Example: '20250529T010001Z'; 'latest'
+    galaxy_db_restore_timestamp: '2025-05-29 02:30:00' # Example: '2025-05-29 02:30:00'
+    galaxy_db_restore_timeline: 'current' # could be 'latest' (default) or 'current', which recovers along the same timeline that was current when the base backup was taken. Or using '0xID' for specific numeric timeline ID (hexadecimal number used in WAL file name)
+    galaxy_db_restore_action: 'promote' # could be 'promote' (to continue right after recovery) or 'pause' (by default) to manually check the DB state. To unpause PSQL DB use command 'psql -c "select * from pg_wal_replay_resume();"' as postgres user
+#  pre_tasks:
+#    - name: Install Dependencies
+#      package:
+#        name: ['acl', 'anacron', 'rsync']
+#  roles:
+#    - galaxyproject.postgresql
+#    - role: galaxyproject.postgresql_objects
+#      become: true
+#      become_user: postgres
+#  post_tasks:
+#    - name: Register if galaxy exists
+#      ansible.builtin.shell:
+#        cmd: galaxyctl status
+#      register: galaxyctl_status
+#      ignore_errors: true
+#      become: true
+
+  tasks:
+    - name: Register psql data directory
+      ansible.builtin.shell:
+        cmd: psql -Atc 'show data_directory;'
+      register: psql_data_dir
+      become: true
+      become_user: postgres
+
+# Unsucessfull attempt to make a prompt with the list of all available backup versions
+    - name: Gather Galaxy DB backup versions
+      find:
+        paths: "{{ postgresql_backup_dir }}"
+        file_type: directory
+        patterns: "*Z"
+        # You can also use file_type: 'file' for files only, or 'directory' for directories only
+      register: db_versions
+      become: true
+      become_user: postgres
+
+    - name: Set backup versions as a list
+      set_fact:
+        version_list: "{{ db_versions.files | map(attribute='path') | list }}"
+
+    - name: Select Galaxy DB backup version from a list
+      debug:
+        msg: 
+        - "Select database version to restore:"
+        - "{{ db_versions.files | map(attribute='path') | map('basename') }}"
+
+    - name: Wait for selection
+      pause:
+        prompt: "Select version to restore from the list: {{ db_versions.files | map(attribute='path') | map('basename') }}"
+      register: selected_version
+
+    - name: Print selected Galaxy DB backup versions
+      debug:
+        msg: "You selected {{ selected_version.user_input }} to restore"
+
+#    - name: Print PostgreSQL data directory path
+#      debug:
+#        msg: "PostgreSQL data directory path: {{ psql_data_dir.stdout }}"
+#    - name: Print Warning
+#      debug:
+#        msg: "No PostgreSQL data directory path! PSQL DB restore is not possible!"
+#      when: psql_data_dir.stdout == ''
+#
+#    - name: Restore Galaxy DB backup - pick proper backup version
+#      ansible.builtin.shell:
+#        cmd: "if [ '{{ galaxy_db_restore_version }}' = 'latest' ]; then ls -dt {{ postgresql_backup_dir }}/20*Z | head -1; else ls -d {{ postgresql_backup_dir }}/{{ galaxy_db_restore_version }}; fi "
+#      register: galaxy_db_restore_dir
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - print selected version
+#      debug:
+#        msg: "Backup version to be restored: {{ galaxy_db_restore_dir.stdout }}"
+#
+#    - name: Restore Galaxy DB backup - stop Galaxy
+#      ansible.builtin.shell:
+#        cmd: galaxyctl stop
+#      become: true
+#      when: galaxyctl_status.rc == 0
+#
+#    - name: Restore Galaxy DB backup - stop postgresql
+#      ansible.builtin.systemd:
+#        name: postgresql
+#        state: stopped
+#      become: true
+#
+#    - name: Restore Galaxy DB backup - backup current postgresql
+#      ansible.builtin.shell:
+#        cmd: "mv {{ psql_data_dir.stdout }} {{ psql_data_dir.stdout+'.backup_'+ansible_date_time.iso8601 }}"
+#      ignore_errors: true
+#      when: psql_data_dir.stdout != ''
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - copy proper backup version
+#      ansible.builtin.shell:
+#        cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0700 {{ psql_data_dir.stdout }} "
+#      when: galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - fill postgresql.auto.conf
+#      ansible.builtin.lineinfile:
+#        path: "{{ psql_data_dir.stdout }}/postgresql.auto.conf"
+#        insertafter: EOF
+#        line: "restore_command = 'cp \"{{ postgresql_backup_dir }}/wal_archive/%f\" \"%p\"'"
+#        state: present
+#        create: true
+#      when: psql_data_dir.stdout != ''
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - fill postgresql.auto.conf (using specific timestamp of recovery)
+#      ansible.builtin.lineinfile:
+#        path: "{{ psql_data_dir.stdout }}/postgresql.auto.conf"
+#        insertafter: EOF
+#        line: "recovery_target_time = '{{ galaxy_db_restore_timestamp }}'"
+#        state: present
+#        create: true
+#      when: psql_data_dir.stdout != '' and galaxy_db_restore_timestamp != ''
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - fill postgresql.auto.conf (using specific timeline of recovery)
+#      ansible.builtin.lineinfile:
+#        path: "{{ psql_data_dir.stdout }}/postgresql.auto.conf"
+#        insertafter: EOF
+#        line: "recovery_target_timeline = '{{ galaxy_db_restore_timeline }}'"
+#        state: present
+#        create: true
+#      when: psql_data_dir.stdout != '' and galaxy_db_restore_timeline != ''
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - fill postgresql.auto.conf (using specific action after recovery)
+#      ansible.builtin.lineinfile:
+#        path: "{{ psql_data_dir.stdout }}/postgresql.auto.conf"
+#        insertafter: EOF
+#        line: "recovery_target_action = '{{ galaxy_db_restore_action }}'"
+#        state: present
+#        create: true
+#      when: psql_data_dir.stdout != '' and galaxy_db_restore_action != ''
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - touch the signal file
+#      ansible.builtin.shell:
+#        cmd: "touch {{ psql_data_dir.stdout }}/recovery.signal "
+#      when: psql_data_dir.stdout != ''
+#      become: true
+#      become_user: postgres
+#
+#    - name: Restore Galaxy DB backup - start postgresql
+#      ansible.builtin.systemd:
+#        name: postgresql
+#        state: started
+#      become: true
+#
+#    - name: Register if postgresql log exists
+#      ansible.builtin.shell:
+#        cmd: "ls /var/log/postgresql/postgresql-{{ postgresql_default_version }}-main.log"
+#      register: psql_log
+#      ignore_errors: true
+#      become: true
+#
+#    - name: Restore Galaxy DB backup - touch the signal file
+#      ansible.builtin.shell:
+#        cmd: "tail -20 {{ psql_log.stdout }}"
+#      when: psql_data_dir.stdout != '' and psql_log.rc == 0
+#      become: true
+#
+#    - name: Restore Galaxy DB backup - start Galaxy
+#      ansible.builtin.shell:
+#        cmd: galaxyctl start
+#      become: true
+#      when: galaxyctl_status.rc == 0
