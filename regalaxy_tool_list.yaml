@@ -23,6 +23,7 @@ tools:
   revisions:
   - 8f2bd3cae2de
   - f0663cdbae66
+  - ae4cebdccf74
   tool_panel_section_id: dante
   tool_panel_section_label: DANTE
   tool_shed_url: toolshed.g2.bx.psu.edu

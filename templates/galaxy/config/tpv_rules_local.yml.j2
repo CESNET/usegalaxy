@@ -73,7 +73,7 @@ tools:
     mem: 64
     context:
       scratch: 150
-      walltime: 168
+      walltime: 336
 
   # repeat_annotation_pipeline tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/extract_re_contigs/.*:
@@ -185,7 +185,8 @@ tools:
     mem: 50
     context:
       scratch: 50
-      walltime: 24
+#      walltime: 24 #DEMON: used to be 24h but if input is very big it could take more time, would be great to scale it to input size
+      walltime: 48
 
   # DANTE_ltr tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
@@ -223,6 +224,19 @@ tools:
       require:
       - pulsar
       - singularity
+    container_resolvers:
+    -   type: cached_explicit_singularity
+        cache_directory: "$SINGULARITY_CACHEDIR"
+    -   type: explicit_singularity
+    -   type: cached_mulled_singularity
+        cache_directory: "$SINGULARITY_CACHEDIR"
+    -   auto_install: true
+        type: mulled_singularity
+    -   auto_install: false
+        cache_directory: /mnt/galaxy-re/singularity/mulled
+        type: build_mulled_singularity
+    params:
+      singularity_default_container_id: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache/cache/library/sha256.660dda926394f3db2400f7800e064cf731c75566853cac43a30be44e3b5f5d73"
     rules:
       - id: queue_definition_by_parameter
         if: |
@@ -306,7 +320,7 @@ destinations:
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:
       SINGULARITY_CACHEDIR: "/mnt/galaxy-re/singularity/"
-      SINGULARITY_TMPDIR: /tmp_galaxy/tmp
+      SINGULARITY_TMPDIR: /mnt/galaxy-re/tmp
     scheduling:
       require:
       - local

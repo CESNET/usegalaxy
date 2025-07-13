@@ -9,7 +9,8 @@ galaxy_user_group_name: galaxyelixir
 galaxy_user_group_gid: 10145
 galaxy_db_name: galaxyelixir
 galaxy_data_dir: "/mnt/galaxy-re"
-galaxy_temp_dir: "/tmp_galaxy"
+#galaxy_temp_dir: "/tmp_galaxy"
+galaxy_temp_dir: "{{ galaxy_data_dir }}"
 galaxy_prefix: "/galaxy"
 
 # CVMFS vars

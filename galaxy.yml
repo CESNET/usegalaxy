@@ -46,75 +46,6 @@
         state: absent
       when: ansible_os_family == 'Debian'
 
-    - name: Ensure the python command exists
-      ansible.builtin.shell: 
-        cmd: which python||exit 0
-      register: python_path
-      tags: py
-    - name: Register python3 path
-      ansible.builtin.command: which python3
-      register: python3_path
-      when: python_path.stdout == ""
-      tags: py
-    - name: Link python to python3 if missing
-      ansible.builtin.file:
-        src: "{{ python3_path.stdout }}"
-        dest: "{{ python3_path.stdout[:-1] }}"
-        state: link
-        force: yes
-      when: python_path.stdout == ""
-      tags: py
-
-    - git:
-        repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
-        dest: /libraries/
-      when: "'usegalaxy' in inventory_hostname"
-#    - name: Create data storage for UMSA
-#      file:
-#        owner: "{{ galaxy_user_name }}"
-#        group: "{{ galaxy_user_group_name }}"
-#        path:  "{{ galaxy_data_dir }}"
-#        state: directory
-#        mode:  "0755"
-#      when: "'umsa' in inventory_hostname"
-    - name: Create the RBD storage directory
-      file:
-        owner: "{{ galaxy_user_name }}"
-        group: "{{ galaxy_user_group_name }}"
-        path: /rbd/data
-        state: directory
-        mode: '0755'
-      when: "'usegalaxy' in inventory_hostname"
-
-    - name: Ensure galaxy temp dir mount
-      mount:
-        path: "{{ galaxy_temp_dir }}"
-        src: "/dev/rbd0"
-        fstype: "ext4"
-        opts: "defaults,nodev,nosuid,noexec,noatime,_netdev"
-        passno: "2"
-        state: mounted
-    - name: Create the galaxy temp directory under root
-      file:
-        owner: root
-        group: root
-        path: "{{ galaxy_temp_dir }}"
-        state: directory
-        mode: '1777'
-    - name: Create the nginx upload job files store
-      file:
-        owner: www-data
-        group: "{{ galaxy_user_group_name }}"
-        path: "{{ galaxy_temp_dir }}/_upload_job_files"
-        state: directory
-        mode: '0775'
-    - name: Create the client body temp path   
-      file:
-        owner: www-data
-        group: "{{ galaxy_user_group_name }}"
-        path: "{{ galaxy_temp_dir }}/nginx_upload_store"
-        state: directory
-        mode: '0775'
       ## Part responsible for setting up NBD mount (specific for galaxy-re)
     - name: Check if /dev/nbd0 exists
       stat:
@@ -153,116 +84,13 @@
         state: mounted
       when: "'galaxy-re' in inventory_hostname or 'galaxy-re' in ansible_hostname"
 
-# recover from WAL based on https://training.galaxyproject.org/training-material/topics/admin/tutorials/backup-cleanup/tutorial.html#restoration
-    ## Part responsible for recovering Galaxy DB from backup if exists (it should be in post_tasks of dbservers but NDB access needs to be set up first)
-    - name: Register psql data directory
-      ansible.builtin.shell:
-        cmd: psql -Atc 'show data_directory;'
-      register: psql_data_dir
-      become: true
-      become_user: postgres
-      tags: gal_db
-    - name: Check if Galaxy DB exists
-      ansible.builtin.shell:
-        cmd: "psql -XAtc '\\l' |cut -f 1 -d '|' |grep -qw {{ galaxy_db_name }}"
-      register: galaxy_db_in_psql
-      ignore_errors: true
-      become: true
-      become_user: postgres
-      tags: gal_db
-    - name: Restore Galaxy DB backup - stop postgresql
-      ansible.builtin.systemd:
-        name: postgresql
-        state: stopped
-      when: galaxy_db_in_psql.rc == 1
-      tags: gal_db
-    - name: Restore Galaxy DB backup - backup current postgresql
-      ansible.builtin.shell:
-        cmd: "mv {{ psql_data_dir.stdout }} {{ psql_data_dir.stdout+'.backup_'+ansible_date_time.iso8601 }}"
-      ignore_errors: true
-      when: galaxy_db_in_psql.rc == 1 and psql_data_dir.stdout != ''
-      become: true
-      become_user: postgres
-      tags: gal_db
-
-    - name: Restore Galaxy DB backup - pick proper backup version
-      ansible.builtin.shell:
-        cmd: "if [ '{{ galaxy_db_restore_version }}' = 'latest' ]; then ls -dt {{ postgresql_backup_dir }}/20*Z | head -1; else ls -d {{ postgresql_backup_dir }}/{{ galaxy_db_restore_version }}; fi "
-      register: galaxy_db_restore_dir
-      when: galaxy_db_in_psql.rc == 1
-      become: true
-      become_user: postgres
-      tags: gal_db
-    - name: Restore Galaxy DB backup - copy proper backup version
-      ansible.builtin.shell:
-        cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
-      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
-      become: true
-      become_user: postgres
-      tags: gal_db
-#    - name: Restore Galaxy DB backup - pick the latest backup version
-#      ansible.builtin.shell:
-#        cmd: "ls -dt {{ postgresql_backup_dir }}/20*Z | head -1 "
-#      register: galaxy_db_restore_dir_latest
-#      ignore_errors: true
-#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_version == 'latest'
-#      become: true
-#      become_user: postgres
-#      tags: gal_db
-#    - name: Restore Galaxy DB backup - pick the user-defined backup version
-#      ansible.builtin.shell:
-#        cmd: "ls -d {{ postgresql_backup_dir }}/{{ galaxy_db_restore_version }} "
-#      register: galaxy_db_restore_dir
-#      ignore_errors: true
-#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_version != 'latest'
-#      become: true
-#      become_user: postgres
-#      tags: gal_db
-#    - name: Restore Galaxy DB backup - copy latest backup version
-#      ansible.builtin.shell:
-#        cmd: "rsync -a {{ galaxy_db_restore_dir_latest.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
-#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_dir_latest.stdout != '' and psql_data_dir.stdout != ''
-#      become: true
-#      become_user: postgres
-#      tags: gal_db
-#    - name: Restore Galaxy DB backup - copy user-defined backup version
-#      ansible.builtin.shell:
-#        cmd: "rsync -a {{ galaxy_db_restore_dir.stdout }}/ {{ psql_data_dir.stdout }}/ && chmod -R 0750 {{ psql_data_dir.stdout }} "
-#      when: galaxy_db_in_psql.rc == 1 and galaxy_db_restore_dir.stdout != '' and psql_data_dir.stdout != ''
-#      become: true
-#      become_user: postgres
-#      tags: gal_db
-    - name: Restore Galaxy DB backup - fill postgresql.auto.conf
-      ansible.builtin.lineinfile:
-        path: "{{ psql_data_dir.stdout }}/postgresql.auto.conf"
-        insertafter: EOF
-        line: "restore_command = 'cp \"{{ postgresql_backup_dir }}/wal_archive/%f\" \"%p\"'"
-        state: present
-        create: true
-      when: galaxy_db_in_psql.rc == 1 and psql_data_dir.stdout != ''
-      become: true
-      become_user: postgres
-      tags: gal_db
-    - name: Restore Galaxy DB backup - touch the signal file
-      ansible.builtin.shell:
-        cmd: "touch {{ psql_data_dir.stdout }}/recovery.signal "
-      when: galaxy_db_in_psql.rc == 1 and psql_data_dir.stdout != ''
-      become: true
-      become_user: postgres
-      tags: gal_db
-    - name: Restore Galaxy DB backup - start postgresql
-      ansible.builtin.systemd:
-        name: postgresql
-        state: started
-      tags: gal_db      
-
   roles:
     - galaxyproject.tusd
     - galaxyproject.galaxy
     - usegalaxy_eu.tpv_auto_lint
-    - role: galaxyproject.miniconda
-      become: true
-      become_user: "{{ galaxy_user_name }}"
+#    - role: galaxyproject.miniconda
+#      become: true
+#      become_user: "{{ galaxy_user_name }}"
     - geerlingguy.redis
     - galaxyproject.nginx
     - usegalaxy_eu.flower
@@ -289,7 +117,7 @@
         minute: "2"
         hour: "*" 
         #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'
-        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -type d -mmin -180 -maxdepth 0 -exec chmod -R g+rw '{}' ';'"
+        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -maxdepth 0 -type d -mmin -240 -exec chmod -R g+rw '{}' ';'"
       become: yes
       become_user: "{{ galaxy_user_name }}"
     - name: Creates entry in crontab "tmpreaper call in tus upload dir"
@@ -297,7 +125,7 @@
         name: "tmpreaper in tus upload dir"
         minute: "5"
         hour: "*" 
-        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 4h {{ galaxy_tus_upload_store }} >> {{ galaxy_data_dir }}/cleaning_tus_upload_dir.log"
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_tus_upload_store }} >> {{ galaxy_data_dir }}/cleaning_tus_upload_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
     - name: Creates entry in crontab "tmpreaper call in galaxy tmp dir"
@@ -305,24 +133,24 @@
         name: "tmpreaper in galaxy temp dir"
         minute: "7"
         hour: "*" 
-        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 4h {{ galaxy_temp_dir }}/tmp >> {{ galaxy_data_dir }}/cleaning_galaxy_temp_dir.log"
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_temp_dir }}/tmp >> {{ galaxy_data_dir }}/cleaning_galaxy_temp_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
+#    - name: Creates entry in crontab "tmpreaper call in galaxy jobs dir"
+#      ansible.builtin.cron:
+#        name: "tmpreaper in galaxy jobs dir"
+#        minute: "9"
+#        hour: "*" 
+#        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_temp_dir }}/jobs >> {{ galaxy_data_dir }}/cleaning_galaxy_jobs_dir.log"
+#      become: yes
+#      become_user: "{{ galaxy_user_name }}"
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
         name: "Cleanup Old User Data"
         user: "{{ galaxy_user_name }}" # Run as the Galaxy user
         minute: "0"
         hour: "0"
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
-    - name: Setup user - group association rutine
-      ansible.builtin.cron:
-        name: "Add E-infra users to E-infra group"
-        user: postgres # Run as the postgres user
-        minute: "0"
-        hour: "*"
-        job: "python3 {{ playbook_dir }}/add_group_users.py {{ inventory_hostname }} {{ api_key }}"
-      when: "'usegalaxy' in inventory_hostname"
+        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60 >> {{ galaxy_data_dir }}/cleaning_gxadmin_cleanup.log"
 #    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
 #      replace:
 #        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"

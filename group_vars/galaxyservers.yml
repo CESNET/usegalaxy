@@ -23,7 +23,7 @@ galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 galaxy_systemd_nofile_limit: 150000
 
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/conda"
-miniconda_version: 'latest' # 23.5.2 # 23.5.0 # 4.12.0
+miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
 miniconda_channels: ['conda-forge', 'bioconda', 'iuc', 'r', 'anaconda', 'petrnovak', 'defaults']
 miniconda_base_env_packages: ['mamba']
 
@@ -85,7 +85,7 @@ galaxy_job_config:
       environment: local
   limits:
     - type: registered_user_concurrent_jobs
-      value: 5
+      value: 4
     - type: anonymous_user_concurrent_jobs
       value: 1
     - type: output_size
@@ -105,6 +105,7 @@ galaxy_config:
     - kavonrtep@repeatexplorer-elixir.cerit-sc.cz
     - salvet@repeatexplorer-elixir.cerit-sc.cz
     - jimacas@repeatexplorer-elixir.cerit-sc.cz
+    - martincech@repeatexplorer-elixir.cerit-sc.cz
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     #umask: 022
     file_path: "{{ galaxy_data_dir }}/datasets"
@@ -121,13 +122,14 @@ galaxy_config:
     - "{{ galaxy_root }}/server/config/tool_conf.xml.sample"
     tool_sheds_config_file: "{{ galaxy_config_dir }}/tool_sheds_conf.xml"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
+    cache_dir: "{{ galaxy_data_dir }}/cache"
     # This allows to do custom ordering of tools in sections, default was true, but Petr Novak wants specific orderring of tools
     toolbox_auto_sort: false
     # This hide specified tools for non-admin users
     tool_filters: 'examples:restrict_testing_tools_to_admins'
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "regalaxy@rt.cesnet.cz"
-    email_from: "regalaxy@rt.cesnet.cz"
+#    email_from: "regalaxy@rt.cesnet.cz"
     # SQL Performance
     slow_query_log_threshold: 5
     enable_per_request_sql_debugging: true
@@ -226,7 +228,7 @@ galaxy_config:
       queues: celery,galaxy.internal,galaxy.external
       pool: threads
       memory_limit: 4
-      concurrency: 2
+      concurrency: 8
       loglevel: DEBUG
     tusd:
       enable: true
@@ -326,6 +328,7 @@ certbot_post_renewal: |
 certbot_domains:
  - "{{ inventory_hostname }}"
  - galaxy-re.grid.cesnet.cz
+ - galaxyelixir.vm.cesnet.cz
 certbot_expand: true
 certbot_agree_tos: --agree-tos
 

@@ -13,6 +13,31 @@ server {
 	}
 }
 
+{% block root %}
+{% if (extra_certbot_domains | default(false) ) %}
+{% for host in extra_certbot_domains %}
+
+server {
+        listen 80;
+        listen [::]:80;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        server_name "{{ host }}";
+
+        location /.well-known/ {
+                root {{ certbot_well_known_root }};
+        }
+
+        location / {
+                return 308 "https://{{ inventory_hostname }}$request_uri";
+        }
+}
+
+{% endfor %}
+{% endif %}
+{% endblock root %}
+
 #server {
 #        listen 80;
 #        listen [::]:80;
