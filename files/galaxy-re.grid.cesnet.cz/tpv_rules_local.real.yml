@@ -1,0 +1,469 @@
+global:
+  default_inherits: default
+
+tools:
+  default:
+    abstract: true
+    cores: 2
+    mem: 10
+    env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+      LC_ALL: C
+      GALAXY_SLOTS: "{cores}"
+      GALAXY_MEMORY_MB: "{int(mem)*1000}"
+    context:
+      scratch: 15
+      walltime: 24
+      queue: galaxyre
+    scheduling:
+      require:
+      - pulsar
+      reject:
+      - offline
+
+  # Tools for testing and playing
+  testing.*:
+    cores: 1
+    mem: 1
+    context:
+      scratch: 1
+      walltime: 1
+
+  # DANTE toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter/.*:
+    cores: 2
+    mem: 25
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_to_tabular/.*:
+    cores: 2
+    mem: 25
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_summary/.*:
+    cores: 2
+    mem: 25
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_extract/.*:
+    cores: 2
+    mem: 25
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/dante/.*:
+    cores: 32
+    mem: 25
+    context:
+      scratch: 15
+      walltime: 336
+
+  # TideCluster tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster_annotation/.*:
+    cores: 16
+    mem: 24
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tc_reannotate/.*:
+    cores: 32
+    mem: 50
+    context:
+      scratch: 15
+      walltime: 96
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster/.*:
+    cores: 16
+    mem: 64
+    context:
+      scratch: 150
+      walltime: 336
+
+  # repeat_annotation_pipeline tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3
+  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/extract_re_contigs/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/compare_gff/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/summarize_gff_by_attribute/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/annotate_contigs/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/repeat_annotate/.*:
+    cores: 32
+    mem: 50
+    context:
+      scratch: 50
+      walltime: 96
+
+  # re_utils tools https://toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/RMsearch2/.*:
+    cores: 16
+    mem: 32
+    context:
+      scratch: 50
+      walltime: 96
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/chip_seq_ratio_1/.*:
+    cores: 16
+    mem: 32
+    context:
+      scratch: 50
+      walltime: 48
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/rename_sequences/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/pairScan/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+      walltime: 48
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/single_fastq_filtering/.*:
+    cores: 6
+    mem: 10
+    context:
+      scratch: 50
+      walltime: 24
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/fasta_affixer/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/sampler/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/plot_comparative/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/extract_var_files_from_re/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/summarize_annotation/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/names_affixer/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/cluster_table2krona_format/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/fasta_input/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/fasta_interlacer/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 50
+  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/paired_fastq_filtering/.*:
+#    cores: 6 #DEMON: old setting but seems pointless
+    cores: 2
+#    mem: 10 #DEMON: old setting but there was job which used 78GB; the best would be to scale to input size
+    mem: 50
+    context:
+      scratch: 50
+#      walltime: 24 #DEMON: used to be 24h but if input is very big it could take more time, would be great to scale it to input size
+      walltime: 48
+
+  # DANTE_ltr tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
+    cores: 2
+    mem: 10
+    context:
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/clean_dante_ltr/.*:
+    cores: 32
+    mem: 64
+    context:
+      scratch: 64
+      walltime: 168
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_search/.*:
+    cores: 32
+    mem: 64
+    context:
+      scratch: 64
+      walltime: 168
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_to_library/.*:
+    cores: 32
+    mem: 64
+    context:
+      scratch: 64
+      walltime: 168
+  
+  # ReapeatExplorer tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing
+  toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*:
+    cores: 10
+    mem: 4
+    context:
+      scratch: 50
+      walltime: 48
+    scheduling:
+      require:
+      - pulsar
+      - singularity
+    container_resolvers:
+    -   type: cached_explicit_singularity
+        cache_directory: "$SINGULARITY_CACHEDIR"
+    -   type: explicit_singularity
+    -   type: cached_mulled_singularity
+        cache_directory: "$SINGULARITY_CACHEDIR"
+    -   auto_install: true
+        type: mulled_singularity
+    -   auto_install: false
+        cache_directory: /mnt/galaxy-re/singularity/mulled
+        type: build_mulled_singularity
+    params:
+      singularity_default_container_id: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache/cache/library/sha256.660dda926394f3db2400f7800e064cf731c75566853cac43a30be44e3b5f5d73"
+    rules:
+      - id: queue_definition_by_parameter
+        if: |
+          param_dict = job.get_param_values(app) # get job input parameters as dictionary
+          'queue_definition' in param_dict and 'queue_specification' in param_dict['queue_definition']
+        cores: |
+          import re
+          int(re.search(r'ncpus=(\d)+', job.get_param_values(app)['queue_definition']['queue_specification']).group(0).split('=')[1])
+        mem: |
+          import re
+          int(re.search(r'mem=(\d)+', job.get_param_values(app)['queue_definition']['queue_specification']).group(0).split('=')[1])
+        context:
+          scratch: |
+            import re
+            int(re.search(r'scratch_local=(\d)+', job.get_param_values(app)['queue_definition']['queue_specification']).group(0).split('=')[1])
+          walltime: |
+            import re
+            int(re.search(r'walltime=(\d)+', job.get_param_values(app)['queue_definition']['queue_specification']).group(0).split('=')[1])
+      - id: basic_fast_queue_selected
+        if: |
+          param_dict = job.get_param_values(app) # get job input parameters as dictionary
+          'queue_select' in param_dict and param_dict['queue_select'].startswith('basic_fast_queue')
+        cores: 10
+        mem: 16
+        context:
+          scratch: 50
+          walltime: 48
+      - id: long_slow_queue_selected
+        if: |
+          param_dict = job.get_param_values(app) # get job input parameters as dictionary
+          'queue_select' in param_dict and param_dict['queue_select'].startswith('long_slow_queue')
+        cores: 16
+        mem: 64
+        context:
+          scratch: 50
+          walltime: 336
+      - id: extra_long_slow_queue_selected
+        if: |
+          param_dict = job.get_param_values(app) # get job input parameters as dictionary
+          'queue_select' in param_dict and param_dict['queue_select'].startswith('extra_long_slow_queue')
+        cores: 16
+        mem: 64
+        context:
+          scratch: 50
+          walltime: 720
+
+  toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/.*:
+    inherits: toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*
+
+  .*/fastq_groomer/.*:
+    cores: 1
+    mem: 16
+
+roles:
+  training.*:
+    max_cores: 2
+    max_mem: "int(max_cores * 3.8)"
+    scheduling:
+      require:
+        - training
+  helper:
+    scheduling:
+      require:
+        - helper
+  highmem:
+    mem: 512
+    context:
+      queue: elixircz
+  test:
+    scheduling:
+      require:
+        - test
+
+destinations:
+  tpv_local:
+    runner: local_runner
+    max_accepted_cores: 1
+    max_accepted_mem: 4
+    params:
+      tmp_dir: true
+    scheduling:
+      require:
+      - local
+      reject:
+      - singularity
+  tpv_local_singularity:
+    runner: local_runner
+    max_accepted_cores: 1
+    max_accepted_mem: 4
+    params:
+      singularity_enabled: true
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+    env:
+      SINGULARITY_CACHEDIR: "/mnt/galaxy-re/singularity/"
+      SINGULARITY_TMPDIR: /mnt/galaxy-re/tmp
+    scheduling:
+      require:
+      - local
+      prefer:
+      - singularity
+  tpv_pulsar:
+    runner: pulsar_runner
+    max_accepted_cores: 32
+    max_accepted_mem: 185
+    max_accepted_gpus: 0
+    max_cores: 32
+    max_mem: 128
+    max_gpus: 0
+    params:
+      default_file_action: remote_rsync_transfer
+      transport: rsync
+      ssh_user: "galaxyelixir"
+      ssh_host: "repeatexplorer-elixir.cerit-sc.cz"
+      ssh_port: 22
+      ssh_key: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACDyeKTY+KWQX5v4Rkg9OGZLsbQm2oHjccEg+hAGfsMo0AAAAKgS5zlWEuc5
+        VgAAAAtzc2gtZWQyNTUxOQAAACDyeKTY+KWQX5v4Rkg9OGZLsbQm2oHjccEg+hAGfsMo0A
+        AAAECe7yi98nsOset8Jo7V2Gmh19TtINb+4Cnx8YFxJSgKafJ4pNj4pZBfm/hGSD04Zkux
+        tCbageNxwSD6EAZ+wyjQAAAAJWdhbGF4eWVsaXhpckBnYWxheHktcmUuZ3JpZC5jZXNuZX
+        QuY3o=
+        -----END OPENSSH PRIVATE KEY-----
+      dependency_resolution: remote
+      jobs_directory: /storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/staging
+      persistence_directory: /opt/pulsar/files/persistent
+      remote_metadata: false
+      rewrite_parameters: true
+      outputs_to_working_directory: false
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue}@pbs-m1.metacentrum.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      TMPDIR: $SCRATCHDIR
+      TMP: $SCRATCHDIR
+      TEMP: $SCRATCHDIR 
+    scheduling:
+      require:
+      - pulsar
+      reject:
+      - singularity
+  tpv_pulsar_singularity:
+    inherits: tpv_pulsar
+    runner: pulsar_runner
+    params:
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue}@pbs-m1.metacentrum.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
+      SINGULARITY_TMPDIR: "$SCRATCHDIR"
+      XDG_CACHE_HOME: "$SCRATCHDIR"
+    scheduling:
+      require:
+      - pulsar
+      - singularity
+  tpv_pulsar_test:
+    inherits: tpv_pulsar
+    runner: pulsar_runner
+    params:
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue}@pbs-m1.metacentrum.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    scheduling:
+      require:
+      - pulsar
+      - test
+      reject:
+      - singularity
+  tpv_pulsar_highmem:
+    inherits: tpv_pulsar
+    runner: pulsar_runner
+    max_accepted_mem: 512
+    max_mem: 512
+
+  tpv_pulsar_helper:
+    runner: pulsar_helper
+    max_accepted_cores: 32
+    max_accepted_mem: 185
+    max_accepted_gpus: 0
+    max_cores: 32
+    max_mem: 128
+    max_gpus: 0
+    params:
+      default_file_action: remote_rsync_transfer
+      transport: rsync
+      ssh_user: "galaxyelixir"
+      ssh_host: "repeatexplorer-elixir.cerit-sc.cz"
+      ssh_port: 22
+      ssh_key: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACDyeKTY+KWQX5v4Rkg9OGZLsbQm2oHjccEg+hAGfsMo0AAAAKgS5zlWEuc5
+        VgAAAAtzc2gtZWQyNTUxOQAAACDyeKTY+KWQX5v4Rkg9OGZLsbQm2oHjccEg+hAGfsMo0A
+        AAAECe7yi98nsOset8Jo7V2Gmh19TtINb+4Cnx8YFxJSgKafJ4pNj4pZBfm/hGSD04Zkux
+        tCbageNxwSD6EAZ+wyjQAAAAJWdhbGF4eWVsaXhpckBnYWxheHktcmUuZ3JpZC5jZXNuZX
+        QuY3o=
+        -----END OPENSSH PRIVATE KEY-----
+      dependency_resolution: remote
+      jobs_directory: /storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/staging
+      persistence_directory: /opt/pulsar/files/persistent
+      remote_metadata: false
+      rewrite_parameters: true
+      outputs_to_working_directory: false
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue}@pbs-m1.metacentrum.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      TMPDIR: $SCRATCHDIR
+      TMP: $SCRATCHDIR
+      TEMP: $SCRATCHDIR 
+    scheduling:
+      require:
+      - pulsar
+      - helper
+      reject:
+      - singularity
+  tpv_pulsar_singularity_helper:
+    inherits: tpv_pulsar_helper
+    runner: pulsar_helper
+    params:
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue}@pbs-m1.metacentrum.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
+      SINGULARITY_TMPDIR: "$SCRATCHDIR"
+      XDG_CACHE_HOME: "$SCRATCHDIR"
+    scheduling:
+      require:
+      - pulsar
+      - helper
+      - singularity
