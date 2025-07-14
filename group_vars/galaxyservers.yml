@@ -88,7 +88,7 @@ galaxy_job_config:
         function: map_tool_to_destination
         rules_module: tpv.rules
         tpv_config_files:
-          - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
+          - https://gxy.io/tpv/db-v2.yml
           - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
           - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   resources:
