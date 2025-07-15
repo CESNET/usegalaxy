@@ -10,10 +10,12 @@ csnt_enable_notification_system: false
 csnt_enable_oidc: true
 csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
 csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+csnt_auth_config_file: ''
 csnt_enable_reports: false
 csnt_edam_panel_views: ""
 csnt_default_panel_view: default
 csnt_registered_user_jobs_limit: 10
+csnt_jobs_output_size_limit: 50GB
 csnt_tool_config_file:
   - "{{ galaxy_config_dir }}/tool_conf.xml"
   - "{{ galaxy_config_dir }}/local_tool_conf.xml"
@@ -49,6 +51,7 @@ galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: release_24.2
 galaxy_force_checkout: true
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
+galaxy_prefix: ""
 
 # Miniconda
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
@@ -66,7 +69,7 @@ galaxy_job_config:
       workers: 4
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ rabbitmq_hostname }}"
+      galaxy_url: "https://{{ rabbitmq_hostname }}{{ galaxy_prefix }}"
       amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
@@ -102,7 +105,7 @@ galaxy_job_config:
     - type: anonymous_user_concurrent_jobs
       value: 1
     - type: output_size
-      value: 50GB
+      value: "{{ csnt_jobs_output_size_limit }}"
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local_env
@@ -113,12 +116,14 @@ galaxy_config:
     # To not bother the main disk
     new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
+    auth_config_file: "{{ csnt_auth_config_file }}"
     enable_oidc: "{{ csnt_enable_oidc }}"
-    oidc_config_file: "{{ csnt_oidc_config_file }}"
-    oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
+    oidc_config_file: "{{ csnt_oidc_config_file if enable_oidc else '' }}"
+    oidc_backends_config_file: "{{ csnt_oidc_backends_config_file if enable_oidc else '' }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users: "{{ vault_admin_users }}"
+    galaxy_url_prefix: "{{ galaxy_prefix }}"
     cleanup_job: onsuccess
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "{{  csnt_contact_email  }}"
@@ -234,6 +239,8 @@ galaxy_config:
 
 
 galaxy_config_files_public:
+  - src: files/galaxy/config/sanitize_allowlist.txt
+    dest: "{{ galaxy_config.galaxy.sanitize_allowlist_file }}"
   - src: templates/{{ inventory_hostname }}/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
   - src: files/galaxy/static/usegalaxycz_straight.svg
@@ -258,6 +265,8 @@ galaxy_config_templates:
     dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
   - src: "templates/galaxy/config/vault_conf.yml.j2"
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
+    dest: "{{ galaxy_config.galaxy.auth_config_file }}"
 
 galaxy_extra_dirs:
   - "{{ tpv_config_dir }}"

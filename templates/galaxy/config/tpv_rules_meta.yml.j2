@@ -109,23 +109,48 @@ tools:
       walltime: 96
       scratch: 100
 
-  __SET_.*:
+  __DATA_FETCH__:
     inherits: local_running_tools
 
   __IMPORT_HISTORY__:
-     inherits: local_running_tools
+    inherits: local_running_tools
+
+  __EXPORT_HISTORY__:
+    inherits: local_running_tools
+
+  __SET_.*:
+    inherits: local_running_tools
 
   "Show .*":
-     inherits: local_running_tools
+    inherits: local_running_tools
 
   "Remove .*":
-     inherits: local_running_tools
+    inherits: local_running_tools
 
   cat1:
-     inherits: local_running_tools
+    inherits: local_running_tools
 
   .*/data_manager_.*:
     inherits: local_sing_running_tools
+
+  ebi_sra_main:
+    inherits: local_sing_running_tools
+
+  sra_source:
+    inherits: local_sing_running_tools
+
+  gff2bed1:
+    inherits: local_sing_running_tools
+
+#  bed2gff1:
+#    inherits: local_sing_running_tools
+
+  Extract_features1:
+    inherits: local_sing_running_tools
+
+  export_remote:
+    inherits: local_sing_running_tools
+
 
 roles:
   training.*:
