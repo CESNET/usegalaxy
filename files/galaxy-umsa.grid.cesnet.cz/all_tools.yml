@@ -43,6 +43,7 @@ items:
   - matchms
   - mfassignr
   - qcxms
+  - ipapy2
   - pre_processing
   - post_processing
   - proteomics
