@@ -43,15 +43,15 @@ tools:
     gpus: 1
     context:
       walltime: 24
-      scratch: 25 
+      scratch: 25
       gpu_mem: 16
-    scheduling:   
+    scheduling:
       require:
         - rosettafold
 
   rosettafold2:
     inherits: testing_rosettafold2
-    scheduling:   
+    scheduling:
       require:
         - singularity
 
