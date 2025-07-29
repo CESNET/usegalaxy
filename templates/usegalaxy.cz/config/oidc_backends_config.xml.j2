@@ -1,18 +1,15 @@
 <?xml version="1.0"?>
 <OIDC>
-    <provider name="Keycloak">
+    <provider name="Einfracz">
         <client_id>{{ einfracz_client_id }}</client_id>
         <client_secret>{{ einfracz_client_secret }}</client_secret>
-        <redirect_uri>https://{{ inventory_hostname }}/authnz/keycloak/callback</redirect_uri>
-        <url>https://login.e-infra.cz/oidc</url>
+        <redirect_uri>https://{{ inventory_hostname }}/authnz/einfracz/callback</redirect_uri>
         <icon>https://www.e-infra.cz/img/logo.svg</icon>
-        <!-- <extra_scopes>offline_access</extra_scopes> -->
     </provider>
     <provider name="Lifescience">
         <client_id>{{ lifescience_client_id }}</client_id>
         <client_secret>{{ lifescience_client_secret }}</client_secret>
         <redirect_uri>https://{{ inventory_hostname }}/authnz/lifescience/callback</redirect_uri>
         <icon>https://lifescience-ri.eu/fileadmin/lifescience-ri/media/Images/login-grey-wide.jpg.png</icon>
-        <!-- <extra_scopes>offline_access</extra_scopes> -->
     </provider>
 </OIDC>
