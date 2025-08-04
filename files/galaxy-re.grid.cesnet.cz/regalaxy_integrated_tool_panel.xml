@@ -127,6 +127,14 @@
 
     </section>
 
+    <section id="dante_tir" name="DANTE_TIR" version="">
+
+        <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/dante_tir/0.2.0.1" />
+
+        <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/dante_tir_summary/0.2.0.1" />
+
+    </section>
+
     <section id="dante_ltr" name="DANTE_LTR" version="">
 
         <tool id="toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_search/3.5.0" />

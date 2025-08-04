@@ -28,6 +28,11 @@ tools:
       scratch: 1
       walltime: 1
 
+  # DANTE_TIR toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/.*:
+    cores: 20
+    mem: 32
+
   # DANTE toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter/.*:
     cores: 2
