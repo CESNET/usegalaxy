@@ -225,6 +225,13 @@
         state: restarted
         name: nginx
 
+    # not detected automatically due to a bug: https://github.com/galaxyproject/galaxy/issues/20483
+    - name: Install conditional dependencies
+      pip:
+        name: fs.onedatarestfs==21.2.5.2
+        virtualenv: "{{ galaxy_venv_dir }}"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz','usegalaxy.cz']"
+
     - name: Creates entry in crontab "chmod on _files for ngnix access"
       ansible.builtin.cron:
         name: "chmod on _files for ngnix access"
