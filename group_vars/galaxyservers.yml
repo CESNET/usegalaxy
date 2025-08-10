@@ -32,6 +32,10 @@ csnt_require_login: true
 csnt_toolbox_auto_sort: true
 csnt_watch_job_rules: auto
 csnt_retry_job_output_collection: 3
+csnt_gunicorn_workers: 2
+csnt_celery_concurrency: 2
+csnt_celery_memory_limit: 2
+csnt_handlers_processes: 2
 
 admin_ssh_keys: false
 enable_telegraf: false
@@ -182,6 +186,7 @@ galaxy_config:
     # Tool Dependencies
     container_resolvers:
     -   type: explicit_singularity
+#    -   cache_directory: /mnt/galaxy-re/singularity     # DEMON: this was used on RE but the directory doesn't seem to be used
     -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
         type: cached_mulled_singularity
     -   auto_install: true
@@ -209,7 +214,7 @@ galaxy_config:
       # listening options
       bind: "unix:{{ galaxy_mutable_config_dir }}/gunicorn.sock"
       # performance options
-      workers: 2
+      workers: "{{ csnt_gunicorn_workers }}"
       # Other options that will be passed to gunicorn
       # This permits setting of 'secure' headers like REMOTE_USER (and friends)
       # https://docs.gunicorn.org/en/stable/settings.html#forwarded-allow-ips
@@ -222,8 +227,8 @@ galaxy_config:
       enable: true
       queues: celery,galaxy.internal,galaxy.external
       pool: threads
-      memory_limit: 2
-      concurrency: 2
+      memory_limit: "{{ csnt_celery_memory_limit }}"
+      concurrency: "{{ csnt_celery_concurrency }}"
       loglevel: DEBUG
     tusd:
       enable: true
@@ -231,7 +236,7 @@ galaxy_config:
       upload_dir: "{{ galaxy_tus_upload_store }}"
     handlers:
       handler:
-        processes: 2
+        processes: "{{ csnt_handlers_processes }}"
         pools:
           - job-handlers
           - workflow-schedulers
@@ -255,6 +260,12 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/eu_msmt_eosc.svg"
   - src: files/galaxy/static/e-infra_logo.svg
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
+  - src: files/galaxy/static/images/umbr_programs_icons/RE_header.png
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/RE_header.png"
+  - src: files/galaxy/static/images/umbr_programs_icons/ELIXIR_CZECHREPUBLIC_white_background_small.png
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/ELIXIR_CZECHREPUBLIC_white_background_small.png"
+  - src: files/galaxy/static/images/umbr_programs_icons/RE_logo.png
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/RE_logo.png"
 
 galaxy_config_templates:
   - src: templates/galaxy/config/reports.yml.j2
@@ -271,8 +282,11 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
     dest: "{{ galaxy_config.galaxy.auth_config_file }}"
+  - src: templates/galaxy/config/dependency_resolvers_conf.xml.j2
+    dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
 
 galaxy_extra_dirs:
+  - "{{ galaxy_data_dir }}"
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_config_dir }}/plugins/activities"
 
@@ -344,7 +358,8 @@ nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/p
 
 #Install pip docker package for ansible
 pip_install_packages:
-  - name: docker
+  - docker
+  - python-ldap
 
 # RabbitMQ
 rabbitmq_hostname: "{{ inventory_hostname }}"

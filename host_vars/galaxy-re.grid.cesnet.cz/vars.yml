@@ -27,6 +27,10 @@ csnt_toolbox_auto_sort: false
 csnt_contact_email: regalaxy@rt.cesnet.cz
 csnt_watch_job_rules: 'polling' # used to be auto
 csnt_retry_job_output_collection: 5
+csnt_gunicorn_workers: 9
+csnt_handlers_processes: 4
+csnt_celery_memory_limit: 4
+csnt_celery_concurrency: 8
 
 enable_tiaas: false
 shed_tools_shadowing: false
@@ -45,6 +49,10 @@ galaxy_user:
   uid: "{{ galaxy_user_id }}"
   group: "{{ galaxy_user_group.name }}"
   shell: /bin/bash
+
+extra_certbot_domains:
+  - repeatexplorer-elixir.cerit-sc.cz
+  - galaxyelixir.vm.cesnet.cz
 
 galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
 #galaxy_commit_id: release_25.0
