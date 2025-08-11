@@ -90,3 +90,27 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/tool_sheds_conf.xml"
   - src: "files/{{ inventory_hostname }}/all_tools.yml"
     dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
+
+rabbitmq_vhosts:
+  - pulsar  # DEMON: used to be /pulsar and Pulsar config must be changed before (or right after) the change is deployed
+  - galaxy_internal
+
+tusd_instances:
+      - name: uploads
+        # user that tusd will run as
+        user: "{{ galaxy_user.name }}"
+        # group that tusd will run as
+        group: "{{ galaxy_user.group }}"
+        # args passed to tusd
+        args:
+          - -host=localhost
+          - "-port={{ galaxy_tusd_port }}"
+          - "-upload-dir={{ galaxy_tus_upload_store }}"
+          - "-hooks-http=https://{{ inventory_hostname }}{{ csnt_galaxy_url_prefix }}/api/upload/hooks"
+          - -hooks-http-forward-headers=X-Api-Key,Cookie
+          - -hooks-enabled-events pre-create
+
+flower_bind_interface: localhost
+flower_port: 5555
+flower_user: "{{ galaxy_user.name }}"
+flower_group: "{{ galaxy_user.group }}"
