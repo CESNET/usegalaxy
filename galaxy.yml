@@ -8,7 +8,8 @@
         name:
         - python3-pip
         - python-is-python3
-        update_cache: yes
+        # this is not needed often and can fail the run since the machines have many repos
+        # update_cache: yes
       when: ansible_os_family == 'Debian'
 
 - hosts: production
