@@ -3,7 +3,7 @@ rbd_mount_point: /rbd
 galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy-umsa_data"
 
 galaxy_commit_id: release_25.0
-# galaxy_build_client: false
+galaxy_build_client: false
 
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
