@@ -64,6 +64,10 @@ galaxy_job_config:
     local_runner:
       load: galaxy.jobs.runners.local:LocalJobRunner
       workers: 4
+    pulsar_tes_runner:
+      load: galaxy.jobs.runners.pulsar:PulsarTesJobRunner
+      amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
+      workers: 4
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       galaxy_url: "https://{{ rabbitmq_hostname }}"
@@ -77,11 +81,17 @@ galaxy_job_config:
   handling:
     assign: ['db-skip-locked']
   execution:
-    default: tpv_dispatcher
+    default: tesp_env
     environments:
       local_env:
         runner: local_runner
         tmp_dir: true
+      tesp_env:
+        runner: pulsar_tes_runner
+        tes_url: "http://147.251.245.185:8080"
+        singularity_enabled: true
+        pulsar_app_config:
+          message_queue_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       tpv_dispatcher:
         runner: dynamic
         type: python
@@ -155,7 +165,6 @@ galaxy_config:
     edam_panel_views: "{{ csnt_edam_panel_views }}"
     default_panel_view: "{{ csnt_default_panel_view }}"
     panel_views_dir: "{{ galaxy_config_dir }}/plugins/activities"
-    file_source_templates_config_file: "{{ galaxy_config_dir }}/file_source_templates.yml"
     # NFS workarounds
     retry_job_output_collection: 3
     # Debugging
@@ -259,8 +268,6 @@ galaxy_config_templates:
     dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
   - src: "templates/galaxy/config/vault_conf.yml.j2"
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
-  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
-    dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
 
 galaxy_extra_dirs:
   - "{{ tpv_config_dir }}"
