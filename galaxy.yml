@@ -230,13 +230,40 @@
     - name: Creates entry in crontab "chmod on _files for ngnix access"
       ansible.builtin.cron:
         name: "chmod on _files for ngnix access"
-        minute: "2"
-        hour: "*" # 2nd minute every hour
-        #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'
-        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -type d -mmin -180 -maxdepth 0 -exec chmod -R g+rw '{}' ';'"
+        minute: "/15"  # every 15 min of every hour
+        hour: "*"
+        #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'  DO NOT USE! VERY SLOW!
+        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }} -maxdepth 4 -wholename '*/dataset_*_files' -type d -mmin -120 -exec chmod -R g+rx '{}' ';'"
       become: yes
       become_user: "{{ galaxy_user_name }}"
       tags: cron
+
+    #DEMON: cleanup jobs from RE (maybe not needed)
+    - name: Creates entry in crontab "tmpreaper call in tus upload dir"
+      ansible.builtin.cron:
+        name: "tmpreaper in tus upload dir"
+        minute: "5"
+        hour: "*" 
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_tus_upload_store }} >> {{ galaxy_data_dir }}/cleaning_tus_upload_dir.log"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
+    - name: Creates entry in crontab "tmpreaper call in galaxy tmp dir"
+      ansible.builtin.cron:
+        name: "tmpreaper in galaxy temp dir"
+        minute: "7"
+        hour: "*" 
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_temp_dir }}/tmp >> {{ galaxy_data_dir }}/cleaning_galaxy_temp_dir.log"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
+#    - name: Creates entry in crontab "tmpreaper call in galaxy jobs dir"
+#      ansible.builtin.cron:
+#        name: "tmpreaper in galaxy jobs dir"
+#        minute: "9"
+#        hour: "*" 
+#        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_temp_dir }}/jobs >> {{ galaxy_data_dir }}/cleaning_galaxy_jobs_dir.log"
+#      become: yes
+#      become_user: "{{ galaxy_user_name }}"
+
 
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
@@ -244,7 +271,7 @@
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "0" # midnight daily
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
+        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60 >> {{ galaxy_data_dir }}/cleaning_gxadmin_cleanup.log"
       tags: cron
 
     - name: Create a file with key for CRON jobs
@@ -259,14 +286,14 @@
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
       no_log: true
 
-    - name: Copy user - group association script
+    - name: Copy user-group association script
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/extra_scripts/add_group_users.py"
         dest: "/var/lib/postgresql/add_group_users.py"
         owner: postgres
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
-    - name: Setup user - group association rutine
+    - name: Setup user-group association rutine
       ansible.builtin.cron:
         name: "Add E-infra users to E-infra group"
         user: postgres
@@ -322,12 +349,6 @@
         job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY=$(cat /home/{{ galaxy_user_name }}/.galaxy_api_key) {{ galaxy_root }}/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
       tags: cron
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
-
-    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
-      replace:
-        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
-        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
-        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
 
     - name: Add lines to logrotate config of ProFTPd
       lineinfile:
