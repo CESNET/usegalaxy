@@ -81,7 +81,7 @@ galaxy_job_config:
   handling:
     assign: ['db-skip-locked']
   execution:
-    default: tesp_env
+    default: tpv_dispatcher
     environments:
       local_env:
         runner: local_runner
