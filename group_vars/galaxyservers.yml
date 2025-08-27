@@ -86,12 +86,6 @@ galaxy_job_config:
       local_env:
         runner: local_runner
         tmp_dir: true
-      tesp_env:
-        runner: pulsar_tes_runner
-        tes_url: "http://147.251.245.185:8080"
-        singularity_enabled: true
-        pulsar_app_config:
-          message_queue_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       tpv_dispatcher:
         runner: dynamic
         type: python

@@ -135,6 +135,10 @@ roles:
       require:
         - pulsar
         - training
+  tesp_tester:
+    scheduling:
+      require:
+        - tes
 
 destinations:
   tpv_local:
@@ -259,10 +263,43 @@ destinations:
       require:
         - singularity
 
-users:
-  "Martin.Cech@cesnet.cz":
+  tesp_env:
+    runner: pulsar_tes_runner
+    max_accepted_cores: 128
+    max_accepted_mem: 512
+    max_accepted_gpus: 0
+    max_cores: 16
+    max_mem: 180
+    max_gpus: 0
+    params:
+      tes_url: "http://147.251.245.185:8080"
+      pulsar_app_config:
+        message_queue_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
+      dependency_resolution: remote
+      jobs_directory: "{{ pulsar_data_dir }}/files/staging"
+      persistence_directory: "/opt/pulsar/files/persistent"
+      remote_metadata: false
+      rewrite_parameters: true
+      outputs_to_working_directory: false
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {{ pulsar.pbs_queue }} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      singularity_enabled: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
+      singularity_run_extra_arguments: >-
+        --env JAVA_OPTS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
+        --env JAVA_TOOL_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
+    env:
+      LC_ALL: C
+      TMPDIR: $SCRATCHDIR
+      TMP: $SCRATCHDIR
+      TEMP: $SCRATCHDIR
+      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_TMPDIR: $SCRATCHDIR
+      XDG_CACHE_HOME: $SCRATCHDIR
+    container_resolvers:
+    -   type: explicit_singularity
+    -   cache_directory: /cvmfs/singularity.metacentrum.cz/RoseTTAFold2/
+        type: cached_mulled_singularity    
     scheduling:
       require:
         - tes
-    destinations:
-      - id: tesp_env
