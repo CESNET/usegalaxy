@@ -50,8 +50,10 @@ galaxy_user:
   group: "{{ galaxy_user_group.name }}"
   shell: /bin/bash
 
+galaxy_users_domain: repeatexplorer-elixir.cerit-sc.cz
+
 extra_certbot_domains:
-  - repeatexplorer-elixir.cerit-sc.cz
+  - "{{ galaxy_users_domain }}"
   - galaxyelixir.vm.cesnet.cz
 
 galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
@@ -114,3 +116,15 @@ flower_bind_interface: localhost
 flower_port: 5555
 flower_user: "{{ galaxy_user.name }}"
 flower_group: "{{ galaxy_user.group }}"
+
+# PROFTPD specific setup
+proftpd_galaxy_modules:
+  - mod_ldap.c
+
+proftpd_galaxy_default_options:
+  - AuthOrder: mod_auth_pam.c* mod_auth_unix.c
+  - Umask: '037 037'
+  - DefaultRoot: "{{ galaxy_ftp_upload_dir }}%u@{{ galaxy_users_domain }}"
+  - CreateHome: on 700 NoRootPrivs
+proftpd_tls_protocol: TLSv1.2
+proftpd_tls_options: EnableDiags NoSessionReuseRequired UseImplicitSSL

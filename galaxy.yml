@@ -99,6 +99,39 @@
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
+  post_tasks:
+    - name: Create pg_dump backup folder if needed
+      file:
+        path:  "{{ postgresql_backup_dir }}/pg_dump"
+        state: directory
+        owner: postgres
+        group: "{{ galaxy_user_group_name }}"
+        mode:  0750
+    - name: Create initial empty pg_dump file if needed # otherwise the following logrotate conf will not work
+      file:
+        path:  "{{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz"
+        state: touch
+        owner: postgres
+        group: "{{ galaxy_user_group_name }}"
+        mode:  0640
+    - name: Set-up Galaxy DB backup using pg_dump and logrotate
+      ansible.builtin.blockinfile:
+        path: "/etc/logrotate.d/{{ postgresql_pg_dump_prefix }}"
+        create: true
+        block: |
+          {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz {
+            daily
+            missingok
+            rotate 14
+            nocompress
+            nocreate
+            postrotate
+              sudo -u postgres pg_dump {{ galaxy_db_name }} --file={{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql --verbose 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: postgres gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && sudo -u postgres gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+            endscript
+          }
 
 - hosts: noletsencrypt
   become: true
@@ -217,6 +250,20 @@
       when: enable_telegraf | bool
 
   post_tasks:
+    - name: Check if ProFTPd LDAP config exists
+      stat:
+        path: "templates/{{ inventory_hostname }}/config/proftpd_ldap.conf.j2"
+      register: proftpd_ldap_config
+
+    - name: Configure ProFTPd LDAP option
+      template:
+        src: "templates/{{ inventory_hostname }}/config/proftpd_ldap.conf.j2"
+        dest: "{{ proftpd_config_include_dir }}/06_ldap.conf"
+        backup: yes
+      when: proftpd_ldap_config.stat.exists
+      notify:
+        - reload proftpd
+
     - name: Adds nginx's www-data user into galaxy user group
       ansible.builtin.user:
         name: www-data

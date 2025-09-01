@@ -98,7 +98,7 @@
             <search-base>dc=perun,dc=cesnet,dc=cz</search-base>
 
             <search-filter>(&amp;(objectclass=perunUser)(login;x-ns-einfra={username}))</search-filter>
-            <search-memberof-filter>perunGroupId=13865,perunVoId=3980,dc=perun,dc=cesnet,dc=cz</search-memberof-filter>
+            <search-memberof-filter>perunGroupId={{ ldap_perun_group_id }},perunVoId={{ ldap_perun_vo_id }},dc=perun,dc=cesnet,dc=cz</search-memberof-filter>
             <!-- If login-use-username is False -->
 <!--        <search-filter>(mail={email})</search-filter>
 -->
@@ -107,7 +107,7 @@
 
 <!--            <search-user>login;x-ns-einfra={username},ou=People,dc=perun,dc=cesnet,dc=cz</search-user>
             <search-password>{password}</search-password> -->
-            <search-user>perunUserId=51582,ou=People,dc=perun,dc=cesnet,dc=cz</search-user>
+            <search-user>perunUserId={{ ldap_perun_user_id }},ou=People,dc=perun,dc=cesnet,dc=cz</search-user>
             <search-password>{{ ldap_user_password }}</search-password>
 
             <!-- Replacement fields: instances of {email}, {username},
