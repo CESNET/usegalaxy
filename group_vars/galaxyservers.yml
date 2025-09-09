@@ -74,6 +74,10 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: _default_
+    pulsar_tes_runner:
+      load: galaxy.jobs.runners.pulsar:PulsarTesJobRunner
+      amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
+      workers: 4
   handling:
     assign: ['db-skip-locked']
   execution:
