@@ -118,13 +118,30 @@ flower_user: "{{ galaxy_user.name }}"
 flower_group: "{{ galaxy_user.group }}"
 
 # PROFTPD specific setup
+proftpd_galaxy_auth: no
+proftpd_create_ftp_upload_dir: yes
+galaxy_ftp_upload_dir: "{{ galaxy_config.galaxy.ftp_upload_dir }}"
+proftpd_display_connect: |
+  {{ galaxy_users_domain }} FTP server
+
+  Unauthorized access is prohibited
 proftpd_galaxy_modules:
   - mod_ldap.c
-
-proftpd_galaxy_default_options:
-  - AuthOrder: mod_auth_pam.c* mod_auth_unix.c
+  - mod_tls.c
+proftpd_global_options:
+  - AuthOrder: mod_ldap.c
+  - UseIPv6: off
   - Umask: '037 037'
-  - DefaultRoot: "{{ galaxy_ftp_upload_dir }}%u@{{ galaxy_users_domain }}"
+  - DefaultRoot: "{{ galaxy_ftp_upload_dir }}/%u@{{ galaxy_users_domain }}"
   - CreateHome: on 700 NoRootPrivs
-proftpd_tls_protocol: TLSv1.2
+  - RequireValidShell off
+  - PassivePorts: 56000 60000
+proftpd_options:
+  - User: "{{ galaxy_user_name }}"
+  - Group: "{{ galaxy_user_group_name }}"
+  - Port: 21
+proftpd_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
+proftpd_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+proftpd_tls_protocol: TLSv1.2 TLSv1.3
 proftpd_tls_options: EnableDiags NoSessionReuseRequired UseImplicitSSL
+proftpd_use_mod_tls_shmcache: false

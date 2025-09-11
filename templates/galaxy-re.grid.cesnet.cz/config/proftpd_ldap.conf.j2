@@ -9,6 +9,7 @@
 #
 # This is used for encrypted LDAPS connections
 #
+LDAPLog /var/log/proftpd/ldap.log
 LDAPServer ldaps://perun.metacentrum.cz/??sub
 LDAPBindDN "perunUserId={{ ldap_perun_user_id }},ou=People,dc=perun,dc=cesnet,dc=cz" "{{ ldap_user_password }}"
 LDAPUsers "dc=perun,dc=cesnet,dc=cz" "(&(login=%v)(objectclass=perunUser)(memberof=perunGroupId={{ ldap_perun_group_id }},perunVoId={{ ldap_perun_vo_id }},dc=perun,dc=cesnet,dc=cz))"

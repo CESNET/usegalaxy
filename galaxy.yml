@@ -250,19 +250,26 @@
       when: enable_telegraf | bool
 
   post_tasks:
-    - name: Check if ProFTPd LDAP config exists
-      stat:
-        path: "templates/{{ inventory_hostname }}/config/proftpd_ldap.conf.j2"
-      register: proftpd_ldap_config
-
     - name: Configure ProFTPd LDAP option
       template:
-        src: "templates/{{ inventory_hostname }}/config/proftpd_ldap.conf.j2"
+        src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/proftpd_ldap.conf.j2', 'templates/galaxy/config/proftpd_ldap.conf.j2']) }}"
         dest: "{{ proftpd_config_include_dir }}/06_ldap.conf"
         backup: yes
-      when: proftpd_ldap_config.stat.exists
       notify:
-        - reload proftpd
+      - reload proftpd
+
+    - name: Uncomment LoadModule directives in ProFTPd in case we are not using Galaxy SQL DB for auth
+      lineinfile:
+        name: "{{ proftpd_modules_config_file }}"
+        regexp: '^#\s*(LoadModule\s+{{ item }}.*)$'
+        backrefs: yes
+        line: '\1 # uncommented by Ansible'
+        backup: yes
+      with_items: "{{ proftpd_galaxy_modules }}"
+      when: not proftpd_galaxy_auth is defined or not proftpd_galaxy_auth
+      notify:
+      - reload proftpd
+  
 
     - name: Adds nginx's www-data user into galaxy user group
       ansible.builtin.user:
