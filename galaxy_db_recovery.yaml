@@ -30,7 +30,7 @@
       become_user: postgres
   post_tasks:
 # recover from WAL based on https://training.galaxyproject.org/training-material/topics/admin/tutorials/backup-cleanup/tutorial.html#restoration
-    ## Part responsible for recovering Galaxy DB from backup if exists (it should be in post_tasks of dbservers but RDB (or NDB) access needs to be set up first)
+    ## Part responsible for recovering Galaxy DB from backup if exists (it should be in post_tasks of dbservers but RBD (or NBD) access needs to be set up first)
     - name: Register if galaxy exists
       ansible.builtin.shell:
         cmd: galaxyctl status
