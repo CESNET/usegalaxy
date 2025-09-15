@@ -60,8 +60,9 @@ rabbitmq_users_password:
   mqadmin: a-really-long-password-here
   pulsar: a-really-long-DIFFERENT-password-here
 vault_rabbitmq_password_galaxy: good-password-here
-oidc_client_id: string-with-client-id
-oidc_client_secret: string-with-client-secret
+einfracz_client_id: string-with-client-id
+einfracz_client_secret: string-with-client-secret
+
 # Galaxy admin API key for tool installation
 api_key: dont-be-lazy-a-really-long-password-here
 # see https://github.com/galaxyproject/galaxy/blob/dev/doc/source/admin/special_topics/vault.md
@@ -90,6 +91,31 @@ and external repository that contains the lists of tools for every instance: htt
 ## deployment troubleshooting
 
 Following are troubleshooting notes gathered through the learning process.
+
+
+### client build OOM
+
+- stop app before building
+- do not build maps (`make client-production` only)
+- set reasonable heap (e.g. `NODE_OPTIONS: --max_old_space_size=4096`)
+- disable webpack parallel minimizer
+
+```diff
+diff --git a/client/webpack.config.js b/client/webpack.config.js
+index 8202237857..99f86ec25d 100644
+--- a/client/webpack.config.js
++++ b/client/webpack.config.js
+@@ -43,7 +43,7 @@ module.exports = (env = {}, argv = {}) => {
+     if (targetEnv == "production") {
+         minimizations = {
+             minimize: true,
+-            minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
++            minimizer: [new TerserPlugin({parallel: false,}), new CssMinimizerPlugin()],
+         };
+     } else {
+         minimizations = {
+```
+
 
 ### glibc
 

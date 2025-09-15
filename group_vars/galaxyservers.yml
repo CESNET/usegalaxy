@@ -25,11 +25,13 @@ csnt_galaxy_tmpclean_dirs:
   - "{{ galaxy_config.galaxy.job_working_directory }}"
   - "{{ galaxy_config.galaxy.new_file_path }}"
   - "{{ galaxy_tus_upload_store if galaxy_config.gravity.tusd.enable else ' ' }}"
+csnt_require_login: true
 
 admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
 enable_tiaas: true
+shed_tools_shadowing: false
 
 # Galaxy
 galaxy_manage_systemd: no
@@ -86,7 +88,7 @@ galaxy_job_config:
         function: map_tool_to_destination
         rules_module: tpv.rules
         tpv_config_files:
-          - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
+          - https://gxy.io/tpv/db-v2.yml
           - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
           - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   resources:
@@ -121,7 +123,7 @@ galaxy_config:
     smtp_server: "rs.cesnet.cz:25"
     error_email_to: "{{  csnt_contact_email  }}"
     allow_user_creation: false
-    require_login: true
+    require_login: "{{ csnt_require_login }}"
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
     file_path: "{{ galaxy_mutable_data_dir }}/datasets"
     short_term_storage_dir: "{{ csnt_short_term_storage_dir }}"
@@ -153,6 +155,7 @@ galaxy_config:
     edam_panel_views: "{{ csnt_edam_panel_views }}"
     default_panel_view: "{{ csnt_default_panel_view }}"
     panel_views_dir: "{{ galaxy_config_dir }}/plugins/activities"
+    file_source_templates_config_file: "{{ galaxy_config_dir }}/file_source_templates.yml"
     # NFS workarounds
     retry_job_output_collection: 3
     # Debugging
@@ -175,9 +178,6 @@ galaxy_config:
         type: cached_mulled_singularity
     -   auto_install: true
         type: mulled_singularity
-    -   auto_install: false
-        type: build_mulled_singularity
-        cache_directory: "{{ galaxy_mutable_data_dir }}/singularity/mulled"
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
@@ -237,8 +237,8 @@ galaxy_config:
 galaxy_config_files_public:
   - src: templates/{{ inventory_hostname }}/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
-  - src: files/galaxy/static/usegalaxy-cz.png
-    dest: "{{ galaxy_server_dir }}/static/usegalaxy-cz.png"
+  - src: files/galaxy/static/usegalaxycz_straight.svg
+    dest: "{{ galaxy_server_dir }}/static/usegalaxycz_straight.svg"
   - src: files/galaxy/static/elixir_logo.png
     dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
   - src: files/galaxy/static/eu_msmt_eosc.svg
@@ -259,6 +259,8 @@ galaxy_config_templates:
     dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
   - src: "templates/galaxy/config/vault_conf.yml.j2"
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
+    dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
 
 galaxy_extra_dirs:
   - "{{ tpv_config_dir }}"

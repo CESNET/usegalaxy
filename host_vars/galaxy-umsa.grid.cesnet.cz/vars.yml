@@ -2,8 +2,8 @@
 rbd_mount_point: /rbd
 galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy-umsa_data"
 
-galaxy_commit_id: release_24.2
-# galaxy_build_client: false
+galaxy_commit_id: release_25.0
+galaxy_build_client: false
 
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
@@ -17,6 +17,7 @@ csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
 csnt_allow_path_paste: true
 enable_tiaas: false
+shed_tools_shadowing: true
 
 galaxy_user_name: galaxyumsa
 galaxy_user_group_name: galaxyumsa
