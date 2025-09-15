@@ -173,11 +173,19 @@ galaxy_config:
     - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
     container_resolvers:
-    -   type: explicit_singularity
-    -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-        type: cached_mulled_singularity
-    -   auto_install: true
-        type: mulled_singularity
+      - type: explicit_singularity
+      - type: cached_mulled_singularity
+        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+        cache_directory_cacher_type: dir_mtime
+    # dependency_resolvers:
+    #   - type: conda
+    #   - type: tool_shed_packages
+    #   - type: galaxy_packages
+    #   - type: galaxy_packages
+    #     versionless: true
+    #   - type: conda
+    #     versionless: true
+
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
