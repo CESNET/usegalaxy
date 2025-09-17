@@ -11,7 +11,7 @@ csnt_enable_notification_system: false
 csnt_enable_oidc: true
 csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
 csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
-csnt_auth_config_file: ''
+csnt_auth_config_file: "{{ galaxy_config_dir }}/auth_conf.xml"
 csnt_enable_reports: false
 csnt_edam_panel_views: ""
 csnt_default_panel_view: default
@@ -59,6 +59,7 @@ galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
 galaxy_commit_id: release_24.2
 galaxy_force_checkout: true
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
+galaxy_data_dir: "{{ galaxy_mutable_data_dir }}"
 
 # Miniconda
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
@@ -125,8 +126,8 @@ galaxy_config:
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     auth_config_file: "{{ csnt_auth_config_file }}"
     enable_oidc: "{{ csnt_enable_oidc }}"
-    oidc_config_file: "{{ csnt_oidc_config_file if enable_oidc else '' }}"
-    oidc_backends_config_file: "{{ csnt_oidc_backends_config_file if enable_oidc else '' }}"
+    oidc_config_file: "{{ csnt_oidc_config_file if csnt_enable_oidc else '' }}"
+    oidc_backends_config_file: "{{ csnt_oidc_backends_config_file if csnt_enable_oidc else '' }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users: "{{ vault_admin_users }}"
@@ -177,13 +178,14 @@ galaxy_config:
     outputs_to_working_directory: true
     new_user_dataset_access_role_default_private: true # Make datasets private by default
     # TUS
-    galaxy_infrastructure_url: "https://{{ inventory_hostname }}{{ galaxy_infrastructure_url }}"
+    galaxy_infrastructure_url: "https://{{ inventory_hostname }}{{ csnt_galaxy_url_prefix }}"
     tus_upload_store: "{{ galaxy_tus_upload_store }}"
     # CVMFS
     tool_data_table_config_path:
     - /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml
     - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
+    dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
     container_resolvers:
     -   type: explicit_singularity
 #    -   cache_directory: /mnt/galaxy-re/singularity     # DEMON: this was used on RE but the directory doesn't seem to be used
@@ -289,6 +291,7 @@ galaxy_extra_dirs:
   - "{{ galaxy_data_dir }}"
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_config_dir }}/plugins/activities"
+  - "{{ galaxy_server_dir }}/static/images/umbr_programs_icons"
 
 galaxy_extra_privsep_dirs:
   - "{{ tpv_mutable_dir }}"
