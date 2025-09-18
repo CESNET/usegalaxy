@@ -92,6 +92,31 @@ and external repository that contains the lists of tools for every instance: htt
 
 Following are troubleshooting notes gathered through the learning process.
 
+
+### client build OOM
+
+- stop app before building
+- do not build maps (`make client-production` only)
+- set reasonable heap (e.g. `NODE_OPTIONS: --max_old_space_size=4096`)
+- disable webpack parallel minimizer
+
+```diff
+diff --git a/client/webpack.config.js b/client/webpack.config.js
+index 8202237857..99f86ec25d 100644
+--- a/client/webpack.config.js
++++ b/client/webpack.config.js
+@@ -43,7 +43,7 @@ module.exports = (env = {}, argv = {}) => {
+     if (targetEnv == "production") {
+         minimizations = {
+             minimize: true,
+-            minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
++            minimizer: [new TerserPlugin({parallel: false,}), new CssMinimizerPlugin()],
+         };
+     } else {
+         minimizations = {
+```
+
+
 ### glibc
 
 On ubuntu < 22.04 and Debian < 12 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therefore playbook ends in error.

@@ -9,6 +9,7 @@ csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
 shed_tools_shadowing: true
 csnt_require_login: true
+csnt_registered_user_jobs_limit: 1000
 
 pulsar:
   user_name: galaxy-qa1

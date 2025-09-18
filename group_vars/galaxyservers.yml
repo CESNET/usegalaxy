@@ -99,7 +99,7 @@ galaxy_job_config:
         function: map_tool_to_destination
         rules_module: tpv.rules
         tpv_config_files:
-          - https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml
+          - https://gxy.io/tpv/db-v2.yml
           - "{{ tpv_config_dir }}/tpv_rules_meta.yml"
           - "{{ tpv_config_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   resources:
@@ -169,6 +169,7 @@ galaxy_config:
     edam_panel_views: "{{ csnt_edam_panel_views }}"
     default_panel_view: "{{ csnt_default_panel_view }}"
     panel_views_dir: "{{ galaxy_config_dir }}/plugins/activities"
+    file_source_templates_config_file: "{{ galaxy_config_dir }}/file_source_templates.yml"
     # NFS workarounds
     retry_job_output_collection: "{{ csnt_retry_job_output_collection }}"
     # Debugging
@@ -187,12 +188,19 @@ galaxy_config:
     # Tool Dependencies
     dependency_resolvers_config_file: "{{ galaxy_config_dir }}/dependency_resolvers_conf.xml"
     container_resolvers:
-    -   type: explicit_singularity
-#    -   cache_directory: /mnt/galaxy-re/singularity     # DEMON: this was used on RE but the directory doesn't seem to be used
-    -   cache_directory: /cvmfs/singularity.galaxyproject.org/all/
-        type: cached_mulled_singularity
-    -   auto_install: true
-        type: mulled_singularity
+      - type: explicit_singularity
+      - type: cached_mulled_singularity
+        cache_directory: /cvmfs/singularity.galaxyproject.org/all/
+        cache_directory_cacher_type: dir_mtime
+    # dependency_resolvers:
+    #   - type: conda
+    #   - type: tool_shed_packages
+    #   - type: galaxy_packages
+    #   - type: galaxy_packages
+    #     versionless: true
+    #   - type: conda
+    #     versionless: true
+
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
@@ -286,6 +294,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.auth_config_file }}"
   - src: templates/galaxy/config/dependency_resolvers_conf.xml.j2
     dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
+    dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
 
 galaxy_extra_dirs:
   - "{{ galaxy_data_dir }}"

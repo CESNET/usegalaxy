@@ -8,7 +8,8 @@
         name:
         - python3-pip
         - python-is-python3
-        update_cache: yes
+        # this is not needed often and can fail the run since the machines have many repos
+        # update_cache: yes
       when: ansible_os_family == 'Debian'
 
 - hosts: production
@@ -210,13 +211,11 @@
         repo: 'https://github.com/usegalaxy-eu/libraries-training-repo'
         dest: /libraries/
 
-    # disabled for now because for release 25.0 this does not help anymore
-
-    # - name: stop galaxy to free mem for client build
-    #   become: true
-    #   become_user: root
-    #   ansible.builtin.command: galaxyctl stop
-    #   when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+    - name: stop galaxy to free mem for client build
+      become: true
+      become_user: root
+      ansible.builtin.command: galaxyctl stop
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
 
     # this needs to be in the correct spot, not here, either via fork or enabling this configuration upstream
 
@@ -281,6 +280,13 @@
         state: restarted
         name: nginx
 
+    # not detected automatically due to a bug: https://github.com/galaxyproject/galaxy/issues/20483
+    - name: Install conditional dependencies
+      pip:
+        name: fs.onedatarestfs==21.2.5.2
+        virtualenv: "{{ galaxy_venv_dir }}"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz','usegalaxy.cz']"
+
     - name: Creates entry in crontab "chmod on _files for ngnix access"
       ansible.builtin.cron:
         name: "chmod on _files for ngnix access"
@@ -340,11 +346,22 @@
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
       no_log: true
 
+    # set up cron to propagate einfra users to einfra galaxy group
+    - name: Ensure the user_group directory exists
+      ansible.builtin.file:
+        path: "{{ galaxy_root }}/cron/user_group"
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: '0755'
+      when: "'usegalaxy.cz' in inventory_hostname"
+      tags: cron
     - name: Copy user-group association script
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/extra_scripts/add_group_users.py"
-        dest: "/var/lib/postgresql/add_group_users.py"
+        dest: "{{ galaxy_root }}/cron/user_group/add_group_users.py"
         owner: postgres
+        group: postgres
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
     - name: Setup user-group association rutine
@@ -353,14 +370,24 @@
         user: postgres
         minute: "0"
         hour: "*" # every hour
-        job: "python3 /var/lib/postgresql/add_group_users.py {{ inventory_hostname }} $(cat /home/{{ galaxy_user_name }}/.galaxy_api_key)"
+        job: "python3 {{ galaxy_root }}/cron/user_group/add_group_users.py {{ inventory_hostname }} $(cat /home/{{ galaxy_user_name }}/.galaxy_api_key)"
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
 
+    # set up cron to shadow some shed_tools contents to minimize space consumption
+    - name: Ensure the shadow cron script directory exists
+      ansible.builtin.file:
+        path: "{{ galaxy_root }}/cron/shadow"
+        state: directory
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0755'
+      when: "shed_tools_shadowing"
+      tags: cron
     - name: Copy shed_tools shadowing script
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/extra_scripts/shed_tools_shadow_script.sh"
-        dest: "{{ galaxy_root }}/scripts/shed_tools_shadow_script.sh"
+        dest: "{{ galaxy_root }}/cron/shadow/shed_tools_shadow_script.sh"
         owner: "{{ galaxy_user_name }}"
         group: "{{ galaxy_user_group_name }}"
         mode: '0755'
@@ -372,10 +399,11 @@
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "2" # 2 am daily
-        job: "{{ galaxy_root }}/scripts/shed_tools_shadow_script.sh {{ galaxy_root }}/var {{ galaxy_mutable_data_dir }} 2>&1 | logger -t shed_tools_shadowing"
+        job: "{{ galaxy_root }}/cron/shadow/shed_tools_shadow_script.sh {{ galaxy_root }}/var {{ galaxy_mutable_data_dir }} 2>&1 | logger -t shed_tools_shadowing"
       when: "shed_tools_shadowing"
       tags: cron
 
+    # set up cron to automate tool installation from https://github.com/CESNET/galaxy_tools repository
     - name: Ensure the tools cron script directory exists
       ansible.builtin.file:
         path: "{{ galaxy_root }}/cron/tools"
@@ -411,6 +439,7 @@
         insertbefore: BOF
       with_items:
         - /var/log/proftpd/tls.log
+        - /var/log/proftpd/ldap.log
         - /var/log/proftpd/sql.log
 
     - name: Add pulsar public ssh key
@@ -418,6 +447,7 @@
         user: "{{ galaxy_user_name }}"
         state: present
         key: "{{ lookup('file','files/{{ inventory_hostname }}/pulsar.pub') }}"
+
     - name: Restart galaxy
       become: true
       become_user: root
