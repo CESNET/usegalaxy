@@ -36,3 +36,4 @@ postgresql_objects_privileges:
 #
 # PostgreSQL Backups
 postgresql_backup_dir: "{{ galaxy_mutable_data_dir }}/backups"
+postgresql_pg_dump_prefix: galaxy_db_backup
