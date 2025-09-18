@@ -4,6 +4,13 @@
 # (This is not to be used if you prefer a PAM-based LDAP authentication)
 #
 
+##DEMON: I put it here, because it should be somewhere if proftpd_galaxy_auth is not defined (i.e., used)
+# Deny use of commands that allow modifying modification times and retrieving files
+<Limit SITE_CHMOD SITE_UTIME RETR MDTM MFMT MFCT MFF>
+    DenyAll
+</Limit>
+
+
 # Enable LDAP module
 LoadModule mod_ldap.c
 

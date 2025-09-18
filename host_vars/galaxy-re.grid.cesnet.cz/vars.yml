@@ -3,7 +3,6 @@ rbd_mount_point: /data
 galaxy_data_dir: "/mnt/galaxy-re"
 #galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy"
 galaxy_mutable_data_dir: "{{ galaxy_data_dir }}"
-#galaxy_temp_dir: "{{ galaxy_data_dir }}"
 csnt_galaxy_url_prefix: "/galaxy"
 
 csnt_brand: RepeatExplorer
@@ -129,19 +128,22 @@ proftpd_galaxy_modules:
   - mod_ldap.c
   - mod_tls.c
 proftpd_global_options:
-  - AuthOrder: mod_ldap.c
-  - UseIPv6: off
-  - Umask: '037 037'
-  - DefaultRoot: "{{ galaxy_ftp_upload_dir }}/%u@{{ galaxy_users_domain }}"
-  - CreateHome: on 700 NoRootPrivs
-  - RequireValidShell off
-  - PassivePorts: 56000 60000
+  - AllowOverwrite: 'on'
+  - AllowStoreRestart: 'on'
+  - PassivePorts: '56000 60000'
 proftpd_options:
+  - AuthOrder: mod_ldap.c
+  - UseIPv6: 'off'
+  - RequireValidShell: 'off'
   - User: "{{ galaxy_user_name }}"
   - Group: "{{ galaxy_user_group_name }}"
-  - Port: 21
+  - Port: '990'
+  - Umask: '037 037'
+  - DefaultRoot: "{{ galaxy_ftp_upload_dir }}/%u@{{ galaxy_users_domain }}"
+  - CreateHome: 'on 700 NoRootPrivs'
 proftpd_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
 proftpd_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+proftpd_conf_ssl_certificate_type: 'EC'
 proftpd_tls_protocol: TLSv1.2 TLSv1.3
 proftpd_tls_options: EnableDiags NoSessionReuseRequired UseImplicitSSL
 proftpd_use_mod_tls_shmcache: false
