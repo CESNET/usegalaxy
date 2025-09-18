@@ -257,19 +257,6 @@
       notify:
       - reload proftpd
 
-    - name: Uncomment LoadModule directives in ProFTPd in case we are not using Galaxy SQL DB for auth
-      lineinfile:
-        name: "{{ proftpd_modules_config_file }}"
-        regexp: '^#\s*(LoadModule\s+{{ item }}.*)$'
-        backrefs: yes
-        line: '\1 # uncommented by Ansible'
-        backup: yes
-      with_items: "{{ proftpd_galaxy_modules }}"
-      when: not proftpd_galaxy_auth is defined or not proftpd_galaxy_auth
-      notify:
-      - reload proftpd
-  
-
     - name: Adds nginx's www-data user into galaxy user group
       ansible.builtin.user:
         name: www-data
@@ -287,17 +274,6 @@
         virtualenv: "{{ galaxy_venv_dir }}"
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz','usegalaxy.cz']"
 
-    - name: Creates entry in crontab "chmod on _files for ngnix access"
-      ansible.builtin.cron:
-        name: "chmod on _files for ngnix access"
-        minute: "/15"  # every 15 min of every hour
-        hour: "*"
-        #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'  DO NOT USE! VERY SLOW!
-        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }} -maxdepth 4 -wholename '*/dataset_*_files' -type d -mmin -120 -exec chmod -R g+rx '{}' ';'"
-      become: yes
-      become_user: "{{ galaxy_user_name }}"
-      tags: cron
-
     #DEMON: cleanup jobs from RE (maybe not needed)
     - name: Creates entry in crontab "tmpreaper call in tus upload dir"
       ansible.builtin.cron:
@@ -312,7 +288,7 @@
         name: "tmpreaper in galaxy temp dir"
         minute: "7"
         hour: "*" 
-        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_temp_dir }}/tmp >> {{ galaxy_data_dir }}/cleaning_galaxy_temp_dir.log"
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_data_dir }}/tmp >> {{ galaxy_data_dir }}/cleaning_galaxy_temp_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
 #    - name: Creates entry in crontab "tmpreaper call in galaxy jobs dir"
@@ -320,7 +296,7 @@
 #        name: "tmpreaper in galaxy jobs dir"
 #        minute: "9"
 #        hour: "*" 
-#        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_temp_dir }}/jobs >> {{ galaxy_data_dir }}/cleaning_galaxy_jobs_dir.log"
+#        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_data_dir }}/jobs >> {{ galaxy_data_dir }}/cleaning_galaxy_jobs_dir.log"
 #      become: yes
 #      become_user: "{{ galaxy_user_name }}"
 
