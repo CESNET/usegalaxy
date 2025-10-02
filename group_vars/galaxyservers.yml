@@ -2,7 +2,7 @@
 # defaults for host-specific vars
 csnt_brand: ""
 csnt_contact_email: "galaxy@cesnet.cz"
-csnt_galaxy_url_prefix: "/"
+csnt_galaxy_url_prefix: ''
 csnt_short_term_storage_dir: short_term_web_storage
 csnt_enable_account_interface: true
 csnt_log_level: WARNING
