@@ -3,16 +3,21 @@ global:
 
 tools:
   default:
+    abstract: True
     cores: 1
-    mem: cores * 4
+    mem: "{int(cores) * 4}"
     env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+    - name: LC_ALL
+      value: C
     - name: GALAXY_SLOTS
-      value: "{cores}"
+      value: "{int(cores)}"
     - name:  GALAXY_MEMORY_MB
       value: "{int(mem)*1000}"
     context:
       walltime: 24
       scratch: 50
+      queue: "{{ pulsar.pbs_queue }}"
     scheduling:
       require:
         - pulsar
@@ -45,6 +50,7 @@ tools:
       walltime: 24
       scratch: 25
       gpu_mem: 16
+      queue: "{{ pulsar.pbs_gpu_queue }}"
     scheduling:
       require:
         - rosettafold
@@ -85,6 +91,7 @@ tools:
       walltime: 24
       scratch: 100
       gpu_mem: 16
+      queue: "{{ pulsar.pbs_gpu_queue }}"
     env:
       MPLCONFIGDIR: "$SCRATCHDIR"
       ALPHAFOLD_DB: "/scratch.ssd/galaxyeu/permanent/alphafold.db"
@@ -102,12 +109,20 @@ tools:
     context:
       walltime: 48
 
-  toolshed.g2.bx.psu.edu/repos/iuc/megahit/megahit/.*:
+  .*/megahit/.*:
     cores: 16
     mem: 256
     context:
       walltime: 96
       scratch: 100
+      queue: elixircz
+    scheduling:
+      require:
+        - highmem
+
+  .*/fastq_groomer/.*:
+    cores: 1
+    mem: 16
 
   __DATA_FETCH__:
     inherits: local_running_tools
@@ -155,11 +170,25 @@ tools:
 roles:
   training.*:
     max_cores: 4
-    max_mem: max_cores * 4  # TODO check multiplier
+    max_mem: "int(max_cores * 3.8)"
     scheduling:
       require:
-        - pulsar
         - training
+
+  # DEMON: For testing purposes, set whatever you want here when needed
+  test.*:
+    scheduling:
+      require:
+        - test
+
+  highmem:
+    mem: 512
+    context:
+      queue: elixircz
+    scheduling
+      require:
+        - highmem
+    
 
 destinations:
   tpv_local:
@@ -182,8 +211,6 @@ destinations:
       singularity_enabled: true
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:
-      # Ensuring a consistent collation environment is good for reproducibility.
-      LC_ALL: C
       # The cache directory holds the docker containers that get converted
       SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
       # Singularity uses a temporary directory to build the squashfs filesystem
@@ -193,13 +220,21 @@ destinations:
       - local
       prefer:
       - singularity
-  tpv_pulsar:
+  # DEMON: this is the common pulsar configuration
+  tpv_pulsar_common:
+    abstract: true
     runner: pulsar_tpv_runner
-    max_accepted_cores: 128
-    max_accepted_mem: 512
+    # DEMON: sum of cores in one VM (i.e., elmo5-*)
+    max_accepted_cores: 32
+    # DEMON: sum of memory in one VM (i.e., elmo5-*)
+    max_accepted_mem: 185
+    # DEMON: sum of GPUs in one VM (i.e., elmo5-*)
     max_accepted_gpus: 0
-    max_cores: 16
+    # DEMON: max number of cores one job will get
+    max_cores: 32
+    # DEMON: max memory one job will get
     max_mem: 180
+    # DEMON: max number of gpus one job will get
     max_gpus: 0
     params:
       default_file_action: remote_rsync_transfer
@@ -215,7 +250,27 @@ destinations:
       ssh_key: |
         {{ pulsar_ssh_key | indent(width=8,first=False) }}
       outputs_to_working_directory: false
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {{ pulsar.pbs_queue }} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      TMPDIR: $SCRATCHDIR
+      TMP: $SCRATCHDIR
+      TEMP: $SCRATCHDIR
+    scheduling:
+      require:
+        - pulsar  
+  # DEMON: this one uses conda dependences (no singularity)
+  tpv_pulsar_conda:
+    inherits: tpv_pulsar_common
+    scheduling:
+      require:
+        - conda
+      reject:
+        - singularity
+  # DEMON: this one uses singularity exclusively (consider it as a default configuration)
+  tpv_pulsar:
+    inherits: tpv_pulsar_common
+    runner: pulsar_tpv_runner
+    params:
       singularity_enabled: true
       singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
@@ -223,16 +278,13 @@ destinations:
         --env JAVA_OPTS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
         --env JAVA_TOOL_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
     env:
-      LC_ALL: C
-      TMPDIR: $SCRATCHDIR
-      TMP: $SCRATCHDIR
-      TEMP: $SCRATCHDIR
       SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
       SINGULARITY_TMPDIR: $SCRATCHDIR
       XDG_CACHE_HOME: $SCRATCHDIR
     scheduling:
-      require:
-      - pulsar
+      prefer:
+        - singularity
+  # DEMON: Some JAVA tools just ignore the traditional way of limiting the allowed memory
   tpv_pulsar_nasty_java:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner
@@ -241,31 +293,49 @@ destinations:
     scheduling:
       require:
         - nasty-java
+  # DEMON: Pulsar for AlphaFold because of special configuration
   tpv_pulsar_alphafold:
     inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
     max_accepted_gpus: 1
     max_gpus: 1
-    runner: pulsar_tpv_runner
     params:
-      singularity_run_extra_arguments: '--nv'
+      singularity_run_extra_arguments: '--nv --env SCRATCHDIR="$SCRATCHDIR" --env SCRATCH=$SCRATCHDIR'
       singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q {{ pulsar.pbs_gpu_queue }} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q {queue} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
     scheduling:
       require:
         - alphafold
+  # DEMON: Pulsar for TIAAS. It could schedule to a private small queue to ensure the participants of some course will not have to wait
   tpv_pulsar_training:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner
     scheduling:
       require:
         - training
-# usegalaxy.cz specific:
+  # DEMON: For tools/users that need more memory for their jobs. Current approach is to add the user to highmem role for some time. Better approach would be to implement rescheduling for PBS over Pulsar runner
+  tpv_pulsar_highmem:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    max_accepted_mem: 512
+    max_mem: 512
+    scheduling:
+      require:
+        - highmem
+  # DEMON: For testing purposes, set whatever you want here when needed
+  tpv_pulsar_test:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    scheduling:
+      require:
+        - test
+# DEMON: usegalaxy.cz specific destinations (unfortunately, because of inheritance they cannot be in placed in instance-specific TPV config file)
   tpv_pulsar_rosettafold:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner
     params:
       singularity_enabled: false
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q galaxy_gpu@pbs-m1.metacentrum.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q {queue} -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
     scheduling:
       require:
         - rosettafold

@@ -1,32 +1,13 @@
-global:
-  default_inherits: default
-
 tools:
-  default:
-    abstract: true
+  # DEMON: All Novak's tools (except 2) are not properly containerized, therefore, they need conda to deal with dependences
+  .*/petr-novak/.*:
     cores: 2
     mem: 10
-    env:
-      # Ensuring a consistent collation environment is good for reproducibility.
-      LC_ALL: C
-      GALAXY_SLOTS: "{cores}"
-      GALAXY_MEMORY_MB: "{int(mem)*1000}"
     context:
       scratch: 15
-      walltime: 24
     scheduling:
       require:
-      - pulsar
-      reject:
-      - offline
-
-  # Tools for testing and playing
-  testing.*:
-    cores: 1
-    mem: 1
-    context:
-      scratch: 1
-      walltime: 1
+        - conda
 
   # DANTE_TIR toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/.*:
@@ -35,43 +16,27 @@ tools:
 
   # DANTE toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter/.*:
-    cores: 2
     mem: 25
-    context:
-      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_to_tabular/.*:
-    cores: 2
     mem: 25
-    context:
-      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_summary/.*:
-    cores: 2
     mem: 25
-    context:
-      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_extract/.*:
-    cores: 2
     mem: 25
-    context:
-      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/dante/.*:
     cores: 32
     mem: 25
     context:
-      scratch: 15
       walltime: 336
 
   # TideCluster tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster
   toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster_annotation/.*:
     cores: 16
     mem: 24
-    context:
-      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tc_reannotate/.*:
     cores: 32
     mem: 50
     context:
-      scratch: 15
       walltime: 96
   toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster/.*:
     cores: 16
@@ -81,26 +46,26 @@ tools:
       walltime: 336
 
   # repeat_annotation_pipeline tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3
-  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/extract_re_contigs/.*:
-    cores: 2
-    mem: 10
-    context:
-      scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/compare_gff/.*:
-    cores: 2
-    mem: 10
-    context:
-      scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/summarize_gff_by_attribute/.*:
-    cores: 2
-    mem: 10
-    context:
-      scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/annotate_contigs/.*:
-    cores: 2
-    mem: 10
-    context:
-      scratch: 15
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/extract_re_contigs/.*:
+#    cores: 2
+#    mem: 10
+#    context:
+#      scratch: 15
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/compare_gff/.*:
+#    cores: 2
+#    mem: 10
+#    context:
+#      scratch: 15
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/summarize_gff_by_attribute/.*:
+#    cores: 2
+#    mem: 10
+#    context:
+#      scratch: 15
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/annotate_contigs/.*:
+#    cores: 2
+#    mem: 10
+#    context:
+#      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/repeat_annotate/.*:
     cores: 32
     mem: 50
@@ -122,70 +87,45 @@ tools:
       scratch: 50
       walltime: 48
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/rename_sequences/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/pairScan/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
       walltime: 48
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/single_fastq_filtering/.*:
     cores: 6
-    mem: 10
     context:
       scratch: 50
       walltime: 24
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/fasta_affixer/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
-  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/sampler/.*:
-    cores: 2
-    mem: 10
-    context:
-      scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/plot_comparative/.*:
-    cores: 2
-    mem: 10
-    context:
-      scratch: 15
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/sampler/.*:
+#    context:
+#      scratch: 15
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/plot_comparative/.*:
+#    context:
+#      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/extract_var_files_from_re/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/summarize_annotation/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/names_affixer/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/cluster_table2krona_format/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/fasta_input/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/fasta_interlacer/.*:
-    cores: 2
-    mem: 10
     context:
       scratch: 50
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/paired_fastq_filtering/.*:
-#    cores: 6 #DEMON: old setting but seems pointless
-    cores: 2
 #    mem: 10 #DEMON: old setting but there was job which used 78GB; the best would be to scale to input size
     mem: 50
     context:
@@ -194,11 +134,11 @@ tools:
       walltime: 48
 
   # DANTE_ltr tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
-    cores: 2
-    mem: 10
-    context:
-      scratch: 15
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
+#    cores: 2
+#    mem: 10
+#    context:
+#      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/clean_dante_ltr/.*:
     cores: 32
     mem: 64
@@ -226,9 +166,10 @@ tools:
       scratch: 50
       walltime: 48
     scheduling:
+      reject:
+        - conda
       require:
-      - pulsar
-      - singularity
+        - singularity
     container_resolvers:
     -   type: cached_explicit_singularity
         cache_directory: "$SINGULARITY_CACHEDIR"
@@ -242,6 +183,8 @@ tools:
         type: build_mulled_singularity
     params:
       singularity_default_container_id: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache/cache/library/sha256.660dda926394f3db2400f7800e064cf731c75566853cac43a30be44e3b5f5d73"
+    env:
+      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
     rules:
       - id: queue_definition_by_parameter
         if: |
@@ -290,95 +233,3 @@ tools:
 
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/.*:
     inherits: toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*
-
-  .*/fastq_groomer/.*:
-    cores: 1
-    mem: 16
-
-roles:
-  training.*:
-    max_cores: 2
-    max_mem: "int(max_cores * 3.8)"
-    scheduling:
-      require:
-        - pulsar
-        - training
-
-destinations:
-  tpv_local:
-    runner: local_runner
-    max_accepted_cores: 1
-    max_accepted_mem: 4
-    params:
-      tmp_dir: true
-    scheduling:
-      require:
-      - local
-      reject:
-      - singularity
-  tpv_local_singularity:
-    runner: local_runner
-    max_accepted_cores: 1
-    max_accepted_mem: 4
-    params:
-      singularity_enabled: true
-      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
-    env:
-      SINGULARITY_CACHEDIR: "/mnt/galaxy-re/singularity/"
-      SINGULARITY_TMPDIR: /mnt/galaxy-re/tmp
-    scheduling:
-      require:
-      - local
-      prefer:
-      - singularity
-  tpv_pulsar:
-    runner: pulsar_runner
-    max_accepted_cores: 32
-    max_accepted_mem: 185
-    max_accepted_gpus: 0
-    max_cores: 32
-    max_mem: 128
-    max_gpus: 0
-    params:
-      default_file_action: remote_rsync_transfer
-      transport: rsync
-      ssh_user: "{{ galaxy_user_name }}"
-      ssh_host: "{{ inventory_hostname }}"
-      ssh_port: 22
-      ssh_key: |
-        -----BEGIN OPENSSH PRIVATE KEY-----
-        ThisKeyIsFakeBecauseThanksToKerberosIDontNeedIt
-        QuY3o=
-        -----END OPENSSH PRIVATE KEY-----
-      dependency_resolution: remote
-      jobs_directory: /storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/staging
-      persistence_directory: /opt/pulsar/files/persistent
-      remote_metadata: false
-      rewrite_parameters: true
-      outputs_to_working_directory: false
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q galaxyre@pbs-m1.metacentrum.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
-    env:
-      TMPDIR: $SCRATCHDIR
-      TMP: $SCRATCHDIR
-      TEMP: $SCRATCHDIR 
-    scheduling:
-      require:
-      - pulsar
-      reject:
-      - singularity
-  tpv_pulsar_singularity:
-    inherits: tpv_pulsar
-    runner: pulsar_runner
-    params:
-      singularity_enabled: true
-      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
-      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q galaxyre@pbs-m1.metacentrum.cz -N pulsar_re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
-    env:
-      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
-      SINGULARITY_TMPDIR: "$SCRATCHDIR"
-      XDG_CACHE_HOME: "$SCRATCHDIR"
-    scheduling:
-      require:
-      - pulsar
-      - singularity
