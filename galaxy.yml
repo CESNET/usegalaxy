@@ -408,6 +408,16 @@
       tags: cron
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
 
+    - name: Set-up pre-defined integrated_tool_panel config file on RE instance only
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/{{ inventory_hostname }}/regalaxy_integrated_tool_panel.xml"
+        dest: "{{ galaxy_mutable_config_dir }}/integrated_tool_panel.xml"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0644'
+        backup: true
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz', 'galaxy-re.grid.cesnet.cz']"
+
     - name: Add lines to logrotate config of ProFTPd
       lineinfile:
         path: /etc/logrotate.d/proftpd-core
