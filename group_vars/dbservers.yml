@@ -8,7 +8,7 @@ postgresql_objects_databases:
   - name: "{{ galaxy_db_name }}"
     owner: "{{ galaxy_user_name }}"
 postgresql_objects_privileges:
-  - database: galaxy
+  - database: "{{ galaxy_db_name }}"
     roles: telegraf
     privs: SELECT
     objs: ALL_IN_SCHEMA
