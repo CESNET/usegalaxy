@@ -120,6 +120,15 @@ galaxy_job_config:
 
 galaxy_config:
   galaxy:
+    # DEMON: TODO: remove before merging
+    # Show a message box under the masthead.
+    message_box_visible: true
+    # Show a message box under the masthead.
+    message_box_content: RepeatExplorer will undergo scheduled maintenance this Thursday starting 9 AM CET. Server will be down for a couple of hours, running jobs will not be affected.
+    # Class of the message box under the masthead. Possible values are:
+    # 'info' (the default), 'warning', 'error', 'done'.
+    message_box_class: warning
+
     # Main Configuration
     # To not bother the main disk
     new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
