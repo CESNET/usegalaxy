@@ -249,6 +249,14 @@
       when: enable_telegraf | bool
 
   post_tasks:
+    - name: Add Nginx warning about maintenance
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/nginx/warning.html"
+        dest: "/var/www/html/warning.html"
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
     - name: Configure ProFTPd LDAP option
       template:
         src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/proftpd_ldap.conf.j2', 'templates/galaxy/config/proftpd_ldap.conf.j2']) }}"

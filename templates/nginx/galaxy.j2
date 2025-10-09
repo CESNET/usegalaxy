@@ -42,6 +42,13 @@ server {
 #        proxy_buffering off;
 #        proxy_http_version 1.1;
 
+        location / {
+                allow 78.128.225.117;
+                allow  2001:718:812:27::117;
+                deny all;
+                error_page 403 /warning.html;
+        }
+
 	# The most important location block, by default all requests are sent to gunicorn
 	# If you serve galaxy at a path like /galaxy, change that below (and all other locations!)
 	location {{ csnt_galaxy_url_prefix }}/ {
@@ -60,7 +67,21 @@ server {
 
 		# This is the backend to send the requests to
 		proxy_pass http://galaxy;
+
+                allow 78.128.225.117;
+                allow  2001:718:812:27::117;
+                deny all;
+
+                # Set up the error page directive for 403 errors
+                error_page 403 /warning.html;
+                error_page 502 /warning.html;
 	}
+
+        # Serve the warning page
+        location = /warning.html {
+               root /var/www/html;  # Path to your warning page
+               internal;  # Prevent direct access to this page
+        }
 
 	location {{ csnt_galaxy_url_prefix }}/api/upload/resumable_upload {
 		# Disable request and response buffering
