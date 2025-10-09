@@ -1,2 +1,149 @@
+# where to put most of the data; we use RBD or NBD volumes
+rbd_mount_point: /data
+galaxy_data_dir: "/mnt/galaxy-re"
+#galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy"
+galaxy_mutable_data_dir: "{{ galaxy_data_dir }}"
+csnt_galaxy_url_prefix: "/galaxy"
+
 csnt_brand: RepeatExplorer
-csnt_short_term_storage_dir: /rbd/data/short_term_web_storage
+csnt_contact_email: regalaxy@rt.cesnet.cz
+csnt_log_level: DEBUG
+csnt_enable_notification_system: false
+csnt_short_term_storage_dir: "{{ galaxy_mutable_data_dir }}/short_term_web_storage"
+csnt_registered_user_jobs_limit: 4
+csnt_jobs_output_size_limit: 250GB
+csnt_tool_config_file:
+- "{{ galaxy_config_dir }}/local_tool_conf.xml"
+- "{{ galaxy_root }}/server/config/tool_conf.xml.sample"
+#csnt_tool_sheds_config_file: "{{ galaxy_config_dir }}/tool_sheds_conf.xml"
+#csnt_edam_panel_views: operations,topics
+#csnt_default_panel_view: all_tools
+csnt_allow_path_paste: true
+csnt_allow_user_deletion: true
+csnt_enable_oidc: false
+csnt_auth_config_file: "{{ galaxy_config_dir }}/auth_conf.xml"
+csnt_toolbox_auto_sort: false
+csnt_contact_email: regalaxy@rt.cesnet.cz
+csnt_watch_job_rules: 'polling' # used to be auto
+csnt_retry_job_output_collection: 5
+csnt_gunicorn_workers: 9
+csnt_handlers_processes: 4
+csnt_celery_memory_limit: 4
+csnt_celery_concurrency: 8
+
+enable_tiaas: false
+shed_tools_shadowing: false
+
+galaxy_user_name: galaxyelixir
+galaxy_user_id: 2469
+galaxy_user_group_name: galaxyelixir
+galaxy_user_group_gid: 10145
+galaxy_db_name: galaxyelixir
+
+galaxy_user_group:
+  name: "{{ galaxy_user_group_name }}"
+  gid: "{{ galaxy_user_group_gid }}"
+galaxy_user:
+  name: "{{ galaxy_user_name }}"
+  uid: "{{ galaxy_user_id }}"
+  group: "{{ galaxy_user_group.name }}"
+  shell: /bin/bash
+
+galaxy_users_domain: repeatexplorer-elixir.cerit-sc.cz
+
+extra_certbot_domains:
+  - "{{ galaxy_users_domain }}"
+  - galaxyelixir.vm.cesnet.cz
+
+galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
+#galaxy_commit_id: release_25.0
+galaxy_build_client: false
+
+#galaxy_force_checkout: true
+galaxy_systemd_nofile_limit: 150000
+
+# Postgresql DB backup using dump is not implemented in main branch (find the code in galaxy-re branch)
+#postgresql_pg_dump_prefix: galaxy_db_backup
+postgresql_backup_local_dir: "{{ galaxy_data_dir }}/backups/scripts"
+
+miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/conda"
+miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
+miniconda_channels: ['conda-forge', 'bioconda', 'iuc', 'r', 'anaconda', 'petrnovak', 'defaults']
+miniconda_base_env_packages: ['mamba']
+
+pulsar:
+  user_name: galaxyelixir
+  nfs_home: brno11-elixir
+  nfs_prefix: pulsar-re
+  pbs_queue: galaxyre
+  pbs_gpu_queue: galaxy_gpu
+
+galaxy_config_files:
+  - src: files/galaxy/themes.yml
+    dest: "{{ galaxy_config.galaxy.themes_config_file }}"
+  - src: "files/{{ inventory_hostname }}/tpv_rules_local.yml"
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
+  - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
+    dest: "{{ galaxy_config_dir }}/tool_conf.xml"
+  - src: files/galaxy/config/oidc_config.xml
+    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
+  - src: "files/{{ inventory_hostname }}/config/tool_sheds_conf.xml"
+    dest: "{{ galaxy_config_dir }}/tool_sheds_conf.xml"
+  - src: "files/{{ inventory_hostname }}/all_tools.yml"
+    dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
+
+rabbitmq_vhosts:
+  - pulsar  # DEMON: used to be /pulsar and Pulsar config must be changed before (or right after) the change is deployed
+  - galaxy_internal
+
+tusd_instances:
+      - name: uploads
+        # user that tusd will run as
+        user: "{{ galaxy_user.name }}"
+        # group that tusd will run as
+        group: "{{ galaxy_user.group }}"
+        # args passed to tusd
+        args:
+          - -host=localhost
+          - "-port={{ galaxy_tusd_port }}"
+          - "-upload-dir={{ galaxy_tus_upload_store }}"
+          - "-hooks-http=https://{{ inventory_hostname }}{{ csnt_galaxy_url_prefix }}/api/upload/hooks"
+          - -hooks-http-forward-headers=X-Api-Key,Cookie
+          - -hooks-enabled-events pre-create
+
+flower_bind_interface: localhost
+flower_port: 5555
+flower_user: "{{ galaxy_user.name }}"
+flower_group: "{{ galaxy_user.group }}"
+
+# PROFTPD specific setup
+proftpd_galaxy_auth: no
+proftpd_create_ftp_upload_dir: yes
+galaxy_ftp_upload_dir: "{{ galaxy_config.galaxy.ftp_upload_dir }}"
+proftpd_display_connect: |
+  {{ galaxy_users_domain }} FTP server
+
+  Unauthorized access is prohibited
+proftpd_galaxy_modules:
+  - mod_ldap.c
+  - mod_tls.c
+proftpd_global_options:
+  - AllowOverwrite: 'on'
+  - AllowStoreRestart: 'on'
+  - PassivePorts: '56000 60000'
+proftpd_options:
+  - AuthOrder: mod_ldap.c
+  - UseIPv6: 'off'
+  - RequireValidShell: 'off'
+  - User: "{{ galaxy_user_name }}"
+  - Group: "{{ galaxy_user_group_name }}"
+  - Port: '990'
+  - Umask: '037 037'
+  - DefaultRoot: "{{ galaxy_ftp_upload_dir }}/%u@{{ galaxy_users_domain }}"
+  - CreateHome: 'on 700 NoRootPrivs'
+proftpd_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
+proftpd_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+proftpd_conf_ssl_certificate_type: 'EC'
+proftpd_tls_protocol: TLSv1.2 TLSv1.3
+proftpd_tls_options: EnableDiags NoSessionReuseRequired UseImplicitSSL
+proftpd_use_mod_tls_shmcache: false
