@@ -1,6 +1,7 @@
 # where to put most of the data; we use RBD or NBD volumes
 rbd_mount_point: /rbd
-galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy-umsa_data"
+rbd_data_dir: "{{ rbd_mount_point }}/galaxy-umsa_data"
+galaxy_mutable_data_dir: "{{ rbd_data_dir }}"
 
 galaxy_commit_id: release_25.0
 galaxy_build_client: false

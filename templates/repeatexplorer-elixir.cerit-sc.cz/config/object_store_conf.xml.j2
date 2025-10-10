@@ -1,10 +1,19 @@
 <?xml version="1.0"?>
 <object_store type="hierarchical">
     <backends>
-        <backend id="newdata" type="disk" order="0">
-	    <files_dir path="{{ galaxy_mutable_data_dir }}/datasets" />
-	    <extra_dir type="temp" path="{{ galaxy_mutable_data_dir }}/tmp"/>
-	    <extra_dir type="job_work" path="{{ galaxy_mutable_data_dir }}/jobs" />
+        <backend type="distributed" id="primary" order="0" maxpctfull="90">
+            <backends>
+                <backend id="rbd" type="disk" weight="1" store_by="uuid">
+                    <files_dir path="{{ rbd_data_dir }}/datasets"/>
+                    <extra_dir type="temp" path="{{ rbd_data_dir }}/tmp"/>
+                    <extra_dir type="job_work" path="{{ rbd_data_dir }}/jobs"/>
+                </backend>
+            </backends>
+        </backend>
+        <backend type="disk" id="nbd" order="1">
+	    <files_dir path="{{ galaxy_data_dir }}/datasets" />
+	    <extra_dir type="temp" path="{{ galaxy_data_dir }}/tmp"/>
+	    <extra_dir type="job_work" path="{{ galaxy_data_dir }}/jobs" />
         </backend>
     </backends>
 </object_store>

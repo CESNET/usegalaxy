@@ -392,7 +392,6 @@ nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/p
 #Install pip docker package for ansible
 pip_install_packages:
   - docker
-  - python-ldap
 
 # RabbitMQ
 rabbitmq_hostname: "{{ inventory_hostname }}"

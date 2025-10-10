@@ -1,8 +1,6 @@
-# where to put most of the data; we use RBD or NBD volumes
-rbd_mount_point: /data
 galaxy_data_dir: "/mnt/galaxy-re"
-#galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy"
 galaxy_mutable_data_dir: "{{ galaxy_data_dir }}"
+#galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy"
 csnt_galaxy_url_prefix: "/galaxy"
 
 csnt_brand: RepeatExplorer
@@ -75,6 +73,11 @@ pulsar:
   nfs_prefix: pulsar-re
   pbs_queue: galaxyre
   pbs_gpu_queue: galaxy_gpu
+
+#Install pip docker package for ansible
+pip_install_packages:
+  - docker
+  - python-ldap
 
 galaxy_config_files:
   - src: files/galaxy/themes.yml

@@ -80,11 +80,11 @@
         fstype: xfs
         opts: rw,_netdev
         state: mounted
-    - name: Create galaxy mutable data directory
+    - name: Create RBD data directory
       file:
         owner: "{{ galaxy_user_name }}"
         group: "{{ galaxy_user_group_name }}"
-        path: "{{ galaxy_mutable_data_dir }}"
+        path: "{{ rbd_data_dir }}"
         state: directory
         mode: '0755'
 
@@ -184,7 +184,7 @@
       when: admin_ssh_keys
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'squashfs-tools', 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'squashfs-tools', 'libldap2-dev', 'libsasl2-dev']#, 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
