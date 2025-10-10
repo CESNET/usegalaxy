@@ -6,7 +6,7 @@ csnt_galaxy_url_prefix: "/galaxy"
 csnt_brand: RepeatExplorer
 csnt_contact_email: regalaxy@rt.cesnet.cz
 csnt_log_level: DEBUG
-csnt_enable_notification_system: false
+csnt_enable_notification_system: true
 csnt_short_term_storage_dir: "{{ galaxy_mutable_data_dir }}/short_term_web_storage"
 csnt_registered_user_jobs_limit: 4
 csnt_jobs_output_size_limit: 250GB

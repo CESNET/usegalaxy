@@ -61,14 +61,6 @@ server {
 		# This is the backend to send the requests to
 		proxy_pass http://galaxy;
 
-                allow 78.128.225.117;
-                allow 2001:718:812:27::117;
-                allow 78.128.247.102;
-                allow 2001:718:ff05:209::102;
-                allow 86.49.250.141;
-                allow 2a02:8308:b014:7c00:9ce6:253:1f0d:d08;
-                deny all;
-
                 # Set up the error page directive for 403 errors
                 error_page 403 /warning.html;
                 error_page 502 /warning.html;
