@@ -58,6 +58,9 @@ server {
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "upgrade";
 
+                # DEMON: temp solution because of a bug
+                rewrite ^/galaxy/galaxy(.*)$ /galaxy$1 last;
+
 		# This is the backend to send the requests to
 		proxy_pass http://galaxy;
 
