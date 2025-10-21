@@ -1,4 +1,17 @@
 tools:
+  .*/trimmomatic/.*:
+    rules:
+      - id: no_singularity
+        if: |
+          # versions without singularity container available
+          no_container = {
+              '0.39+galaxy0',
+          }
+          any(helpers.tool_version_eq(tool, version) for version in no_container)
+        scheduling:
+          require:
+            - conda
+
   # DEMON: All Novak's tools (except 2) are not properly containerized, therefore, they need conda to deal with dependences
   .*/petr-novak/.*:
     cores: 2
@@ -13,6 +26,8 @@ tools:
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/.*:
     cores: 20
     mem: 32
+    context:
+      walltime: 48
 
   # DANTE toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter/.*:
