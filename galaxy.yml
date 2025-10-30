@@ -260,7 +260,7 @@
         dest: "/home/{{ galaxy_user_name }}/.galaxy_api_key"
         owner: "{{ galaxy_user_name }}"
         group: "{{ galaxy_user_group_name }}"
-        mode: '0600'
+        mode: '0640'
       tags: cron
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
       no_log: true
@@ -281,6 +281,13 @@
         dest: "{{ galaxy_root }}/cron/user_group/add_group_users.py"
         owner: postgres
         group: postgres
+      when: "'usegalaxy.cz' in inventory_hostname"
+      tags: cron
+    - name: Add the user postgres to the galaxy user primary group, to access the Galaxy API key
+      ansible.builtin.user:
+        name: postgres
+        groups: "{{ galaxy_user_group_name }}"
+        append: yes
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
     - name: Setup user - group association rutine

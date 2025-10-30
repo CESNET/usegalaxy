@@ -85,7 +85,7 @@ You also need to create a non-admin service user called `galaxy@cesnet.cz` for r
 
 ## tools
 
-Instances' tools are managed by a combination of a cron script that installs them (deployed from this playbook) -- check out `[`the script`](templates/galaxy/cron/install_tools.sh.j2)
+Instances' tools are managed by a combination of a cron script that installs them (deployed from this playbook) -- check out [the script](templates/galaxy/cron/install_tools.sh.j2)
 and external repository that contains the lists of tools for every instance: https://github.com/CESNET/galaxy_tools.
 
 ## deployment troubleshooting
