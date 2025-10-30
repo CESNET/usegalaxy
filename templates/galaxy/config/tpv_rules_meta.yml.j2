@@ -7,9 +7,11 @@ tools:
     mem: cores * 4
     env:
     - name: GALAXY_SLOTS
-      value: "{cores}"
+      value: cores
     - name:  GALAXY_MEMORY_MB
-      value: "{int(mem)*1000}"
+      value: mem * 1000
+    - name:  GALAXY_MEMORY_MB_PER_SLOT
+      value: int(mem / cores) * 1000
     context:
       walltime: 24
       scratch: 50
@@ -127,10 +129,15 @@ tools:
   .*/data_manager_.*:
     inherits: local_sing_running_tools
 
+  .*/hapog/.*:
+    cores: 8
+    context:
+      walltime: 48
+
 roles:
   training.*:
     max_cores: 4
-    max_mem: max_cores * 4  # TODO check multiplier
+    max_mem: max_cores * 4
     scheduling:
       require:
         - pulsar
