@@ -7,11 +7,11 @@ tools:
     mem: cores * 4
     env:
     - name: GALAXY_SLOTS
-      value: cores
+      value: "{int(cores)}"
     - name:  GALAXY_MEMORY_MB
-      value: mem * 1000
+      value: "{int(mem) * 1000}"
     - name:  GALAXY_MEMORY_MB_PER_SLOT
-      value: int(mem / cores) * 1000
+      value: "{int(mem / cores) * 1000}"
     context:
       walltime: 24
       scratch: 50
@@ -104,12 +104,17 @@ tools:
     context:
       walltime: 48
 
-  toolshed.g2.bx.psu.edu/repos/iuc/megahit/megahit/.*:
+  .*/megahit/.*:
     cores: 16
     mem: 256
     context:
       walltime: 96
       scratch: 100
+
+  .*/hapog/.*:
+    cores: 8
+    context:
+      walltime: 48
 
   __SET_.*:
     inherits: local_running_tools
@@ -128,11 +133,6 @@ tools:
 
   .*/data_manager_.*:
     inherits: local_sing_running_tools
-
-  .*/hapog/.*:
-    cores: 8
-    context:
-      walltime: 48
 
 roles:
   training.*:
