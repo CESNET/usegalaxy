@@ -192,7 +192,6 @@ galaxy_config:
       - type: cached_mulled_singularity
         cache_directory: /cvmfs/singularity.galaxyproject.org/all/
         cache_directory_cacher_type: dir_mtime
-
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
@@ -280,6 +279,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
     dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
+    dest: "{{ galaxy_config.galaxy.auth_config_file }}"
 
 galaxy_extra_dirs:
   - "{{ galaxy_data_dir }}"
