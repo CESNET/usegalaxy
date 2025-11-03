@@ -88,10 +88,56 @@ galaxy_config_files:
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
-  - src: files/galaxy/config/oidc_config.xml
-    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
-  - src: "files/{{ inventory_hostname }}/all_tools.yml"
-    dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
+#  - src: files/galaxy/config/oidc_config.xml
+#    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
+#  - src: "files/{{ inventory_hostname }}/all_tools.yml"
+#    dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
+
+galaxy_config_files_public:
+  - src: files/galaxy/config/sanitize_allowlist.txt
+    dest: "{{ galaxy_config.galaxy.sanitize_allowlist_file }}"
+  - src: templates/{{ inventory_hostname }}/static/welcome.html
+    dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
+  - src: files/galaxy/static/usegalaxycz_straight.svg
+    dest: "{{ galaxy_server_dir }}/static/usegalaxycz_straight.svg"
+#  - src: files/galaxy/static/elixir_logo.png
+#    dest: "{{ galaxy_server_dir }}/static/elixir_logo.png"
+#  - src: files/galaxy/static/eu_msmt_eosc.svg
+#    dest: "{{ galaxy_server_dir }}/static/eu_msmt_eosc.svg"
+#  - src: files/galaxy/static/e-infra_logo.svg
+#    dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
+  - src: "files/{{ inventory_hostname }}/static/images/umbr_programs_icons/RE_header.png"
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/RE_header.png"
+  - src: "files/{{ inventory_hostname }}/static/images/umbr_programs_icons/ELIXIR_CZECHREPUBLIC_white_background_small.png"
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/ELIXIR_CZECHREPUBLIC_white_background_small.png"
+  - src: "files/{{ inventory_hostname }}/static/images/umbr_programs_icons/RE_logo.png"
+    dest: "{{ galaxy_server_dir }}/static/images/umbr_programs_icons/RE_logo.png"
+
+galaxy_config_templates:
+#  - src: templates/galaxy/config/reports.yml.j2
+#    dest: "{{ galaxy_config.gravity.reports.config_file }}"
+#  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/oidc_backends_config.xml.j2', 'templates/galaxy/config/oidc_backends_config.xml.j2']) }}"
+#    dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+  - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
+    dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
+  - src: "templates/{{ inventory_hostname }}/config/local_tool_conf.xml.j2"
+    dest: "{{ galaxy_config_dir }}/local_tool_conf.xml"
+  - src: templates/galaxy/config/tpv_rules_meta.yml.j2
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
+  - src: "templates/galaxy/config/vault_conf.yml.j2"
+    dest: "{{ galaxy_config_dir }}/vault_conf.yml"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
+    dest: "{{ galaxy_config.galaxy.auth_config_file }}"
+  - src: templates/galaxy/config/dependency_resolvers_conf.xml.j2
+    dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
+    dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
+
+galaxy_extra_dirs:
+  - "{{ galaxy_data_dir }}"
+  - "{{ tpv_config_dir }}"
+  - "{{ galaxy_config_dir }}/plugins/activities"
+  - "{{ galaxy_server_dir }}/static/images/umbr_programs_icons"
 
 rabbitmq_vhosts:
   - pulsar  # DEMON: used to be /pulsar and Pulsar config must be changed before (or right after) the change is deployed
