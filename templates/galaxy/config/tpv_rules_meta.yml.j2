@@ -124,6 +124,11 @@ tools:
     cores: 1
     mem: 16
 
+  .*/hapog/.*:
+    cores: 8
+    context:
+      walltime: 48
+
   __DATA_FETCH__:
     inherits: local_running_tools
 
@@ -145,6 +150,12 @@ tools:
   cat1:
     inherits: local_running_tools
 
+  export_remote:
+    inherits: local_running_tools
+
+  gff2bed1:
+    inherits: local_running_tools
+
   .*/data_manager_.*:
     inherits: local_sing_running_tools
 
@@ -154,17 +165,11 @@ tools:
   sra_source:
     inherits: local_sing_running_tools
 
-  gff2bed1:
-    inherits: local_sing_running_tools
-
 #  bed2gff1:
 #    inherits: local_sing_running_tools
 
   Extract_features1:
     inherits: local_sing_running_tools
-
-  export_remote:
-    inherits: local_running_tools
 
 
 roles:
