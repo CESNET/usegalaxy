@@ -144,10 +144,6 @@
     <tool file="stats/gsummary.xml" />
     <tool file="filters/uniq.xml" />
   </section>
-  <section id="motif_tools" name="Motif Tools">
-    <tool file="meme/meme.xml" hidden="True" />
-    <!-- <tool file="meme/fimo.xml" hidden="True" /> -->
-  </section>
   <section id="graph_display_data" name="Graph/Display Data">
     <tool file="plotting/bar_chart.xml" />
     <tool file="plotting/boxplot.xml" />

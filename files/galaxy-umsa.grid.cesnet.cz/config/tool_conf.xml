@@ -28,8 +28,8 @@
     <tool file="data_source/hbvar.xml" />
   </section> -->
   <section id="send_data" name="Send Data">
-    <tool file="data_export/send.xml" />
-    <!-- <tool file="data_export/export_remote.xml" /> -->
+    <!-- <tool file="data_export/send.xml" /> -->
+    <tool file="data_export/export_remote.xml" />
   </section>
   <section id="collection_operations" name="Collection Operations">
     <tool file="${model_tools_path}/unzip_collection.xml" />
@@ -144,10 +144,6 @@
     <tool file="stats/gsummary.xml" />
     <tool file="filters/uniq.xml" />
   </section>
-  <!-- <section id="motif_tools" name="Motif Tools">
-    <tool file="meme/meme.xml" hidden="True" />
-    <tool file="meme/fimo.xml" hidden="True" />
-  </section> -->
   <section id="visualization" name="Visualization">
     <tool file="plotting/bar_chart.xml" />
     <tool file="plotting/boxplot.xml" />
