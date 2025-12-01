@@ -56,16 +56,16 @@ tools:
         cores: int(job.get_param_values(app)['__job_resource']['cores'])
         context:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
-  .*/bedtools_annotatebed/.*:
+  toolshed.g2.bx.psu.edu/repos/iuc/bedtools/bedtools_annotatebed/.*:
     context:
       walltime: 48
-  .*/megahit/.*:
+  toolshed.g2.bx.psu.edu/repos/iuc/megahit/megahit/.*:
     cores: 16
     mem: 256
     context:
       walltime: 96
       scratch: 100
-  .*/hapog/.*:
+  toolshed.g2.bx.psu.edu/repos/iuc/hapog/hapog/.*:
     cores: 8
     context:
       walltime: 48
@@ -75,9 +75,11 @@ tools:
      inherits: local_running_tools
   __EXPORT_HISTORY__:
      inherits: local_running_tools
-  "Show .*":
+  "Show beginning1":
      inherits: local_running_tools
-  "Remove .*":
+  "Show tail1":
+     inherits: local_running_tools
+  "Remove beginning1":
      inherits: local_running_tools
   cat1:
      inherits: local_running_tools
