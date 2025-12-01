@@ -13,7 +13,9 @@ tools:
     - name: GALAXY_SLOTS
       value: "{int(cores)}"
     - name:  GALAXY_MEMORY_MB
-      value: "{int(mem)*1000}"
+      value: "{int(mem) * 1000}"
+    - name:  GALAXY_MEMORY_MB_PER_SLOT
+      value: "{int(mem / cores) * 1000}"
     context:
       walltime: 24
       scratch: 50
