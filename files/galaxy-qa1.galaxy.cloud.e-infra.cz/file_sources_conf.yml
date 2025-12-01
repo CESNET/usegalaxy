@@ -6,6 +6,14 @@
   token: ${user.user_vault.read_secret('preferences/invenio_sandbox/token')}
   public_name: ${user.preferences['invenio_sandbox|public_name']}
   writable: true
+- type: inveniordm
+  id: cesnet_invenio_sandbox
+  doc: CESNET-Invenio instance
+  label: CESNET-Invenio TESTING
+  url: https://workflow-repo.test.du.cesnet.cz/
+  token: ${user.user_vault.read_secret('preferences/cesnet_invenio_sandbox/token')}
+  public_name: ${user.preferences['cesnet_invenio_sandbox|public_name']}
+  writable: true
 - type: zenodo
   id: zenodo_sandbox
   doc: Testing instance of Zenodo, content is NOT preserved and DOIs created in this instance are not real.
