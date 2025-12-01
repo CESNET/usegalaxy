@@ -1,6 +1,5 @@
 global:
   default_inherits: default
-
 tools:
   default:
     cores: 1
@@ -20,10 +19,10 @@ tools:
         - pulsar
       reject:
         - offline
+        - docker
     rules: []
     rank: |
       helpers.weighted_random_sampling(candidate_destinations)
-
   local_running_tools:
     abstract: True
     scheduling:
@@ -31,32 +30,12 @@ tools:
       - local
       reject:
       - pulsar
-
   local_sing_running_tools:
     inherits: local_running_tools
     abstract: True
     scheduling:
       require:
       - singularity
-
-  testing_rosettafold2:
-    cores: 8
-    mem: 64
-    gpus: 1
-    context:
-      walltime: 24
-      scratch: 25
-      gpu_mem: 16
-    scheduling:
-      require:
-        - rosettafold
-
-  rosettafold2:
-    inherits: testing_rosettafold2
-    scheduling:
-      require:
-        - singularity
-
   .*testing.*:
     cores: 1
     mem: 1
@@ -70,7 +49,6 @@ tools:
           # last line in block must evaluate to a value - which determines whether the TPV if conditional matches or not
           not user or (user.email not in admin_users and user.email not in ['galaxy@cesnet.cz','galaxy@usegalaxy.cz'])
         fail: Unauthorized. Only admins can execute this tool.
-
       - id: resource_params_defined
         if: |
           param_dict = job.get_param_values(app)
@@ -78,65 +56,33 @@ tools:
         cores: int(job.get_param_values(app)['__job_resource']['cores'])
         context:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
-
-  .*/alphafold/.*:
-    cores: 8
-    mem: 120
-    gpus: 1
-    context:
-      walltime: 24
-      scratch: 100
-      gpu_mem: 16
-    env:
-      MPLCONFIGDIR: "$SCRATCHDIR"
-      ALPHAFOLD_DB: "/scratch.ssd/galaxyeu/permanent/alphafold.db"
-      ALPHAFOLD_USE_GPU: True
-    scheduling:
-      require:
-        - alphafold
-
-  .*/goenrichment/.*:
-    scheduling:
-      require:
-        - nasty-java
-
   .*/bedtools_annotatebed/.*:
     context:
       walltime: 48
-
   .*/megahit/.*:
     cores: 16
     mem: 256
     context:
       walltime: 96
       scratch: 100
-
   .*/hapog/.*:
     cores: 8
     context:
       walltime: 48
-
   __SET_.*:
     inherits: local_running_tools
-
   __IMPORT_HISTORY__:
      inherits: local_running_tools
-     
   __EXPORT_HISTORY__:
      inherits: local_running_tools
-
   "Show .*":
      inherits: local_running_tools
-
   "Remove .*":
      inherits: local_running_tools
-
   cat1:
      inherits: local_running_tools
-
   .*/data_manager_.*:
     inherits: local_sing_running_tools
-
 roles:
   training.*:
     max_cores: 4
@@ -145,7 +91,6 @@ roles:
       require:
         - pulsar
         - training
-
 destinations:
   tpv_local:
     runner: local_runner
@@ -218,53 +163,9 @@ destinations:
     scheduling:
       require:
       - pulsar
-  tpv_pulsar_nasty_java:
-    inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
-    params:
-      singularity_run_extra_arguments: '--env _JAVA_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"'
-    scheduling:
-      require:
-        - nasty-java
-  tpv_pulsar_alphafold:
-    inherits: tpv_pulsar
-    max_accepted_gpus: 1
-    max_gpus: 1
-    runner: pulsar_tpv_runner
-    params:
-      singularity_run_extra_arguments: '--nv'
-      singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q {{ pulsar.pbs_gpu_queue }} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
-    scheduling:
-      require:
-        - alphafold
   tpv_pulsar_training:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner
     scheduling:
       require:
         - training
-# usegalaxy.cz specific:
-  tpv_pulsar_rosettafold:
-    inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
-    params:
-      singularity_enabled: false
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb:ngpus={int(gpus)}:gpu_mem={int(gpu_mem)}gb -l walltime={int(walltime)}:00:00 -q galaxy_gpu@pbs-m1.metacentrum.cz -N pulsar_cz_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
-    scheduling:
-      require:
-        - rosettafold
-  tpv_pulsar_rosettafold_sing:
-    inherits: tpv_pulsar_rosettafold
-    container_resolvers:
-    -   type: explicit_singularity
-    -   cache_directory: /cvmfs/singularity.metacentrum.cz/RoseTTAFold2/
-        type: cached_mulled_singularity
-    params:
-      singularity_enabled: true
-      singularity_run_extra_arguments: '--nv --env SCRATCHDIR="$SCRATCHDIR" --env SCRATCH=$SCRATCHDIR'
-      singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,/scratch.ssd/galaxyeu/permanent/rosettafold_data/bfd:/opt/RoseTTAFold2/bfd,/scratch.ssd/galaxyeu/permanent/rosettafold_data/pdb100_2021Mar03:/opt/RoseTTAFold2/pdb100_2021Mar03,/scratch.ssd/galaxyeu/permanent/rosettafold_data/UniRef30_2020_06:/opt/RoseTTAFold2/UniRef30_2020_06,/scratch.ssd/galaxyeu/permanent/rosettafold_data/weights:/opt/RoseTTAFold2/network/weights'
-      singularity_default_container_id: "/cvmfs/singularity.metacentrum.cz/RoseTTAFold2/rosettafold_image.sif"
-    scheduling:
-      require:
-        - singularity

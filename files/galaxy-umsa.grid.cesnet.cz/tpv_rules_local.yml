@@ -44,6 +44,6 @@ tools:
     mem: 16
 
   .*/fastqc/.*:
-    cores: 1 
+    cores: 1
     context:
       walltime: 2
