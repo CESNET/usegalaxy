@@ -156,6 +156,10 @@ galaxy_config:
     default_panel_view: "{{ csnt_default_panel_view }}"
     panel_views_dir: "{{ galaxy_config_dir }}/plugins/activities"
     file_source_templates_config_file: "{{ galaxy_config_dir }}/file_source_templates.yml"
+    # Changing defaults for tool installation
+    install_tool_dependencies: false
+    install_repository_dependencies: true
+    install_resolver_dependencies: false
     # NFS workarounds
     retry_job_output_collection: 3
     # Debugging
