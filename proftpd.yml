@@ -1,0 +1,34 @@
+---
+- hosts: galaxyservers
+  name: apt update, python, pip
+  become: true
+  become_user: root
+  pre_tasks:
+    - ansible.builtin.apt:
+        name:
+        - python3-pip
+        - python-is-python3
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Dependencies
+      package:
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'proftpd-mod-ldap']
+
+  roles:
+    - galaxyproject.proftpd
+
+  post_tasks:
+    - name: Check if ProFTPd LDAP config exists
+      stat:
+        path: "templates/{{ inventory_hostname }}/config/proftpd_ldap.conf.j2"
+      register: proftpd_ldap_config
+
+    - name: Configure ProFTPd LDAP option
+      template:
+        src: "templates/{{ inventory_hostname }}/config/proftpd_ldap.conf.j2"
+        dest: "{{ proftpd_config_include_dir }}/06_ldap.conf"
+        backup: yes
+      when: proftpd_ldap_config.stat.exists
+      notify:
+        - reload proftpd
