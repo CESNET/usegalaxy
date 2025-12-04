@@ -49,6 +49,7 @@ items:
   - regional_variation
   - biodiversity_data_exploration
   - genome_diversity
+  - transcriptomics
 - id: statistics_and_visualization_label
   text: Statistics and Visualization
   type: label
