@@ -110,6 +110,7 @@ tools:
       walltime: 48
   toolshed.g2.bx.psu.edu/repos/petr-novak/re_utils/single_fastq_filtering/.*:
     cores: 6
+    mem: 16
     context:
       scratch: 50
       walltime: 24
