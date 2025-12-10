@@ -58,8 +58,6 @@ items:
   - phenotype_association
   - single_cell
   - hca_single_cell
-  - hca-single_cell
-  - single-cell
 - id: stats_viz
   text: Statistics and Visualization
   type: label
