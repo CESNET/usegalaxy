@@ -3,37 +3,38 @@ type: generic
 id: all_tools
 items:
 - sections:
-  - getext
-  - send
+  - upload_file
+  - get_data
+  - data_source_tools
+  - send_data
   - collection_operations
   - expression_tools
-- id: general_text_tools_label
+- id: general_text_label
   text: General Text Tools
   type: label
 - sections:
-  - textutil
+  - text_manipulation
+  - filter_and_sort
+  - join__subtract_and_group
   - convert
-  - filter
-  - group
   - convert_formats
-- id: genomic_file_manipulation_label
+  - builtin_converters
+- id: genomic_manip_label
   text: Genomic File Manipulation
   type: label
 - sections:
-  - fasta/fastq
+  - fasta_fastq
+  - fastq_quality_control
   - quality_control
-  - sam/bam
+  - sam_bam
   - bed
-  - vcf/bcf
+  - vcf_bcf
   - nanopore
   - lift_over
   - extract_features
-- id: common_genomics_tools_label
-  text: Common Genomics Tools
-  type: label
-- sections:
-  - bxops
-  - fetchAlignSeq
+  - operate_on_genomic_intervals
+  - fetch_sequences___alignments
+  - chromosome_conformation
 - id: genomics_analysis_label
   text: Genomics Analysis
   type: label
@@ -49,15 +50,23 @@ items:
   - regional_variation
   - biodiversity_data_exploration
   - genome_diversity
-  - transcriptomics
-- id: statistics_and_visualization_label
+  - rna_seq
+  - peak_calling
+  - genome_editing
+  - epigenetics
+  - phylogenetics
+  - phenotype_association
+  - single_cell
+  - hca_single_cell
+- id: stats_viz
   text: Statistics and Visualization
   type: label
 - sections:
-  - stats
+  - statistics
   - machine_learning
   - plots
   - interactive_tools
+  - graph_display_data
 - id: genomics_toolkits_label
   text: Genomics Toolkits
   type: label
@@ -68,19 +77,16 @@ items:
   - picard
   - deeptools
   - emboss
-  - ncbi_blast_
+  - ncbi_blast
   - mimodd
   - scanpy
   - hicexplorer
   - gemini
   - motif_tools
   - gatk_tools
-  - rad-seq
+  - rad_seq
   - sanger_sequencing
-  - genome_editing
   - dna_metabarcoding
-  - peak_calling
-  - phylogenetics
   - apollo
 - id: domain_tools_label
   text: Domain Tools
@@ -88,8 +94,6 @@ items:
 - sections:
   - virology
   - metagenomic_analysis
-  - single-cell
-  - hca-single_cell
   - proteomics
   - metabolomics
   - muon_spectroscopy
@@ -98,24 +102,24 @@ items:
   - imaging
   - climate_analysis
   - gis_data_handling
-  - epigenetics
   - spatial_omics
-  - compute_indicators_for_satellite_remote_sensing
-  - compute_indicators_for_turnover_boulders_fields
-  - animal_detection_on_acoustic_recordings
   - ecoregionalization
   - graphclust
   - species_abundance
-  - obo_ontology_manipulation
   - data_and_metadata_management
-- id: other_tools_label
-  text: Other Tools
-  type: label
+  - obo_ontology_manipulation
+  - ontology
+  - compute_indicators_for_satellite_remote_sensing
+  - compute_indicators_for_turnover_boulders_fields
+  - animal_detection_on_acoustic_recordings
+# - id: other_tools_label
+#   text: Other Tools
+#   type: label
 - sections:
   - other_tools
-- id: testing_tools_label
-  text: Testing Tools
-  type: label
+# - id: testing_tools_label
+#   text: Testing Tools
+#   type: label
 - sections:
   - local_tools
   - test_tools
