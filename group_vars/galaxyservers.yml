@@ -52,8 +52,9 @@ galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
 # Miniconda
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 24.11.1
-miniconda_channels: ['conda-forge', 'defaults']
+miniconda_distribution: miniforge
+miniconda_version: 25.3
+miniconda_channels: ['conda-forge', 'bioconda']
 
 # Pulsar
 pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
