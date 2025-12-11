@@ -85,6 +85,10 @@ tools:
      inherits: local_running_tools
   .*/data_manager_.*:
     inherits: local_sing_running_tools
+  toolshed.g2.bx.psu.edu/repos/iuc/goenrichment/goenrichment/2.0.1/.*:
+    scheduling:
+      require:
+        - nasty-java
 roles:
   training.*:
     max_cores: 4
@@ -171,3 +175,11 @@ destinations:
     scheduling:
       require:
         - training
+  tpv_pulsar_nasty_java:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    params:
+      singularity_run_extra_arguments: '--env _JAVA_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"'
+    scheduling:
+      require:
+        - nasty-java

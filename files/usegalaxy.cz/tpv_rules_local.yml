@@ -36,14 +36,6 @@ destinations:
     scheduling:
       require:
         - alphafold
-  tpv_pulsar_nasty_java:
-    inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
-    params:
-      singularity_run_extra_arguments: '--env _JAVA_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"'
-    scheduling:
-      require:
-        - nasty-java
 tools:
   testing_rosettafold2:
     cores: 8
@@ -76,7 +68,3 @@ tools:
     scheduling:
       require:
         - alphafold
-  toolshed.g2.bx.psu.edu/repos/iuc/goenrichment/goenrichment/2.0.1/.*:
-    scheduling:
-      require:
-        - nasty-java
