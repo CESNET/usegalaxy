@@ -62,11 +62,6 @@ galaxy_force_checkout: true
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 galaxy_data_dir: "{{ galaxy_mutable_data_dir }}"
 
-# Miniconda
-miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/_conda"
-miniconda_version: 24.11.1
-miniconda_channels: ['conda-forge', 'defaults']
-
 # Pulsar
 pulsar_data_dir: "/storage/{{ pulsar.nfs_home }}/home/{{ pulsar.user_name }}/{{ pulsar.nfs_prefix }}"
 
@@ -170,6 +165,10 @@ galaxy_config:
     default_panel_view: "{{ csnt_default_panel_view }}"
     panel_views_dir: "{{ galaxy_config_dir }}/plugins/activities"
     file_source_templates_config_file: "{{ galaxy_config_dir }}/file_source_templates.yml"
+    # Changing defaults for tool installation
+    install_tool_dependencies: false
+    install_repository_dependencies: true
+    install_resolver_dependencies: false
     # NFS workarounds
     retry_job_output_collection: "{{ csnt_retry_job_output_collection }}"
     # Debugging

@@ -6,8 +6,6 @@
   version: 1.1.7
 - src: galaxyproject.postgresql_objects
   version: 1.2.0
-- src: galaxyproject.miniconda
-  version: 0.3.1
 - src: usegalaxy_eu.certbot
   version: 0.1.11
 - src: galaxyproject.tusd
@@ -29,8 +27,6 @@
 - src: galaxyproject.proftpd
   version: 0.3.3
 # conditional reqs below
-# - name: mvdbeek.sentry_selfhosted
-#   src: https://github.com/mvdbeek/ansible-role-sentry/archive/main.tar.gz
 - src: usegalaxy_eu.flower
   version: 2.0.0
 - src: usegalaxy_eu.influxdb
