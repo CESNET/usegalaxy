@@ -1,0 +1,13 @@
+diff --git a/lib/galaxy/files/sources/invenio.py b/lib/galaxy/files/sources/invenio.py
+index 9f0d984268..28620d74bf 100644
+--- a/lib/galaxy/files/sources/invenio.py
++++ b/lib/galaxy/files/sources/invenio.py
+@@ -327,7 +327,7 @@ class InvenioRepositoryInteractor(RDMRepositoryInteractor):
+             "metadata": {
+                 "title": title,
+                 "publication_date": today,
+-                "resource_type": {"id": "dataset"},
++                "resource_type": {"id": "c_393c"},
+                 "creators": [
+                     creator,
+                 ],
