@@ -269,6 +269,11 @@ galaxy_config_templates:
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
     dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
 
+galaxy_local_tools:
+  - testing.xml
+  - testing_pbs.xml
+  - testing_html.xml
+
 galaxy_extra_dirs:
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_config_dir }}/plugins/activities"
