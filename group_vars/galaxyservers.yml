@@ -279,6 +279,11 @@ galaxy_config_templates:
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
     dest: "{{ galaxy_config.galaxy.auth_config_file }}"
 
+galaxy_local_tools:
+  - testing.xml
+  - testing_pbs.xml
+  - testing_html.xml
+
 galaxy_extra_dirs:
   - "{{ galaxy_data_dir }}"
   - "{{ tpv_config_dir }}"
