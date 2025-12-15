@@ -5,7 +5,7 @@ tools:
   default:
     abstract: True
     cores: 1
-    mem: "int(cores * 4)"
+    mem: cores * 4
     env:
       # Ensuring a consistent collation environment is good for reproducibility.
     - name: LC_ALL
@@ -118,7 +118,7 @@ tools:
 roles:
   training.*:
     max_cores: 4
-    max_mem: "int(max_cores * 3.8)"
+    max_mem: max_cores * 3.8
     scheduling:
       require:
         - training
@@ -157,7 +157,7 @@ destinations:
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:
       # The cache directory holds the docker containers that get converted
-      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_CACHEDIR: "{{ galaxy_mutable_data_dir }}/singularity/cache"
       # Singularity uses a temporary directory to build the squashfs filesystem
       SINGULARITY_TMPDIR: "{{ galaxy_mutable_data_dir }}/tmp"
     scheduling:
