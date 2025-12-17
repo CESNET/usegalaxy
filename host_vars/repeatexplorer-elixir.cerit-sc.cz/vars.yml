@@ -1,5 +1,4 @@
-galaxy_data_dir: "/mnt/galaxy-re"
-galaxy_mutable_data_dir: "{{ galaxy_data_dir }}"
+galaxy_mutable_data_dir: /mnt/galaxy-re
 #galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy"
 csnt_galaxy_url_prefix: "/galaxy"
 
@@ -62,7 +61,7 @@ galaxy_systemd_nofile_limit: 150000
 
 # Postgresql DB backup using dump is not implemented in main branch (find the code in galaxy-re branch)
 #postgresql_pg_dump_prefix: galaxy_db_backup
-postgresql_backup_local_dir: "{{ galaxy_data_dir }}/backups/scripts"
+postgresql_backup_local_dir: "{{ galaxy_mutable_data_dir }}/backups/scripts"
 
 miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/conda"
 miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
@@ -130,7 +129,7 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
 
 galaxy_extra_dirs:
-  - "{{ galaxy_data_dir }}"
+  - "{{ galaxy_mutable_data_dir }}"
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_config_dir }}/plugins/activities"
   - "{{ galaxy_server_dir }}/static/images/umbr_programs_icons"

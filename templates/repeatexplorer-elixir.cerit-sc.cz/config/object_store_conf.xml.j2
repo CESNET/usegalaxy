@@ -11,9 +11,9 @@
             </backends>
         </backend>
         <backend type="disk" id="nbd" order="1">
-	    <files_dir path="{{ galaxy_data_dir }}/datasets" />
-	    <extra_dir type="temp" path="{{ galaxy_data_dir }}/tmp"/>
-	    <extra_dir type="job_work" path="{{ galaxy_data_dir }}/jobs" />
+	    <files_dir path="{{ galaxy_mutable_data_dir }}/datasets" />
+	    <extra_dir type="temp" path="{{ galaxy_mutable_data_dir }}/tmp"/>
+	    <extra_dir type="job_work" path="{{ galaxy_mutable_data_dir }}/jobs" />
         </backend>
     </backends>
 </object_store>

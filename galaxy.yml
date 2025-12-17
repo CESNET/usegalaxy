@@ -285,7 +285,7 @@
         name: "tmpreaper in tus upload dir"
         minute: "5"
         hour: "*" 
-        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_tus_upload_store }} >> {{ galaxy_data_dir }}/cleaning_tus_upload_dir.log"
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_tus_upload_store }} >> {{ galaxy_mutable_data_dir }}/cleaning_tus_upload_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
     - name: Creates entry in crontab "tmpreaper call in galaxy tmp dir"
@@ -293,7 +293,7 @@
         name: "tmpreaper in galaxy temp dir"
         minute: "7"
         hour: "*" 
-        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_data_dir }}/tmp >> {{ galaxy_data_dir }}/cleaning_galaxy_temp_dir.log"
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_mutable_data_dir }}/tmp >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_temp_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
 #    - name: Creates entry in crontab "tmpreaper call in galaxy jobs dir"
@@ -301,7 +301,7 @@
 #        name: "tmpreaper in galaxy jobs dir"
 #        minute: "9"
 #        hour: "*" 
-#        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_data_dir }}/jobs >> {{ galaxy_data_dir }}/cleaning_galaxy_jobs_dir.log"
+#        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_mutable_data_dir }}/jobs >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_jobs_dir.log"
 #      become: yes
 #      become_user: "{{ galaxy_user_name }}"
 
@@ -312,7 +312,7 @@
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "0" # midnight daily
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60 >> {{ galaxy_data_dir }}/cleaning_gxadmin_cleanup.log"
+        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60 >> {{ galaxy_mutable_data_dir }}/cleaning_gxadmin_cleanup.log"
       tags: cron
 
     - name: Create a file with key for CRON jobs
