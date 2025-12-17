@@ -74,6 +74,14 @@ pulsar_ssh_key: |
   -----END OPENSSH PRIVATE KEY-----
 ```
 
+## RBD storage
+On production instances, the Galaxy datasets and other mutable data are stored on RBD (RADOS Block Device) using Ceph. Its installation and configuration is covered by this playbook and the following variables help to maintain the process:
+```
+rbd_mount_point: /data
+rbd_data_dir: "{{ rbd_mount_point }}/galaxy"
+rbd_cluster_code: CL4
+```
+
 ## running playbook
 `$ ansible-playbook --limit <YOUR_HOST> galaxy.yml`
 
