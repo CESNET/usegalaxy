@@ -5,7 +5,7 @@ csnt_brand: QA2-TEST
 # csnt_enable_account_interface: false
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
-csnt_registered_user_jobs_limit: 1000
+csnt_registered_user_jobs_limit: 100
 
 pulsar:
   user_name: galaxy-qa1
