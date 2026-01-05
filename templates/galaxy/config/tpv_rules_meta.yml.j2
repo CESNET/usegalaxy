@@ -229,7 +229,7 @@ destinations:
       SINGULARITY_TMPDIR: $SCRATCHDIR
       XDG_CACHE_HOME: $SCRATCHDIR
     scheduling:
-      require:
+      prefer:
         - singularity
   # DEMON: Pulsar for TIAAS. It could schedule to a private small queue to ensure the participants of some course will not have to wait
   tpv_pulsar_training:
