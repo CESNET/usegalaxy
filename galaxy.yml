@@ -205,7 +205,6 @@
       when: enable_tiaas | bool
     - galaxyproject.nginx
     - galaxyproject.proftpd
-    - geerlingguy.docker
     - galaxyproject.rabbitmq
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
