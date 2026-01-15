@@ -1,8 +1,8 @@
-galaxy_commit_id: release_25.0
+galaxy_commit_id: release_25.1
 galaxy_build_client: false
 galaxy_client_make_target: client-production
 
-csnt_brand: QA1-TEST-25.0
+csnt_brand: QA1-TEST-25.1
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
 csnt_edam_panel_views: operations,topics
