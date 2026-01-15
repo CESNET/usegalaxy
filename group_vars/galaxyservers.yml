@@ -305,12 +305,11 @@ certbot_well_known_root: /srv/nginx/_well-known_root
 certbot_share_key_users:
   - www-data
   - proftpd
-certbot_share_key_ids:
-  - "999:999"
+  - rabbitmq
 certbot_post_renewal: |
     systemctl restart nginx || true
-    docker restart rabbit_hole || true
     systemctl restart proftpd || true
+    systemctl restart rabbitmq-server || true
 # the order in domain names matter, rabbitMQ role takes the first entry for path to letsencrypt certificates
 certbot_domains: "{{ [ inventory_hostname ] + (extra_certbot_domains | default([]) ) }}"
 certbot_expand: true
@@ -351,35 +350,40 @@ nginx_conf_http:
 
 # default Let's encrypt, override in host_vars eventually
 nginx_ssl_role: usegalaxy_eu.certbot
-nginx_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-nginx_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+nginx_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
+nginx_conf_ssl_certificate_key: /etc/ssl/user/privkey-www-data.pem
 
-#Install pip docker package for ansible
-pip_install_packages:
-  - docker
 
 # RabbitMQ
 rabbitmq_hostname: "{{ inventory_hostname }}"
-rabbitmq_container:
-  name: rabbit_hole
-  image: rabbitmq:3.13-management
-  hostname: "{{ inventory_hostname }}"
-
 rabbitmq_plugins:
-  - rabbitmq_management
+  - names: rabbitmq_management
 
-# ok for noletsencrypt
-#rabbitmq_conf_ssl_certificate: /etc/ssl/certs/cert.pem
+rabbitmq_apt_keys:
+  ## Team RabbitMQ's main signing key
+  - url: https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc
+    file: rabbitmq-release-signing-key.asc
+
+rabbitmq_apt_repositories:
+  ## Provides modern Erlang/OTP releases
+  - url: "https://deb1.rabbitmq.com/rabbitmq-erlang/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+  - url: "https://deb2.rabbitmq.com/rabbitmq-erlang/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+  ## Provides RabbitMQ
+  - url: "https://deb1.rabbitmq.com/rabbitmq-server/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+  - url: "https://deb2.rabbitmq.com/rabbitmq-server/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+
 rabbitmq_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
-rabbitmq_conf_ssl_certificate_key: /etc/ssl/user/privkey-999:999.pem
-
-rabbitmq_container_pause: 60
+rabbitmq_conf_ssl_certificate_key: /etc/ssl/user/privkey-rabbitmq.pem
 
 rabbitmq_config:
   listeners:
     tcp: none
-  ssl_listeners:
-    default: 5671
+    ssl:
+      default: 5671
   ssl_options:
     verify: verify_peer
     cacertfile: /etc/ssl/certs/ca-certificates.crt
@@ -396,25 +400,42 @@ rabbitmq_config:
   consumer_timeout: 21600000 # 6 hours in milliseconds
 
 rabbitmq_vhosts:
-  - pulsar
-  - galaxy_gpu
-  - galaxy_internal
+  - name: pulsar
+  - name: galaxy_internal
 
 rabbitmq_users:
+  - user: guest
+    state: absent
   - user: debian
     password: "{{ rabbitmq_users_password.mqadmin }}"
     tags: administrator
-    vhost: /
+    permissions:
+          - vhost: /
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
   - user: "{{ pulsar.user_name }}"
     password: "{{ rabbitmq_users_password.pulsar }}"
-    vhost: pulsar
+    permissions:
+          - vhost: pulsar
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
   - user: galaxy
     password: "{{ vault_rabbitmq_password_galaxy }}"
-    vhost: galaxy_internal
+    permissions:
+          - vhost: galaxy_internal
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
   - user: flower
     password: "{{ vault_rabbitmq_password_flower }}"
     tags: administrator
-    vhost: galaxy_internal
+    permissions:
+          - vhost: galaxy_internal
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
 
 
 # TUS
@@ -490,8 +511,8 @@ proftpd_options:
   - Port: 21
 proftpd_sql_db: galaxy@/var/run/postgresql
 proftpd_sql_user: galaxy
-proftpd_conf_ssl_certificate: /etc/letsencrypt/live/{{ inventory_hostname }}/cert.pem
-proftpd_conf_ssl_certificate_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+proftpd_conf_ssl_certificate: /etc/ssl/certs/cert.pem
+proftpd_conf_ssl_certificate_key: /etc/ssl/user/privkey-proftpd.pem
 proftpd_global_options:
   - PassivePorts: 56000 60000
 proftpd_use_mod_tls_shmcache: false
