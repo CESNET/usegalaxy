@@ -372,6 +372,22 @@ rabbitmq_config:
     disable_stats: 'false'
   consumer_timeout: 21600000 # 6 hours in milliseconds
 
+rabbitmq_apt_keys:
+  ## Team RabbitMQ's main signing key
+  - url: https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc
+    file: rabbitmq-release-signing-key.asc
+rabbitmq_apt_repositories:
+  ## Provides modern Erlang/OTP releases
+  - url: "https://deb1.rabbitmq.com/rabbitmq-erlang/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+  - url: "https://deb2.rabbitmq.com/rabbitmq-erlang/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+  ## Provides RabbitMQ
+  - url: "https://deb1.rabbitmq.com/rabbitmq-server/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+  - url: "https://deb2.rabbitmq.com/rabbitmq-server/{{ rabbitmq_apt_dist }}/{{ rabbitmq_apt_dist_rel }}"
+    signed_by: "{{ rabbitmq_apt_key_dir }}/rabbitmq-release-signing-key.asc"
+
 rabbitmq_vhosts:
   - name: pulsar
   - name: galaxy_internal
