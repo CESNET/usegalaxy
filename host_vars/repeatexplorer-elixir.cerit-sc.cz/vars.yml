@@ -87,8 +87,6 @@ galaxy_config_files:
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
-#  - src: files/galaxy/config/oidc_config.xml
-#    dest: "{{ galaxy_config_dir }}/oidc_config.xml"
 #  - src: "files/{{ inventory_hostname }}/all_tools.yml"
 #    dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
 
@@ -109,10 +107,6 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/style/base.css"
 
 galaxy_config_templates:
-#  - src: templates/galaxy/config/reports.yml.j2
-#    dest: "{{ galaxy_config.gravity.reports.config_file }}"
-#  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/oidc_backends_config.xml.j2', 'templates/galaxy/config/oidc_backends_config.xml.j2']) }}"
-#    dest: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
   - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
     dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
   - src: "templates/{{ inventory_hostname }}/config/local_tool_conf.xml.j2"
@@ -123,8 +117,6 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
     dest: "{{ galaxy_config.galaxy.auth_config_file }}"
-  - src: templates/galaxy/config/dependency_resolvers_conf.xml.j2
-    dest: "{{ galaxy_config.galaxy.dependency_resolvers_config_file }}"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
     dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
 
@@ -133,10 +125,6 @@ galaxy_extra_dirs:
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_config_dir }}/plugins/activities"
   - "{{ galaxy_server_dir }}/static/images/umbr_programs_icons"
-
-rabbitmq_vhosts:
-  - pulsar  # DEMON: used to be /pulsar and Pulsar config must be changed before (or right after) the change is deployed
-  - galaxy_internal
 
 tusd_instances:
       - name: uploads
