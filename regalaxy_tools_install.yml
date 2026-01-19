@@ -1,0 +1,29 @@
+---
+- hosts: galaxyservers
+  become: true
+  become_user: root
+  tasks:
+    ## Install required Galaxy tools
+    - name: Install required tools - create Ephemeris venv
+      ansible.builtin.shell:
+        cmd: python3 -m venv ~/ephemeris_venv
+    - name: Install required tools - install Ephemeris
+      ansible.builtin.shell:
+        cmd: source ~/ephemeris_venv/bin/activate && pip install ephemeris
+    - name: Install required tools - install Galaxy tools
+      ansible.builtin.shell:
+        cmd: ~/ephemeris_venv/bin/shed-tools install -g https://{{ inventory_hostname }}{{ csnt_galaxy_url_prefix }} -a {{ api_key }} -t {{ playbook_dir }}/files/{{ inventory_hostname }}/regalaxy_tool_list.yaml
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz', 'galaxy-re.grid.cesnet.cz']"
+    - name: Set-up pre-defined integrated_tool_panel config file on RE instance only
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/{{ inventory_hostname }}/regalaxy_integrated_tool_panel.xml"
+        dest: "{{ galaxy_mutable_config_dir }}/integrated_tool_panel.xml"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0644'
+        backup: true
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz', 'galaxy-re.grid.cesnet.cz']"
+    - name: Restart galaxy
+      become: true
+      become_user: root
+      ansible.builtin.command: galaxyctl restart

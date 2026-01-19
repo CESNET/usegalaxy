@@ -8,7 +8,7 @@ postgresql_objects_databases:
   - name: "{{ galaxy_db_name }}"
     owner: "{{ galaxy_user_name }}"
 postgresql_objects_privileges:
-  - database: galaxy
+  - database: "{{ galaxy_db_name }}"
     roles: telegraf
     privs: SELECT
     objs: ALL_IN_SCHEMA
@@ -37,3 +37,4 @@ postgresql_conf:
 #
 # PostgreSQL Backups
 postgresql_backup_dir: "{{ galaxy_mutable_data_dir }}/backups"
+postgresql_pg_dump_prefix: galaxy_db_backup

@@ -2,6 +2,7 @@
 # defaults for host-specific vars
 csnt_brand: ""
 csnt_contact_email: "galaxy@cesnet.cz"
+csnt_galaxy_url_prefix: ''
 csnt_short_term_storage_dir: short_term_web_storage
 csnt_enable_account_interface: true
 csnt_log_level: WARNING
@@ -10,10 +11,13 @@ csnt_enable_notification_system: false
 csnt_enable_oidc: true
 csnt_oidc_config_file: "{{ galaxy_config_dir }}/oidc_config.xml"
 csnt_oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
+csnt_auth_config_file: "{{ galaxy_config_dir }}/auth_conf.xml"
+csnt_smtp_server: "rs.cesnet.cz:25"
 csnt_enable_reports: false
 csnt_edam_panel_views: ""
 csnt_default_panel_view: default
 csnt_registered_user_jobs_limit: 10
+csnt_jobs_output_size_limit: 50GB
 csnt_tool_config_file:
   - "{{ galaxy_config_dir }}/tool_conf.xml"
   - "{{ galaxy_config_dir }}/local_tool_conf.xml"
@@ -26,6 +30,13 @@ csnt_galaxy_tmpclean_dirs:
   - "{{ galaxy_config.galaxy.new_file_path }}"
   - "{{ galaxy_tus_upload_store if galaxy_config.gravity.tusd.enable else ' ' }}"
 csnt_require_login: true
+csnt_toolbox_auto_sort: true
+csnt_watch_job_rules: auto
+csnt_retry_job_output_collection: 3
+csnt_gunicorn_workers: 2
+csnt_celery_concurrency: 2
+csnt_celery_memory_limit: 2
+csnt_handlers_processes: 2
 
 admin_ssh_keys: false
 enable_telegraf: false
@@ -46,7 +57,7 @@ galaxy_mutable_config_dir: "{{ galaxy_root }}/var/config"
 galaxy_gravity_state_dir: "{{ galaxy_root }}/var/gravity"
 galaxy_tool_dependency_dir: "{{ galaxy_root }}/var/dependencies"
 galaxy_user: {name: "{{ galaxy_user_name }}", shell: /bin/bash}
-galaxy_commit_id: release_24.2
+galaxy_commit_id: release_25.0
 galaxy_force_checkout: true
 galaxy_job_config_file: "{{ galaxy_config_dir }}/galaxy.yml"
 
@@ -61,7 +72,7 @@ galaxy_job_config:
       workers: 4
     pulsar_tpv_runner:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      galaxy_url: "https://{{ rabbitmq_hostname }}"
+      galaxy_url: "https://{{ rabbitmq_hostname }}{{ csnt_galaxy_url_prefix }}"
       amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar?ssl=1"
       amqp_acknowledge: true
       amqp_ack_republish_time: 1200
@@ -97,7 +108,7 @@ galaxy_job_config:
     - type: anonymous_user_concurrent_jobs
       value: 1
     - type: output_size
-      value: 50GB
+      value: "{{ csnt_jobs_output_size_limit }}"
   tools:
     - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
       environment: local_env
@@ -105,17 +116,18 @@ galaxy_job_config:
 galaxy_config:
   galaxy:
     # Main Configuration
-    # To not bother the main disk
     new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
+    auth_config_file: "{{ csnt_auth_config_file }}"
     enable_oidc: "{{ csnt_enable_oidc }}"
-    oidc_config_file: "{{ csnt_oidc_config_file }}"
-    oidc_backends_config_file: "{{ csnt_oidc_backends_config_file }}"
+    oidc_config_file: "{{ csnt_oidc_config_file if csnt_enable_oidc else '' }}"
+    oidc_backends_config_file: "{{ csnt_oidc_backends_config_file if csnt_enable_oidc else '' }}"
     logo_src: "https://www.e-infra.cz/img/logo.svg"
     themes_config_file: "{{ galaxy_config_dir }}/themes.yml"
     admin_users: "{{ vault_admin_users }}"
+    galaxy_url_prefix: "{{ csnt_galaxy_url_prefix }}"
     cleanup_job: onsuccess
-    smtp_server: "rs.cesnet.cz:25"
+    smtp_server: "{{ csnt_smtp_server }}"
     error_email_to: "{{  csnt_contact_email  }}"
     allow_user_creation: false
     require_login: "{{ csnt_require_login }}"
@@ -130,6 +142,7 @@ galaxy_config:
     tool_config_file: "{{ csnt_tool_config_file }}"
     tool_sheds_config_file: "{{ csnt_tool_sheds_config_file }}"
     sanitize_allowlist_file: "{{ galaxy_mutable_config_dir }}/sanitize_allowlist.txt"
+    toolbox_auto_sort: "{{ csnt_toolbox_auto_sort }}"
     # SQL Performance
     slow_query_log_threshold: 5
     enable_per_request_sql_debugging: true
@@ -139,7 +152,7 @@ galaxy_config:
     brand: "{{ csnt_brand }}"
     enable_account_interface: "{{ csnt_enable_account_interface }}"
     enable_notification_system: "{{ csnt_enable_notification_system }}"
-    watch_job_rules: 'auto'
+    watch_job_rules: "{{ csnt_watch_job_rules }}"
     allow_path_paste: "{{ csnt_allow_path_paste }}"
     enable_quotas: true
     allow_user_deletion: "{{ csnt_allow_user_deletion }}"
@@ -156,7 +169,7 @@ galaxy_config:
     install_repository_dependencies: true
     install_resolver_dependencies: false
     # NFS workarounds
-    retry_job_output_collection: 3
+    retry_job_output_collection: "{{ csnt_retry_job_output_collection }}"
     # Debugging
     allow_user_impersonation: true
     log_level: "{{ csnt_log_level }}"
@@ -164,27 +177,19 @@ galaxy_config:
     outputs_to_working_directory: true
     new_user_dataset_access_role_default_private: true # Make datasets private by default
     # TUS
-    galaxy_infrastructure_url: "https://{{ inventory_hostname }}"
+    galaxy_infrastructure_url: "https://{{ inventory_hostname }}{{ csnt_galaxy_url_prefix }}"
     tus_upload_store: "{{ galaxy_tus_upload_store }}"
     # CVMFS
     tool_data_table_config_path:
     - /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml
     - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
     # Tool Dependencies
+    dependency_resolvers: {}
     container_resolvers:
       - type: explicit_singularity
       - type: cached_mulled_singularity
         cache_directory: /cvmfs/singularity.galaxyproject.org/all/
         cache_directory_cacher_type: dir_mtime
-    # dependency_resolvers:
-    #   - type: conda
-    #   - type: tool_shed_packages
-    #   - type: galaxy_packages
-    #   - type: galaxy_packages
-    #     versionless: true
-    #   - type: conda
-    #     versionless: true
-
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
@@ -208,7 +213,7 @@ galaxy_config:
       # listening options
       bind: "unix:{{ galaxy_mutable_config_dir }}/gunicorn.sock"
       # performance options
-      workers: 2
+      workers: "{{ csnt_gunicorn_workers }}"
       # Other options that will be passed to gunicorn
       # This permits setting of 'secure' headers like REMOTE_USER (and friends)
       # https://docs.gunicorn.org/en/stable/settings.html#forwarded-allow-ips
@@ -221,8 +226,8 @@ galaxy_config:
       enable: true
       queues: celery,galaxy.internal,galaxy.external
       pool: threads
-      memory_limit: 2
-      concurrency: 2
+      memory_limit: "{{ csnt_celery_memory_limit }}"
+      concurrency: "{{ csnt_celery_concurrency }}"
       loglevel: DEBUG
     tusd:
       enable: true
@@ -230,7 +235,7 @@ galaxy_config:
       upload_dir: "{{ galaxy_tus_upload_store }}"
     handlers:
       handler:
-        processes: 2
+        processes: "{{ csnt_handlers_processes }}"
         pools:
           - job-handlers
           - workflow-schedulers
@@ -242,6 +247,8 @@ galaxy_config:
 
 
 galaxy_config_files_public:
+  - src: files/galaxy/config/sanitize_allowlist.txt
+    dest: "{{ galaxy_config.galaxy.sanitize_allowlist_file }}"
   - src: templates/{{ inventory_hostname }}/static/welcome.html
     dest: "{{ galaxy_mutable_config_dir }}/welcome.html"
   - src: files/galaxy/static/usegalaxycz_straight.svg
@@ -268,6 +275,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/vault_conf.yml"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
     dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
+    dest: "{{ galaxy_config.galaxy.auth_config_file }}"
 
 galaxy_local_tools:
   - testing.xml
@@ -275,6 +284,7 @@ galaxy_local_tools:
   - testing_html.xml
 
 galaxy_extra_dirs:
+  - "{{ galaxy_mutable_data_dir }}"
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_config_dir }}/plugins/activities"
 

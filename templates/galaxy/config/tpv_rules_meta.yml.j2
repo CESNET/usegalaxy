@@ -1,10 +1,15 @@
 global:
   default_inherits: default
+  
 tools:
   default:
+    abstract: True
     cores: 1
     mem: cores * 4
     env:
+      # Ensuring a consistent collation environment is good for reproducibility.
+    - name: LC_ALL
+      value: C
     - name: GALAXY_SLOTS
       value: "{int(cores)}"
     - name:  GALAXY_MEMORY_MB
@@ -14,6 +19,7 @@ tools:
     context:
       walltime: 24
       scratch: 50
+      queue: "{{ pulsar.pbs_queue }}"
     scheduling:
       require:
         - pulsar
@@ -36,7 +42,7 @@ tools:
     scheduling:
       require:
       - singularity
-  .*testing.*:
+  testing.*:
     cores: 1
     mem: 1
     context:
@@ -47,7 +53,7 @@ tools:
           # Only allow the tool to be executed if the user is an admin
           admin_users = app.config.admin_users
           # last line in block must evaluate to a value - which determines whether the TPV if conditional matches or not
-          not user or (user.email not in admin_users and user.email not in ['galaxy@cesnet.cz','galaxy@usegalaxy.cz'])
+          not user or (user.email not in admin_users and user.email not in ['galaxy@cesnet.cz','galaxy@usegalaxy.cz','galaxyelixir@repeatexplorer-elixir.cerit-sc.cz'])
         fail: Unauthorized. Only admins can execute this tool.
       - id: resource_params_defined
         if: |
@@ -65,38 +71,73 @@ tools:
     context:
       walltime: 96
       scratch: 100
+      queue: elixircz
+    scheduling:
+      require:
+        - highmem
+  toolshed.g2.bx.psu.edu/repos/devteam/fastq_groomer/fastq_groomer/.*:
+    cores: 1
+    mem: 16
   toolshed.g2.bx.psu.edu/repos/iuc/hapog/hapog/.*:
     cores: 8
     context:
       walltime: 48
+  __DATA_FETCH__:
+    inherits: local_running_tools
   __SET_.*:
     inherits: local_running_tools
+  export_remote:
+    inherits: local_running_tools
+  gff2bed1:
+    inherits: local_running_tools
+  ebi_sra_main:
+    inherits: local_sing_running_tools
+  sra_source:
+    inherits: local_sing_running_tools
+  Extract_features1:
+    inherits: local_sing_running_tools
   __IMPORT_HISTORY__:
-     inherits: local_running_tools
+    inherits: local_running_tools
   __EXPORT_HISTORY__:
-     inherits: local_running_tools
+    inherits: local_running_tools
   "Show beginning1":
-     inherits: local_running_tools
+    inherits: local_running_tools
   "Show tail1":
-     inherits: local_running_tools
+    inherits: local_running_tools
   "Remove beginning1":
-     inherits: local_running_tools
+    inherits: local_running_tools
   cat1:
-     inherits: local_running_tools
+    inherits: local_running_tools
   .*/data_manager_.*:
     inherits: local_sing_running_tools
-  toolshed.g2.bx.psu.edu/repos/iuc/goenrichment/goenrichment/2.0.1/.*:
+  toolshed.g2.bx.psu.edu/repos/iuc/goenrichment/goenrichment/.*:
     scheduling:
       require:
         - nasty-java
+  toolshed.g2.bx.psu.edu/repos/devteam/clustalw/clustalw/.*:
+    context:
+      walltime: 48
+
 roles:
   training.*:
     max_cores: 4
-    max_mem: max_cores * 4
+    max_mem: max_cores * 3.8
     scheduling:
       require:
-        - pulsar
         - training
+  # DEMON: For testing purposes, set whatever you want here when needed
+  test.*:
+    scheduling:
+      require:
+        - test
+  highmem:
+    mem: 512
+    context:
+      queue: elixircz
+    scheduling:
+      require:
+        - highmem
+    
 destinations:
   tpv_local:
     runner: local_runner
@@ -118,24 +159,29 @@ destinations:
       singularity_enabled: true
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
     env:
-      # Ensuring a consistent collation environment is good for reproducibility.
-      LC_ALL: C
       # The cache directory holds the docker containers that get converted
-      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_CACHEDIR: "{{ galaxy_mutable_data_dir }}/singularity/cache"
       # Singularity uses a temporary directory to build the squashfs filesystem
       SINGULARITY_TMPDIR: "{{ galaxy_mutable_data_dir }}/tmp"
     scheduling:
       require:
       - local
-      prefer:
       - singularity
-  tpv_pulsar:
+  # DEMON: this is the common pulsar configuration
+  tpv_pulsar_common:
+    abstract: true
     runner: pulsar_tpv_runner
-    max_accepted_cores: 128
-    max_accepted_mem: 512
+    # DEMON: sum of cores in one VM (i.e., elmo5-*)
+    max_accepted_cores: 32
+    # DEMON: sum of memory in one VM (i.e., elmo5-*)
+    max_accepted_mem: 185
+    # DEMON: sum of GPUs in one VM (i.e., elmo5-*)
     max_accepted_gpus: 0
-    max_cores: 16
+    # DEMON: max number of cores one job will get
+    max_cores: 32
+    # DEMON: max memory one job will get
     max_mem: 180
+    # DEMON: max number of gpus one job will get
     max_gpus: 0
     params:
       default_file_action: remote_rsync_transfer
@@ -151,7 +197,27 @@ destinations:
       ssh_key: |
         {{ pulsar_ssh_key | indent(width=8,first=False) }}
       outputs_to_working_directory: false
-      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {{ pulsar.pbs_queue }} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+      submit_native_specification: "-l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue} -N {{ pulsar.nfs_prefix }}_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    env:
+      TMPDIR: $SCRATCHDIR
+      TMP: $SCRATCHDIR
+      TEMP: $SCRATCHDIR
+    scheduling:
+      require:
+        - pulsar  
+  # DEMON: this one uses conda dependences (no singularity)
+  tpv_pulsar_conda:
+    inherits: tpv_pulsar_common
+    scheduling:
+      require:
+        - conda
+      reject:
+        - singularity
+  # DEMON: this one uses singularity exclusively (consider it as a default configuration)
+  tpv_pulsar:
+    inherits: tpv_pulsar_common
+    runner: pulsar_tpv_runner
+    params:
       singularity_enabled: true
       singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro,$SCRATCHDIR:rw"
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/python:3.8.3"
@@ -159,22 +225,36 @@ destinations:
         --env JAVA_OPTS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
         --env JAVA_TOOL_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
     env:
-      LC_ALL: C
-      TMPDIR: $SCRATCHDIR
-      TMP: $SCRATCHDIR
-      TEMP: $SCRATCHDIR
       SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
       SINGULARITY_TMPDIR: $SCRATCHDIR
       XDG_CACHE_HOME: $SCRATCHDIR
     scheduling:
-      require:
-      - pulsar
+      prefer:
+        - singularity
+  # DEMON: Pulsar for TIAAS. It could schedule to a private small queue to ensure the participants of some course will not have to wait
   tpv_pulsar_training:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner
     scheduling:
       require:
         - training
+  # DEMON: For tools/users that need more memory for their jobs. Current approach is to add the user to highmem role for some time. Better approach would be to implement rescheduling for PBS over Pulsar runner
+  tpv_pulsar_highmem:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    max_accepted_mem: 512
+    max_mem: 512
+    scheduling:
+      require:
+        - highmem
+  # DEMON: For testing purposes, set whatever you want here when needed
+  tpv_pulsar_test:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    scheduling:
+      require:
+        - test
+  # DEMON: Some JAVA tools just ignore the traditional way of limiting the allowed memory
   tpv_pulsar_nasty_java:
     inherits: tpv_pulsar
     runner: pulsar_tpv_runner
