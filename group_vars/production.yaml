@@ -1,2 +1,3 @@
 rbd_mount_point: /data
+rbd_data_dir: "{{ rbd_mount_point }}/galaxy"
 rbd_cluster_code: CL4

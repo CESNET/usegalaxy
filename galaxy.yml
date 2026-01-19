@@ -80,11 +80,11 @@
         fstype: xfs
         opts: rw,_netdev
         state: mounted
-    - name: Create galaxy mutable data directory
+    - name: Create RBD data directory
       file:
         owner: "{{ galaxy_user_name }}"
         group: "{{ galaxy_user_group_name }}"
-        path: "{{ galaxy_mutable_data_dir }}"
+        path: "{{ rbd_data_dir }}"
         state: directory
         mode: '0755'
 
@@ -100,6 +100,39 @@
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
+  post_tasks:
+    - name: Create pg_dump backup folder if needed
+      file:
+        path:  "{{ postgresql_backup_dir }}/pg_dump"
+        state: directory
+        owner: postgres
+        group: "{{ galaxy_user_group_name }}"
+        mode:  0750
+    - name: Create initial empty pg_dump file if needed # otherwise the following logrotate conf will not work
+      file:
+        path:  "{{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz"
+        state: touch
+        owner: postgres
+        group: "{{ galaxy_user_group_name }}"
+        mode:  0640
+    - name: Set-up Galaxy DB backup using pg_dump and logrotate
+      ansible.builtin.blockinfile:
+        path: "/etc/logrotate.d/{{ postgresql_pg_dump_prefix }}"
+        create: true
+        block: |
+          {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz {
+            daily
+            missingok
+            rotate 14
+            nocompress
+            nocreate
+            postrotate
+              sudo -u postgres pg_dump {{ galaxy_db_name }} --file={{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql --verbose 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: postgres gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && sudo -u postgres gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+            endscript
+          }
 
 - hosts: noletsencrypt
   become: true
@@ -151,7 +184,7 @@
       when: admin_ssh_keys
     - name: Install Dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'squashfs-tools', 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-docker', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'squashfs-tools', 'libldap2-dev', 'libsasl2-dev']#, 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -212,6 +245,22 @@
       when: enable_telegraf | bool
 
   post_tasks:
+    - name: Add Nginx warning about maintenance
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/nginx/warning.html"
+        dest: "/var/www/html/warning.html"
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Configure ProFTPd LDAP option
+      template:
+        src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/proftpd_ldap.conf.j2', 'templates/galaxy/config/proftpd_ldap.conf.j2']) }}"
+        dest: "{{ proftpd_config_include_dir }}/06_ldap.conf"
+        backup: yes
+      notify:
+      - reload proftpd
+
     - name: Adds nginx's www-data user into galaxy user group
       ansible.builtin.user:
         name: www-data
@@ -248,16 +297,32 @@
         chdir: "{{ galaxy_root }}/server"
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz','usegalaxy.cz']"
 
-    - name: Creates entry in crontab "chmod on _files for ngnix access"
+    # DEMON: cleanup on places which are not set in standard Galaxy cleanup process
+    - name: Creates entry in crontab "tmpreaper call in tus upload dir"
       ansible.builtin.cron:
-        name: "chmod on _files for ngnix access"
-        minute: "2"
-        hour: "*" # 2nd minute every hour
-        #DEMON: zvazit ci nepouzit find /rbd/data/datasets/*/*/*/dataset_*_files -type f ! -perm /g+rw -exec chmod g+rw '{}' ';'
-        job: "/usr/bin/find {{ galaxy_config.galaxy.file_path }}/*/*/*/dataset_*_files -type d -mmin -180 -maxdepth 0 -exec chmod -R g+rw '{}' ';'"
+        name: "tmpreaper in tus upload dir"
+        minute: "5"
+        hour: "*" 
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_tus_upload_store }} >> {{ galaxy_mutable_data_dir }}/cleaning_tus_upload_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
-      tags: cron
+    - name: Creates entry in crontab "tmpreaper call in galaxy tmp dir"
+      ansible.builtin.cron:
+        name: "tmpreaper in galaxy temp dir"
+        minute: "7"
+        hour: "*" 
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_mutable_data_dir }}/tmp >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_temp_dir.log"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
+#    - name: Creates entry in crontab "tmpreaper call in galaxy jobs dir"
+#      ansible.builtin.cron:
+#        name: "tmpreaper in galaxy jobs dir"
+#        minute: "9"
+#        hour: "*" 
+#        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_mutable_data_dir }}/jobs >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_jobs_dir.log"
+#      become: yes
+#      become_user: "{{ galaxy_user_name }}"
+
 
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
@@ -265,7 +330,7 @@
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "0" # midnight daily
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60"
+        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60 >> {{ galaxy_mutable_data_dir }}/cleaning_gxadmin_cleanup.log"
       tags: cron
 
     - name: Create a file with key for CRON jobs
@@ -281,7 +346,7 @@
       no_log: true
 
     # set up cron to propagate einfra users to einfra galaxy group
-    - name: Ensure the user_group cron script directory exists
+    - name: Ensure the user_group directory exists
       ansible.builtin.file:
         path: "{{ galaxy_root }}/cron/user_group"
         state: directory
@@ -290,7 +355,7 @@
         mode: '0755'
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
-    - name: Copy user - group association script
+    - name: Copy user-group association script
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/extra_scripts/add_group_users.py"
         dest: "{{ galaxy_root }}/cron/user_group/add_group_users.py"
@@ -305,7 +370,7 @@
         append: yes
       when: "'usegalaxy.cz' in inventory_hostname"
       tags: cron
-    - name: Setup user - group association rutine
+    - name: Setup user-group association rutine
       ansible.builtin.cron:
         name: "Add E-infra users to E-infra group"
         user: postgres
@@ -373,12 +438,15 @@
       tags: cron
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
 
-
-    - name: RE Galaxy instance patch in lib/galaxy/webapps/galaxy/api/job_files.py
-      replace:
-        path: "{{ galaxy_root }}/server/lib/galaxy/webapps/galaxy/api/job_files.py"
-        regexp: '^(\s*?)shutil\.move\(input_file\.name,\s*path\)\s*$'
-        replace: '\1os.chmod(shutil.move(input_file.name, path), 0o664)'
+    - name: Set-up pre-defined integrated_tool_panel config file on RE instance only
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/{{ inventory_hostname }}/regalaxy_integrated_tool_panel.xml"
+        dest: "{{ galaxy_mutable_config_dir }}/integrated_tool_panel.xml"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0644'
+        backup: true
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz', 'galaxy-re.grid.cesnet.cz']"
 
     - name: Add lines to logrotate config of ProFTPd
       lineinfile:
@@ -387,6 +455,7 @@
         insertbefore: BOF
       with_items:
         - /var/log/proftpd/tls.log
+        - /var/log/proftpd/ldap.log
         - /var/log/proftpd/sql.log
 
     - name: Add pulsar public ssh key
