@@ -1,0 +1,31 @@
+---
+name: Ansible-lint
+
+'on':
+  push:
+
+defaults:
+  run:
+    working-directory: 'ansible-tpv-lint'
+
+jobs:
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: 'ansible-tpv-lint'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install ansible ansible-lint
+      - name: Lint playbook
+        run: |
+          if ! ansible-lint; then
+            exit 1
+          fi

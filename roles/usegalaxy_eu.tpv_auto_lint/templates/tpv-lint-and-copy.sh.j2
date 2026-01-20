@@ -1,0 +1,37 @@
+#!/bin/bash
+# Script that copies files to TPV config dir, only if linting is successful
+
+PYTHONPATH="{{ galaxy_root }}/server/lib"
+VENV="{{ galaxy_venv_dir }}"
+TPV_MUTABLE_DIR="{{ tpv_mutable_dir }}"
+TPV_DIR="{{ tpv_config_dir }}"
+TPV_DIR_NAME="{{ tpv_config_dir_name }}"
+JOB_CONFIG_FILE="{{ galaxy_job_config_file }}"
+TPV_ENV_NAME="{{ tpv_env_name }}"
+
+echo "Installing TPV version 3.1.3 and yq"
+$VENV/bin/pip install total-perspective-vortex==3.1.3 yq
+echo "Activating the Galaxy VENV"
+. $VENV/bin/activate
+
+LOCAL_TPV_CONFIGS="$(yq -c '.galaxy.job_config.execution.environments.'${TPV_ENV_NAME}'.tpv_config_files[]' $JOB_CONFIG_FILE | grep -v '^\"http' | xargs basename -a | xargs -I {} echo \"${TPV_MUTABLE_DIR}/{}\" | xargs)"
+echo "Found the following local TPV configs: $LOCAL_TPV_CONFIGS"
+
+if PYTHONPATH=$PYTHONPATH tpv lint $LOCAL_TPV_CONFIGS; then
+        echo "lint successful, checking job configuration for file(s): $LOCAL_TPV_CONFIGS ..."
+	for f in $LOCAL_TPV_CONFIGS; do
+        	FNAME=$(basename "$f")
+                if grep -q "$TPV_DIR_NAME/$FNAME" "$JOB_CONFIG_FILE"; then
+                        echo "$FNAME is present in job configuration, copying..."
+                        [[ $(type -t cp) == "alias" ]] && unalias cp
+                        cp -bu "$f" "$TPV_DIR/$FNAME" {% if tpv_privsep %}&& chown root:{{ __galaxy_user_group }} "$TPV_DIR/$FNAME" {% endif %}
+
+                else
+                        echo "$FNAME is not present in job configuration, exiting..."
+                        exit 3 && true
+                fi
+	done
+else
+        echo "lint failed, file(s): $LOCAL_TPV_CONFIGS - not copied"
+        exit 3 && true
+fi
