@@ -5,4 +5,4 @@
         name: docker-compose
   roles:
     - peaceman.sentry_selfhosted
-#    - mvdbeek.sentry_selfhosted
+    #    - mvdbeek.sentry_selfhosted
