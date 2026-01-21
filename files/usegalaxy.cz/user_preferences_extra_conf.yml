@@ -15,6 +15,22 @@ preferences:
         label: Whether to make new draft records publicly accessible (Yes) or restricted (No).
         type: boolean
         required: False
+    cesnet_invenio_sandbox:
+    description: Your CESNET-Invenio CatchAll Account
+    inputs:
+      - name: token
+        label: Personal Token to publish records to CESNET-Invenio CatchAll
+        type: secret
+        store: vault
+        required: False
+      - name: public_name
+        label: Public name to publish records (formatted as "Lastname, Firstname")
+        type: text
+        required: False
+      - name: public_records
+        label: Whether to make new draft records publicly accessible (Yes) or restricted (No).
+        type: boolean
+        required: False
   zenodo_sandbox:
     description: Your Zenodo _SANDBOX_ Account
     inputs:
@@ -27,15 +43,15 @@ preferences:
         label: Creator name to associate with new records (formatted as "Last name, First name"). If left blank "Anonymous Galaxy User" will be used. You can always change this by editing your record directly.
         type: text
         required: False
-  zenodo:
-    description: Your Zenodo Account
-    inputs:
-      - name: token
-        label: Personal Access Token used to create draft records and to upload files. You can manage your tokens at https://zenodo.org/account/settings/applications/
-        type: secret
-        store: vault
-        required: False
-      - name: public_name
-        label: Creator name to associate with new records (formatted as "Last name, First name"). If left blank "Anonymous Galaxy User" will be used. You can always change this by editing your record directly.
-        type: text
-        required: False
+  # zenodo:
+  #   description: Your Zenodo Account
+  #   inputs:
+  #     - name: token
+  #       label: Personal Access Token used to create draft records and to upload files. You can manage your tokens at https://zenodo.org/account/settings/applications/
+  #       type: secret
+  #       store: vault
+  #       required: False
+  #     - name: public_name
+  #       label: Creator name to associate with new records (formatted as "Last name, First name"). If left blank "Anonymous Galaxy User" will be used. You can always change this by editing your record directly.
+  #       type: text
+  #       required: False
