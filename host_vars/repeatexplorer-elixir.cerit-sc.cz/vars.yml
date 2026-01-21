@@ -75,9 +75,8 @@ pulsar:
   pbs_queue: galaxyre
   pbs_gpu_queue: galaxy_gpu
 
-#Install pip docker package for ansible
+#Install specific packages via pip
 pip_install_packages:
-  - docker
   - python-ldap
 
 galaxy_config_files:
