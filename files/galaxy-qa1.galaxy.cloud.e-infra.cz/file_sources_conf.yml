@@ -7,6 +7,14 @@
   public_name: ${user.preferences['invenio_sandbox|public_name']}
   writable: true
 - type: inveniordm
+  id: cz_nma_invenio
+  doc:  CZ National Metadata Directory
+  label: CZ NMA TESTING
+  url: https://nma.eosc.cz/
+  token: ${user.user_vault.read_secret('preferences/cz_nma_invenio/token')}
+  public_name: ${user.preferences['cz_nma_invenio|public_name']}
+  writable: true
+- type: inveniordm
   id: cesnet_invenio_sandbox
   doc: CESNET-Invenio instance
   label: CESNET-Invenio TESTING
