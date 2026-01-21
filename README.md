@@ -139,10 +139,6 @@ On Debian 11 the default version of `ansible` is 2.10.08 which fails to extract 
   - followed by `sudo apt-get update` and `sudo apt-get install ansible -y`
 - Note that you might need to `sudo apt remove ansible` `sudo apt autoremove` before you try to install ansible.
 
-### rabbitmq python
-
-Use `sudo apt install python3-docker` before running the `usegalaxy.rabbitmqserver` role.
-
 ### influxdb
 
 For influxdb apt key error: https://www.influxdata.com/blog/linux-package-signing-key-rotation/

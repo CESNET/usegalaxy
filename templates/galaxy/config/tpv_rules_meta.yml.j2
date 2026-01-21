@@ -1,6 +1,6 @@
 global:
   default_inherits: default
-  
+
 tools:
   default:
     abstract: True
@@ -137,7 +137,7 @@ roles:
     scheduling:
       require:
         - highmem
-    
+
 destinations:
   tpv_local:
     runner: local_runner
@@ -204,7 +204,7 @@ destinations:
       TEMP: $SCRATCHDIR
     scheduling:
       require:
-        - pulsar  
+        - pulsar
   # DEMON: this one uses conda dependences (no singularity)
   tpv_pulsar_conda:
     inherits: tpv_pulsar_common

@@ -15,6 +15,22 @@ preferences:
         label: Whether to make new draft records publicly accessible (Yes) or restricted (No).
         type: boolean
         required: False
+  cz_nma_invenio:
+    description: Your CZ National Metadata Directory Account
+    inputs:
+      - name: token
+        label: Personal Token to publish records to CZ National Metadata Directory
+        type: secret
+        store: vault
+        required: False
+      - name: public_name
+        label: Public name to publish records (formatted as "Lastname, Firstname")
+        type: text
+        required: False
+      - name: public_records
+        label: Whether to make new draft records publicly accessible (Yes) or restricted (No).
+        type: boolean
+        required: False
   cesnet_invenio_sandbox:
     description: Your CESNET-Invenio CatchAll Account
     inputs:
