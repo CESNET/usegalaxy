@@ -11,7 +11,7 @@ user_dict = dict()
 for user in users:
     user_dict[user[0]] = user[3] # id is key, email is value
 
-cursor.execute("SELECT * FROM custos_authnz_token")
+cursor.execute("SELECT * FROM oidc_user_authnz_tokens WHERE provider='e-infra_cz'")
 einfra_users = cursor.fetchall()
 
 einfra_emails = []
