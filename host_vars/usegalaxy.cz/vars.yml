@@ -7,7 +7,7 @@ rbd_mount_point: /rbd
 rbd_data_dir: "{{ rbd_mount_point }}/data"
 galaxy_mutable_data_dir: "{{ rbd_data_dir }}"
 
-galaxy_commit_id: release_25.0
+galaxy_commit_id: release_25.1
 galaxy_build_client: false
 
 csnt_log_level: DEBUG
