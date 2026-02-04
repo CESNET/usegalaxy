@@ -129,6 +129,7 @@ galaxy_config:
     cleanup_job: onsuccess
     smtp_server: "{{ csnt_smtp_server }}"
     error_email_to: "{{  csnt_contact_email  }}"
+    allow_user_creation: false
     disable_local_accounts: true
     require_login: "{{ csnt_require_login }}"
     database_connection: "postgresql:///{{ galaxy_db_name }}?host=/var/run/postgresql"
