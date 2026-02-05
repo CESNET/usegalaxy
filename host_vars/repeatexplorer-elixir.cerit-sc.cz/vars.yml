@@ -1,5 +1,6 @@
 galaxy_mutable_data_dir: /mnt/galaxy-re
 #galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy"
+galaxy_tus_upload_store: /data/galaxy/tus
 csnt_galaxy_url_prefix: "/galaxy"
 
 rbd_cluster_code: CL5
@@ -126,21 +127,6 @@ galaxy_extra_dirs:
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_config_dir }}/plugins/activities"
   - "{{ galaxy_server_dir }}/static/images/umbr_programs_icons"
-
-#tusd_instances:
-#      - name: uploads
-#        # user that tusd will run as
-#        user: "{{ galaxy_user.name }}"
-#        # group that tusd will run as
-#        group: "{{ galaxy_user.group }}"
-#        # args passed to tusd
-#        args:
-#          - -host=localhost
-#          - "-port={{ galaxy_tusd_port }}"
-#          - "-upload-dir={{ galaxy_tus_upload_store }}"
-#          - "-hooks-http=https://{{ inventory_hostname }}{{ csnt_galaxy_url_prefix }}/api/upload/hooks"
-#          - -hooks-http-forward-headers=X-Api-Key,Cookie
-#          - -hooks-enabled-events pre-create
 
 flower_bind_interface: localhost
 flower_port: 5555

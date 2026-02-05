@@ -291,6 +291,14 @@
         job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_mutable_data_dir }}/tmp >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_temp_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
+    - name: Creates entry in crontab "tmpreaper call in FTP uploads dir"
+      ansible.builtin.cron:
+        name: "tmpreaper in FTP uploads dir"
+        minute: "9"
+        hour: "2" 
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 30d {{ galaxy_mutable_data_dir }}/uploads >> {{ galaxy_mutable_data_dir }}/cleaning_ftp_uploads_dir.log"
+      become: yes
+      become_user: "{{ galaxy_user_name }}"
 #    - name: Creates entry in crontab "tmpreaper call in galaxy jobs dir"
 #      ansible.builtin.cron:
 #        name: "tmpreaper in galaxy jobs dir"
