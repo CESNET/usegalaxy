@@ -191,6 +191,7 @@ galaxy_config:
       - type: cached_mulled_singularity
         cache_directory: /cvmfs/singularity.galaxyproject.org/all/
         cache_directory_cacher_type: dir_mtime
+      - type: mulled_singularity
     # Data Library Directories
     library_import_dir: "{{ csnt_library_import_dir }}"
     user_library_import_dir: "{{ csnt_user_library_import_dir }}"
