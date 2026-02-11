@@ -65,6 +65,17 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/bedtools/bedtools_annotatebed/.*:
     context:
       walltime: 48
+  toolshed.g2.bx.psu.edu/repos/nml/metaspades/metaspades/.*:
+    rules:
+    - id: tpvdb_metaspades_medium_input_rule
+      if: 1 <= input_size < 60
+      context:
+        walltime: 96
+        scratch: 100
+        queue: elixircz
+      scheduling:
+        require:
+          - highmem
   toolshed.g2.bx.psu.edu/repos/iuc/megahit/megahit/.*:
     cores: 16
     mem: 256
