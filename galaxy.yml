@@ -279,7 +279,7 @@
       ansible.builtin.cron:
         name: "tmpreaper in tus upload dir"
         minute: "5"
-        hour: "*" 
+        hour: "*"
         job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_tus_upload_store }} >> {{ galaxy_mutable_data_dir }}/cleaning_tus_upload_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
@@ -287,7 +287,7 @@
       ansible.builtin.cron:
         name: "tmpreaper in galaxy temp dir"
         minute: "7"
-        hour: "*" 
+        hour: "*"
         job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_mutable_data_dir }}/tmp >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_temp_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
@@ -295,7 +295,7 @@
 #      ansible.builtin.cron:
 #        name: "tmpreaper in galaxy jobs dir"
 #        minute: "9"
-#        hour: "*" 
+#        hour: "*"
 #        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 40d {{ galaxy_mutable_data_dir }}/jobs >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_jobs_dir.log"
 #      become: yes
 #      become_user: "{{ galaxy_user_name }}"
@@ -319,7 +319,7 @@
         group: "{{ galaxy_user_group_name }}"
         mode: '0640'
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz', 'repeatexplorer-elixir.cerit-sc.cz']"
       no_log: true
 
     # set up cron to propagate einfra users to einfra galaxy group
@@ -395,7 +395,7 @@
         group: "{{ galaxy_user_group_name }}"
         mode: '0755'
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz', 'repeatexplorer-elixir.cerit-sc.cz']"
     - name: Template tool installation cron script
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/galaxy/cron/install_tools.sh.j2"
@@ -404,7 +404,7 @@
         group: "{{ galaxy_user_group_name }}"
         mode: '0755'
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz', 'repeatexplorer-elixir.cerit-sc.cz']"
     - name: Schedule tool installation script using cron
       ansible.builtin.cron:
         name: "Install tool updates"
@@ -413,17 +413,17 @@
         hour: "3" # 3 am daily
         job: "/bin/bash -c 'URL={{ inventory_hostname }} API_KEY=$(cat /home/{{ galaxy_user_name }}/.galaxy_api_key) {{ galaxy_root }}/cron/tools/install_tools.sh 2>&1 | logger -t tool_install'"
       tags: cron
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz']"
+      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'usegalaxy.cz', 'galaxy-umsa.grid.cesnet.cz', 'repeatexplorer-elixir.cerit-sc.cz']"
 
-    - name: Set-up pre-defined integrated_tool_panel config file on RE instance only
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/files/{{ inventory_hostname }}/regalaxy_integrated_tool_panel.xml"
-        dest: "{{ galaxy_mutable_config_dir }}/integrated_tool_panel.xml"
-        owner: "{{ galaxy_user_name }}"
-        group: "{{ galaxy_user_group_name }}"
-        mode: '0644'
-        backup: true
-      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz', 'galaxy-re.grid.cesnet.cz']"
+    # - name: Set-up pre-defined integrated_tool_panel config file on RE instance only
+    #   ansible.builtin.copy:
+    #     src: "{{ playbook_dir }}/files/{{ inventory_hostname }}/regalaxy_integrated_tool_panel.xml"
+    #     dest: "{{ galaxy_mutable_config_dir }}/integrated_tool_panel.xml"
+    #     owner: "{{ galaxy_user_name }}"
+    #     group: "{{ galaxy_user_group_name }}"
+    #     mode: '0644'
+    #     backup: true
+    #   when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz', 'galaxy-re.grid.cesnet.cz']"
 
     - name: Add lines to logrotate config of ProFTPd
       lineinfile:
