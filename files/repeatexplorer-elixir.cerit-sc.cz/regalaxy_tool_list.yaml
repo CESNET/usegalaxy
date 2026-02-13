@@ -9,21 +9,23 @@ tools:
 - name: repeatexplorer2_testing
   owner: petr-novak
   revisions:
-  - 3d0ba5734776
-  - 4308d3e572ee
-  - 792914356c37
-  - 20ef42e81eeb
-  - 5cca2c9aa4ad
   - a27646c27090
+  - 3d0ba5734776
+  - 792914356c37
+  - 4308d3e572ee
+  - 5cca2c9aa4ad
+  - 20ef42e81eeb
   tool_panel_section_id: repeatexplorer
   tool_panel_section_label: RepeatExplorer
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: dante
   owner: petr-novak
   revisions:
-  - 8f2bd3cae2de
   - f0663cdbae66
-  - ae4cebdccf74
+  - 8f2bd3cae2de
+  - a9d7ebf988f9
+  - 5210db15a5fa
+  - 726b8447eb09
   tool_panel_section_id: dante
   tool_panel_section_label: DANTE
   tool_shed_url: toolshed.g2.bx.psu.edu
@@ -38,28 +40,28 @@ tools:
   owner: petr-novak
   revisions:
   - e61f06df42b9
-  - 08b5e23859ed
   - 27e5f58763f2
-  - 8224e3d7b03a
+  - 08b5e23859ed
   - d5508ce50c49
+  - 8224e3d7b03a
   tool_panel_section_id: dante_ltr
   tool_panel_section_label: DANTE_LTR
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: tidecluster
   owner: petr-novak
   revisions:
-  - 440796be7576
-  - a0f57cfa1bb7
-  - 971dbc97e607
   - 30a8a954dd93
+  - 440796be7576
+  - 971dbc97e607
+  - a0f57cfa1bb7
   tool_panel_section_id: tidecluster
   tool_panel_section_label: TideCluster
   tool_shed_url: toolshed.g2.bx.psu.edu
 - name: repeat_annotation_pipeline3
   owner: petr-novak
   revisions:
-  - 755a4d643184
   - 5366d5ea04bc
+  - 755a4d643184
   tool_panel_section_id: assembly_annotation_tools
   tool_panel_section_label: Assembly annotation tools
   tool_shed_url: toolshed.g2.bx.psu.edu
@@ -262,6 +264,7 @@ tools:
 - name: trimmomatic
   owner: pjbriggs
   revisions:
+  - b9aaed85cbd1
   - 32f1f56bd970
   tool_panel_section_id: fasta/fastq_manipulation
   tool_panel_section_label: FASTA/FASTQ manipulation
