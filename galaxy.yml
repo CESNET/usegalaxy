@@ -207,6 +207,7 @@
     - galaxyproject.tusd
     - usegalaxy_eu.apptainer
     - galaxyproject.galaxy
+    - usegalaxy_cz.llm_hub
     - usegalaxy_eu.tpv_auto_lint
     - geerlingguy.redis
     - role: usegalaxy_eu.flower

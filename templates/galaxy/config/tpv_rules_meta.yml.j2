@@ -159,6 +159,11 @@ tools:
     scheduling:
       require:
         - alphafold
+  toolshed.g2.bx.psu.edu/repos/bgruening/llm_hub/llm_hub/.*:
+    inherits: local_running_tools
+    env:
+      LITELLM_CONFIG_FILE: "{{ galaxy_config_dir }}/llm_hub_config.yaml"
+     
 
 roles:
   training.*:

@@ -44,6 +44,12 @@ enable_flower: false
 enable_tiaas: true
 shed_tools_shadowing: false
 
+# LLM Hub placeholders; provide real values in secrets.yml
+llm_hub:
+  token: TOKEN
+  endpoint: SOMEWHERE
+
+
 # Galaxy
 galaxy_manage_systemd: no
 galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
@@ -184,6 +190,7 @@ galaxy_config:
     tool_data_table_config_path:
     - /cvmfs/data.galaxyproject.org/byhand/location/tool_data_table_conf.xml
     - /cvmfs/data.galaxyproject.org/managed/location/tool_data_table_conf.xml
+    - "{{ galaxy_config_dir }}/llm_hub_data_table_conf.xml"
     # Tool Dependencies
     dependency_resolvers: {}
     container_resolvers:
@@ -261,6 +268,8 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/eu_msmt_eosc.svg"
   - src: files/galaxy/static/e-infra_logo.svg
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
+  - src: files/galaxy/config/llm_hub_data_table_conf.xml
+    dest: "{{ galaxy_config_dir }}/llm_hub_data_table_conf.xml"
 
 galaxy_config_templates:
   - src: templates/galaxy/config/reports.yml.j2
@@ -279,6 +288,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
     dest: "{{ galaxy_config.galaxy.auth_config_file }}"
+  - src: templates/galaxy/config/llm_hub_config.yaml
+    dest: "{{ galaxy_config_dir }}/llm_hub_config.yaml"
 
 galaxy_local_tools:
   - testing.xml
