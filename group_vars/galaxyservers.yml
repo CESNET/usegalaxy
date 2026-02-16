@@ -44,6 +44,12 @@ enable_flower: false
 enable_tiaas: true
 shed_tools_shadowing: false
 
+# LLM Hub placeholders; provide real values in secrets.yml
+llm_hub:
+  token: TOKEN
+  endpoint: SOMEWHERE
+
+
 # Galaxy
 galaxy_manage_systemd: no
 galaxy_create_user: true # False by default, as e.g. you might have a 'galaxy' user provided by LDAP or AD.
