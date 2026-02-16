@@ -1,0 +1,22 @@
+---
+
+- name: Retrieve current list of LLMs
+  delegate_to: localhost
+  shell: |
+    echo '#<model_id>	<display_name>	<domain>	<provider>	<free_tag>' >files/{{ inventory_hostname }}/llm_models.loc && \
+    curl -H "Authorization: Bearer {{ llm_hub.token }}" {{ llm_hub.endpoint }}/models | \
+    jq -r --arg re "^({{ multimodals | join('|') }})" \
+      '.data[].id | if test($re) then [.,.,"multimodal","CERIT-SC","tag"] else [.,.,"text","CERIT-SC","tag"] end | @tsv' \
+      >> files/{{ inventory_hostname }}/llm_models.loc
+  become: false
+
+- name: Install the list of LLMs
+  copy:
+    src: files/{{ inventory_hostname }}/llm_models.loc
+    dest: "{{ galaxy_tool_data_path }}/llm_models.loc"
+
+- name: Install specific local dependencies
+  pip:
+    name: openai
+    virtualenv: "{{ galaxy_venv_dir }}"
+

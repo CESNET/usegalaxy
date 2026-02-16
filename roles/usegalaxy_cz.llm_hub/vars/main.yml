@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for usegalaxy_cz.llm_hub
+
+multimodals:
+- llama
+- qwen
+- nomic
+- kimi
+- mistral
+- deepseek
+- glm
