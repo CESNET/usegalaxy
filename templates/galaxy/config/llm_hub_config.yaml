@@ -1,0 +1,2 @@
+LITELLM_API_KEY: "{{ llm_hub.token }}"
+LITELLM_BASE_URL: "{{ llm_hub.endpoint }}"
