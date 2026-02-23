@@ -1,0 +1,16 @@
+galaxy_info:
+  author: Mira Kuntz
+  company: Galaxy Europe
+  namespace: usegalaxy_eu
+  role_name: tpv_auto_lint
+  description: Script that lints TPV rule files and checks if they exist in \
+   Galaxy's job_conf.yml before copying them to the TPC rules folder
+  license: GPL-3.0
+  min_ansible_version: "2.1"
+  galaxy_tags:
+    - galaxyproject
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+        - "9"

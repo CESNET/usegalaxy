@@ -28,8 +28,6 @@ pulsar:
 galaxy_config_files:
   - src: files/galaxy/themes.yml
     dest: "{{ galaxy_config.galaxy.themes_config_file }}"
-  - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/tpv_rules_local.yml', 'files/galaxy/config/tpv_rules_local.yml']) }}"
-    dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
   - src: files/galaxy/config/oidc_config.xml
@@ -40,6 +38,22 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
     dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
+
+galaxy_config_templates:
+  - src: "templates/{{ inventory_hostname }}/config/object_store_conf.xml.j2"
+    dest: "{{ galaxy_config.galaxy.object_store_config_file }}"
+  - src: "templates/{{ inventory_hostname }}/config/local_tool_conf.xml.j2"
+    dest: "{{ galaxy_config_dir }}/local_tool_conf.xml"
+  - src: templates/galaxy/config/tpv_rules_meta.yml.j2
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_meta.yml"
+  - src: "templates/galaxy/config/vault_conf.yml.j2"
+    dest: "{{ galaxy_config_dir }}/vault_conf.yml"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/auth_conf.xml.j2', 'templates/galaxy/config/auth_conf.xml.j2']) }}"
+    dest: "{{ galaxy_config.galaxy.auth_config_file }}"
+  - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/file_source_templates.yml.j2', 'templates/galaxy/config/file_source_templates.yml.j2']) }}"
+    dest: "{{ galaxy_config_dir }}/file_source_templates.yml"
+  - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/tpv_rules_local.yml.j2', 'files/galaxy/config/tpv_rules_local.yml']) }}"
+    dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
 
 galaxy_local_tools:
   - testing.xml
