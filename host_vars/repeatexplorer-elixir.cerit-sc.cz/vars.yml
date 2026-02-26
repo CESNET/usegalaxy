@@ -22,7 +22,6 @@ csnt_allow_user_deletion: true
 csnt_enable_oidc: false
 csnt_auth_config_file: "{{ galaxy_config_dir }}/auth_conf.xml"
 csnt_toolbox_auto_sort: false
-csnt_contact_email: regalaxy@rt.cesnet.cz
 csnt_watch_job_rules: 'polling' # used to be auto
 csnt_retry_job_output_collection: 5
 csnt_gunicorn_workers: 9
