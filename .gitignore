@@ -10,4 +10,7 @@
 .vault-password.*
 
 # installed roles
-roles
+roles/*
+
+# this is ours
+!roles/usegalaxy_cz.llm_hub
