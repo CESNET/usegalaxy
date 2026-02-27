@@ -172,6 +172,10 @@ roles:
     scheduling:
       require:
         - test
+  exclusive:
+    scheduling:
+      require:
+        - exclusive
   highmem:
     mem: 512
     context:
@@ -289,6 +293,15 @@ destinations:
     scheduling:
       require:
         - highmem
+  # DEMON: For jobs that need whole computing node exclusively (typically RepeatExplorer, DANTE, etc.)
+  tpv_pulsar_excl_jobs:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    params:
+      submit_native_specification: "-l place=exclhost -l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb -l walltime={int(walltime)}:00:00 -q {queue} -N pulsar-re_j{job.id}__{tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]}__{user.username if user and hasattr(user, 'username') else 'anonymous'}"
+    scheduling:
+      require:
+        - exclusive
   # DEMON: For testing purposes, set whatever you want here when needed
   tpv_pulsar_test:
     inherits: tpv_pulsar
