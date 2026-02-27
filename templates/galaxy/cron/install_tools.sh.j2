@@ -8,5 +8,12 @@ cd {{ galaxy_root }}/cron/tools/galaxy_tools
 python3 -m venv {{ galaxy_root }}/cron/tools/galaxy_tools/.venv
 source {{ galaxy_root }}/cron/tools/galaxy_tools/.venv/bin/activate
 pip install ephemeris
-find $URL -name '*.yml.lock' | xargs -n 1 -I {} shed-tools install --toolsfile {} --galaxy $URL --api_key $API_KEY --skip_install_resolver_dependencies
+
+# Add galaxy prefix to URL for repeatexplorer
+GALAXY_URL="$URL"
+if [[ "$URL" == *"repeatexplorer"* ]]; then
+    GALAXY_URL="${URL}/galaxy"
+fi
+
+find $URL -name '*.yml.lock' | xargs -n 1 -I {} shed-tools install --toolsfile {} --galaxy $GALAXY_URL --api_key $API_KEY --skip_install_resolver_dependencies
 echo "$(date) - tool installation finished"
