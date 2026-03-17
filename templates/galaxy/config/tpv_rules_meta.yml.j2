@@ -62,6 +62,17 @@ tools:
         cores: int(job.get_param_values(app)['__job_resource']['cores'])
         context:
            walltime: "{int(job.get_param_values(app)['__job_resource']['time'])}"
+  toolshed.g2.bx.psu.edu/repos/iuc/anndata_import/anndata_import/.*:
+    # DEMON: the following mem setting is taken from tpv-shared at 17-03-2026 - this should conserve it for us
+    mem: 2 + input_size * 10
+    rules:
+      - id: set_highmem_based_on_input
+        if: 2 + input_size * 10 > 180
+        context:
+          queue: elixircz
+        scheduling:
+          require:
+            - highmem
 # DEMON: Hopefully, this could be optimized after TPV will get repeated reevaluation of resources (https://github.com/galaxyproject/total-perspective-vortex/issues/189)
   toolshed.g2.bx.psu.edu/repos/iuc/kraken2/kraken2/.*:
     rules:
