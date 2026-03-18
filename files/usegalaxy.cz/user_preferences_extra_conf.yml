@@ -15,7 +15,7 @@ preferences:
         label: Whether to make new draft records publicly accessible (Yes) or restricted (No).
         type: boolean
         required: False
-    cesnet_invenio_sandbox:
+  cesnet_invenio_sandbox:
     description: Your CESNET-Invenio CatchAll Account
     inputs:
       - name: token
