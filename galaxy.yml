@@ -304,7 +304,7 @@
 
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
-        name: "Cleanup old user data"
+        name: "Cleanup Old User Data"
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "0" # midnight daily
