@@ -304,11 +304,11 @@
 
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
-        name: "Cleanup Old User Data"
+        name: "Cleanup old user data"
         user: "{{ galaxy_user_name }}"
         minute: "0"
         hour: "0" # midnight daily
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60 >> {{ galaxy_mutable_data_dir }}/cleaning_gxadmin_cleanup.log"
+        job: "SHELL=/bin/bash source {{ galaxy_venv_dir }}/bin/activate &&  GALAXY_LOG_DIR={{ galaxy_mutable_data_dir }}/log/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server GALAXY_CONFIG_FILE={{ galaxy_config_file }} /usr/local/bin/gxadmin galaxy cleanup {{ csnt_galaxy_cleanup_delay }} 2>&1 | logger -t galaxy_user_data_cleanup"
       tags: cron
 
     - name: Create a file with key for CRON jobs

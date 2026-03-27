@@ -37,6 +37,7 @@ csnt_gunicorn_workers: 2
 csnt_celery_concurrency: 2
 csnt_celery_memory_limit: 2
 csnt_handlers_processes: 2
+csnt_galaxy_cleanup_delay: 60
 
 admin_ssh_keys: false
 enable_telegraf: false
