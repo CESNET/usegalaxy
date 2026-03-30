@@ -302,13 +302,29 @@
 #      become_user: "{{ galaxy_user_name }}"
 
 
+    # set up cron to cleanup Galaxy user data
+    - name: Ensure the cleanup directory exists
+      ansible.builtin.file:
+        path: "{{ galaxy_root }}/cron/cleanup"
+        state: directory
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+        mode: '0755'
+      tags: cron
+    - name: Copy the cleanup script
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/extra_scripts/galaxy_user_data_cleanup.sh.j2"
+        dest: "{{ galaxy_root }}/cron/cleanup/galaxy_user_data_cleanup.sh"
+        owner: "{{ galaxy_user_name }}"
+        group: "{{ galaxy_user_group_name }}"
+      tags: cron
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
         name: "Cleanup Old User Data"
         user: "{{ galaxy_user_name }}"
-        minute: "0"
+        minute: "1"
         hour: "0" # midnight daily
-        job: "GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_root }}/server /usr/local/bin/gxadmin galaxy cleanup 60 >> {{ galaxy_mutable_data_dir }}/cleaning_gxadmin_cleanup.log"
+        job: "/bin/bash {{ galaxy_root }}/cron/cleanup/galaxy_user_data_cleanup.sh {{ csnt_galaxy_cleanup_delay }} 2>&1 | logger -t galaxy_user_data_cleanup"
       tags: cron
 
     - name: Create a file with key for CRON jobs
