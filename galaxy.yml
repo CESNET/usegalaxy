@@ -268,12 +268,12 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/files/{{inventory_hostname}}/patch/invenio-workflow.patch"
         dest: /tmp/invenio-workflow.patch
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz','usegalaxy.cz']"
+      when: "inventory_hostname in ['usegalaxy.cz']"
     - name: Apply patch
       ansible.builtin.shell:
         cmd: git apply /tmp/invenio-workflow.patch
         chdir: "{{ galaxy_root }}/server"
-      when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz','usegalaxy.cz']"
+      when: "inventory_hostname in ['usegalaxy.cz']"
 
     # DEMON: cleanup on places which are not set in standard Galaxy cleanup process
     - name: Creates entry in crontab "tmpreaper call in tus upload dir"
