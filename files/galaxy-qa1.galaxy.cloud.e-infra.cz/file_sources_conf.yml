@@ -22,6 +22,9 @@
   token: ${user.user_vault.read_secret('preferences/cesnet_invenio_sandbox/token')}
   public_name: ${user.preferences['cesnet_invenio_sandbox|public_name']}
   writable: true
+  multipart_threshold: 100  # MB
+  multipart_chunk_size: 50  # MB
+  default_resource_type: c_ddb1 # from https://vocabularies.coar-repositories.org/resource_types/
 - type: zenodo
   id: zenodo_sandbox
   doc: Testing instance of Zenodo, content is NOT preserved and DOIs created in this instance are not real.
