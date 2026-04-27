@@ -100,8 +100,15 @@ def get_markdown_table(url: str, section_header: str = "#### Guaranteed Models")
 if __name__ == "__main__":
     TARGET_URL = "https://raw.githubusercontent.com/CERIT-SC/kube-docs/refs/heads/fumadocs/content/docs/ai-as-a-service/chat-ai.mdx"
     
-    guaranteed = transform_model_data(get_markdown_table(TARGET_URL, "#### Guaranteed Models"))
-    experimental = transform_model_data(get_markdown_table(TARGET_URL, "#### Experimental Models"))
+    guaranteed = get_markdown_table(TARGET_URL, "#### Guaranteed Models")
+    if not guaranteed:
+        raise RuntimeError("Can't find #### Guaranteed Models")
+        
+    guaranteed = transform_model_data(guaranteed)
+
+    experimental = get_markdown_table(TARGET_URL, "#### Experimental Models")
+    if experimental:
+        experimental = transform_model_data(experimental)
     
     print("#<value>	<model_id>	<display_name>	<domain>	<provider>	<free_tag>")
 
@@ -109,8 +116,9 @@ if __name__ == "__main__":
         name,desc,mm = m['model_name'],m['description'],m['multimodal']
         print(f'{name}\t{name}\t{desc}\t{"multimodal" if mm else "text"}\tCERIT-SC\tguaranteed')
 
-    for m in experimental:
-        name,desc,mm = m['model_name'],m['description'],m['multimodal']
-        print(f'{name}\t{name}\t{desc}\t{"multimodal" if mm else "text"}\tCERIT-SC\texperimental')
+    if experimental:
+        for m in experimental:
+            name,desc,mm = m['model_name'],m['description'],m['multimodal']
+            print(f'{name}\t{name}\t{desc}\t{"multimodal" if mm else "text"}\tCERIT-SC\texperimental')
 
 
