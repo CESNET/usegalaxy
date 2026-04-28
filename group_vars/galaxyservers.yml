@@ -295,6 +295,8 @@ galaxy_local_tools:
   - testing.xml
   - testing_pbs.xml
   - testing_html.xml
+  - alphafind.xml
+  - alphafind_search.py
 
 galaxy_extra_dirs:
   - "{{ galaxy_mutable_data_dir }}"
