@@ -1,0 +1,220 @@
+<tool id="alphafind_search" name="AlphaFind Protein Search" version="1.0.0">
+    <description>Search AlphaFind API for structurally similar proteins</description>
+    <requirements>
+        <requirement type="package" version="3.6">python</requirement>
+        <requirement type="package" version="2.31.0">requests</requirement>
+    </requirements>
+    <version_command><![CDATA[
+python3 '$__tool_directory__/alphafind_search.py' --version 2>/dev/null || echo "1.0.0"
+    ]]></version_command>
+    <command detect_errors="exit_code"><![CDATA[
+        python3 '$__tool_directory__/alphafind_search.py'
+            --query '$query'
+            #for $idx in $index
+                --index '$idx'
+            #end for
+            #if $filtering.organism
+                --filter-organism '$filtering.organism'
+            #end if
+            #if $filtering.tax_id
+                --filter-tax-id $filtering.tax_id
+            #end if
+            #if $filtering.gene_name
+                --filter-gene-name '$filtering.gene_name'
+            #end if
+            #if $filtering.cath_annotation
+                --filter-cath-annotation '$filtering.cath_annotation'
+            #end if
+            #if $searching.k
+                --option-k $searching.k
+            #end if
+            --timeout ${searching.timeout}
+            --sort-by ${sorting.sort_by}
+            --sort-order ${sorting.sort_order}
+            --quiet
+            --output '$output'
+    ]]></command>
+    <inputs>
+        <!-- Required: Query protein ID -->
+        <param name="query" type="text" optional="false" label="Protein Query" help="Enter a UniProt protein ID (e.g., P0A6F5, Q8Y547, Q9SBL1)"/>
+        <!-- Required: Index type selection -->
+        <param name="index" type="select" label="Search Index" multiple="true" help="Select one or more index types to search. Defaults to all.">
+            <option value="chains">Chains</option>
+            <option value="chains_90">Chains 90% identity</option>
+            <option value="chains_80">Chains 80% identity</option>
+            <option value="chains_70">Chains 70% identity</option>
+            <option value="domains">Domains</option>
+        </param>
+        <!-- Optional Filters Section -->
+        <section name="filtering" title="Filtering Options" expanded="false">
+            <param name="organism" type="text" label="Organism Name" help="Filter by organism name (e.g., 'Mycobacterium tuberculosis')" optional="true"/>
+            <param name="tax_id" type="integer" label="Taxonomy ID" help="NCBI Taxonomy ID (numeric)" optional="true"/>
+            <param name="gene_name" type="text" label="Gene Name" help="Filter by gene name" optional="true"/>
+            <param name="cath_annotation" type="text" label="CATH Annotation" help="Filter by CATH annotation (only applied when using 'domains' index)" optional="true"/>
+        </section>
+        <!-- Search Options Section -->
+        <section name="searching" title="Search Options" expanded="false">
+            <param name="k" type="integer" label="Number of Similar Proteins" value="10" min="1" max="5000" help="Maximum number of similar proteins to return (k). Note: API can return up to 5000 results."/>
+            <param name="timeout" type="integer" label="Timeout (seconds)" value="600" min="60" max="3600" help="Maximum time to wait for API to complete the search and computations."/>
+        </section>
+        <!-- Sorting Options -->
+        <section name="sorting" title="Sorting Options" expanded="false">
+            <param name="sort_by" type="select" label="Sort Results By" help="Choose how to order the results">
+                <option value="knn">KNN Similarity Score (default)</option>
+                <option value="tm_score">TM-Score</option>
+            </param>
+            <param name="sort_order" type="select" label="Sort Order" help="Choose ascending or descending order">
+                <option value="desc">Descending (highest first)</option>
+                <option value="asc">Ascending (lowest first)</option>
+            </param>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="output" format="csv" label="${tool.name} on ${query}"/>
+    </outputs>
+    <tests>
+        <!-- Test basic search with known protein -->
+        <test>
+            <param name="query" value="P9WGR1"/>
+            <param name="index" value="chains"/>
+            <section name="filtering">
+                <param name="organism" value="Mycobacterium tuberculosis"/>
+            </section>
+            <output name="output" file="test-data/P9WGR1_basic.csv"/>
+        </test>
+        <!-- Test with TM-score sorting -->
+        <test>
+            <param name="query" value="Q9SBL1"/>
+            <param name="index" value="chains"/>
+            <section name="filtering">
+                <param name="organism" value="Mycobacterium tuberculosis"/>
+            </section>
+            <section name="sorting">
+                <param name="sort_by" value="tm_score"/>
+                <param name="sort_order" value="desc"/>
+            </section>
+            <output name="output" file="test-data/Q9SBL1_sorted.csv"/>
+        </test>
+    </tests>
+    <help><![CDATA[
+**AlphaFind Protein Search**
+
+This tool searches the AlphaFind API for structurally similar proteins based on 3D structural similarity.
+
+-----
+
+**What is AlphaFind?**
+
+AlphaFind is a service for searching protein structures using AlphaFold predictions. It uses structural embeddings to find proteins with similar 3D conformations.
+
+-----
+
+**Input Parameters**
+
+* **Protein Query**: A UniProt protein ID (e.g., P0A6F5, Q8Y547, Q9SBL1)
+
+* **Search Index**: Choose which structural databases to search:
+  - *Chains*: Full protein chains (recommended)
+  - *Chains 90%*: Chains filtered to 90% sequence identity
+  - *Chains 80%*: Chains filtered to 80% sequence identity
+  - *Chains 70%*: Chains filtered to 70% sequence identity
+  - *Domains*: Protein domains (independent structural units)
+
+* **Optional Filters**: Narrow your search results
+  - *Organism Name*: Filter by organism (e.g., 'Mycobacterium tuberculosis')
+  - *Taxonomy ID*: Filter by NCBI taxonomy ID (numeric)
+  - *Gene Name*: Filter by gene symbol
+  - *CATH Annotation*: Filter by CATH structural classification (domains only)
+
+* **Search Options**:
+  - *Number of Similar Proteins*: Control result size (1-5000). Note that even with low k, the API may return all available matches up to 5000.
+  - *Timeout*: Maximum wait time for computations (60-3600 seconds). Complex searches may take several minutes.
+
+* **Sorting**:
+  - *KNN Similarity*: Sort by embedding similarity score
+  - *TM-Score*: Sort by structural alignment TM-score
+
+-----
+
+**Output Format**
+
+The tool produces a CSV file with 23 columns:
+
+- query_id: Unique query identifier
+- index_type: Index type used
+- page_number: Page number (internal)
+- target_id: Target protein ID
+- score: KNN similarity score (0-1)
+- organism: Target protein organism
+- tax_id: Taxonomy ID
+- gene_name: Gene symbol
+- protein_name: Protein name
+- avg_plddt: AlphaFold prediction quality
+- tm_score_query: TM-score (query as reference)
+- tm_score_target: TM-score (target as reference)
+- rmsd: Root-mean-square deviation
+- sequential_identity: Sequence alignment identity
+- aligned_residues: Aligned residue ratio
+- status: Computation status
+- created_at: Computation start time
+- completed_at: Computation end time
+- has_experimental_structure: Experimental structure available
+- pdb_ids: PDB identifiers
+- chopping: Domain boundaries (if domains)
+- tar_index: Internal reference
+
+-----
+
+**Important Notes**
+
+* This is a web-based API. The tool requires internet connectivity to https://alphafind.ics.muni.cz
+* Computations may take from seconds to several minutes depending on query complexity
+* Results are cached by the API, so repeated queries may complete faster
+* The API can return up to 5000 results even with a low k value
+* TM-score > 0.5 indicates significant structural similarity
+* TM-score > 0.8 indicates very high structural similarity
+
+-----
+
+**Examples**
+
+1. **Basic search**: Query protein P0A6F5 with default settings
+
+2. **Find similar proteins in specific organism**:
+
+   - Query: Q8Y547
+   - Organism: Mycobacterium tuberculosis
+
+3. **Domain-level search**:
+
+   - Query: F8U1Q0
+   - Index: domains
+   - CATH annotation: 1.10.8.10
+
+4. **High-confidence results**:
+
+   - Query: P9WGR1
+   - Sort by: TM-Score
+   - Sort order: Descending
+
+-----
+
+**References**
+
+* AlphaFind API: https://alphafind.ics.muni.cz
+* AlphaFold DB: https://alphafold.ebi.ac.uk
+* TM-Score paper: Yang & Skolnick, 2004
+
+-----
+
+**Troubleshooting**
+
+* **"Protein not found"**: The query ID may not exist in AlphaFold DB or lacks embedding vectors. Verify the UniProt ID.
+* **Timeout exceeded**: Increase the timeout value in Search Options.
+* **Empty results**: Your filters may be too restrictive, or no similar proteins exist with the specified criteria.
+* **"Search failed"**: The API encountered an error. Try again or check the API status.
+    ]]></help>
+    <citations>
+        <citation type="doi">10.1038/nature14539</citation>
+    </citations>
+</tool>
