@@ -1,12 +1,13 @@
 extra_certbot_domains:
  - "galaxy-cz.grid.cesnet.cz"
  - "galaxy.metacentrum.cz"
-
+enable_tiaas: true
+shed_tools_shadowing: true
 # where to put most of the data; we use RBD or NBD volumes
 rbd_mount_point: /rbd
 rbd_data_dir: "{{ rbd_mount_point }}/data"
-galaxy_mutable_data_dir: "{{ rbd_data_dir }}"
 
+galaxy_mutable_data_dir: "{{ rbd_data_dir }}"
 galaxy_commit_id: release_25.1
 galaxy_build_client: false
 
@@ -15,8 +16,6 @@ csnt_enable_notification_system: true
 csnt_short_term_storage_dir: "{{ galaxy_mutable_data_dir }}/short_term_web_storage"
 csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
-enable_tiaas: true
-shed_tools_shadowing: true
 
 pulsar:
   user_name: galaxyeu

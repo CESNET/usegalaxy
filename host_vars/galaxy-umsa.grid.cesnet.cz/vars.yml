@@ -1,11 +1,17 @@
 # where to put most of the data; we use RBD or NBD volumes
 rbd_mount_point: /rbd
 rbd_data_dir: "{{ rbd_mount_point }}/galaxy-umsa_data"
+enable_tiaas: false
+shed_tools_shadowing: true
+
 galaxy_mutable_data_dir: "{{ rbd_data_dir }}"
-
-galaxy_commit_id: release_25.1
+galaxy_commit_id: release_26.0
 galaxy_build_client: false
+galaxy_client_make_target: client-production
+galaxy_user_name: galaxyumsa
+galaxy_user_group_name: galaxyumsa
 
+csnt_brand: UMSA
 csnt_log_level: DEBUG
 csnt_enable_notification_system: true
 csnt_short_term_storage_dir: "{{ galaxy_mutable_data_dir }}/short_term_web_storage"
@@ -17,11 +23,6 @@ csnt_tool_sheds_config_file: "{{ galaxy_config_dir }}/tool_sheds_conf.xml"
 csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
 csnt_allow_path_paste: true
-enable_tiaas: false
-shed_tools_shadowing: true
-
-galaxy_user_name: galaxyumsa
-galaxy_user_group_name: galaxyumsa
 
 pulsar:
   user_name: galaxyumsa
