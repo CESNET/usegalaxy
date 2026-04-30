@@ -118,9 +118,11 @@ server {
 	location /_x_accel_redirect {
 		internal;
 		alias /;
-            # Add upstream response headers that would otherwise be omitted
-            add_header Access-Control-Allow-Origin $upstream_http_access_control_allow_origin;
-            add_header Access-Control-Allow-Methods $upstream_http_access_control_allow_methods;
+		add_header X-Frame-Options SAMEORIGIN;
+        add_header X-Content-Type-Options nosniff;
+		# Add upstream response headers that would otherwise be omitted
+		add_header Access-Control-Allow-Origin $upstream_http_access_control_allow_origin;
+		add_header Access-Control-Allow-Methods $upstream_http_access_control_allow_methods;
 	}
 
 	# Support click-to-run in the GTN-in-Galaxy Webhook
