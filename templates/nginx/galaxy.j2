@@ -125,6 +125,7 @@ server {
 
 	# Support click-to-run in the GTN-in-Galaxy Webhook
 	location /training-material/ {
+		proxy_ssl_server_name on;
 		proxy_pass https://training.galaxyproject.org/training-material/;
 	}
 
