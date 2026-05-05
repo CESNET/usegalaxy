@@ -96,6 +96,9 @@ You also need to create a non-admin service user called `galaxy@cesnet.cz` for r
 Instances' tools are managed by a combination of a cron script that installs them (deployed from this playbook) -- check out [the script](templates/galaxy/cron/install_tools.sh.j2)
 and external repository that contains the lists of tools for every instance: https://github.com/CESNET/galaxy_tools.
 
+- the QA1 instance is supposed to have a large toolset similar toolset as usegalaxy.cz
+- the QA2 instance is meant to have a minimal toolset for fast reload
+
 ## deployment troubleshooting
 
 Following are troubleshooting notes gathered through the learning process.
@@ -129,15 +132,6 @@ index 8202237857..99f86ec25d 100644
 
 On ubuntu < 22.04 and Debian < 12 the GLIBC version is incompatible with the ```galaxyproject.tusd``` GLIBC, therefore playbook ends in error.
 - in `roles/galaxyproject.tusd/defaults/main.yml` you have to set the `tusd_version:` to 'v1.8.0' (tested, possibly higher)
-
-### debian 11
-
-On Debian 11 the default version of `ansible` is 2.10.08 which fails to extract binaries for TUSd.
-- workaround:
-  - `sudo vim /etc/apt/sources.list` add this line : `deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main`
-  - then `sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367`
-  - followed by `sudo apt-get update` and `sudo apt-get install ansible -y`
-- Note that you might need to `sudo apt remove ansible` `sudo apt autoremove` before you try to install ansible.
 
 ### influxdb
 
