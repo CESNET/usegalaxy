@@ -154,6 +154,16 @@
   become: true
   become_user: root
   pre_tasks:
+    - name: Install nginx rate limiting config
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/nginx/rate_limit.conf.j2"
+        dest: "/etc/nginx/conf.d/rate_limit.conf"
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+      when: ansible_os_family == 'Debian'
+
     - name: Admin ssh keys
       blockinfile:
         path: .ssh/authorized_keys

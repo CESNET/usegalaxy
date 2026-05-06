@@ -1,0 +1,39 @@
+##
+## This file is maintained by Ansible - CHANGES WILL BE OVERWRITTEN
+##
+
+# included into http {}
+
+# Chained maps for rate limiting:
+# 1. First check if path should be exempted (tusd, job_files)
+# 2. Then use session cookie if present, otherwise IP address
+# 3. Finally prefer API key if present, otherwise use result from step 2
+# Adapted from https://github.com/galaxyproject/infrastructure-playbook/blob/57e2f8d5346490888c9915988f96eb10367fbd42/templates/nginx/conf.d/rate_limit.conf.j2#L19
+
+# Exempt specific paths from rate limiting entirely
+map $request_uri $rate_limit_path_exempt {
+    ~^/api/upload/resumable_upload "exempt";
+    ~^/api/job_files "exempt";
+    default "not_exempt";
+}
+
+# Use session cookie if present, otherwise IP address
+map $cookie_galaxysession $rate_limit_cookie_key {
+    default $binary_remote_addr;
+    "~.+" $cookie_galaxysession;
+}
+
+# Prefer API key, then cookie/IP, but exempt if path is exempted
+map $http_x_api_key:$rate_limit_path_exempt $rate_limit_zone_key {
+    ~^.+:exempt "";
+    ~^:exempt "";
+    ~^.+:not_exempt $http_x_api_key;
+    default $rate_limit_cookie_key;
+}
+
+# Rate limiting zones
+limit_req_zone $rate_limit_zone_key zone=galaxy_relaxed:10m rate=8r/s;
+limit_req_zone $rate_limit_zone_key zone=galaxy_strict:10m rate=4r/s;
+
+# Return 429 for rate limited requests
+limit_req_status 429;
