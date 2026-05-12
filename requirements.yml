@@ -12,8 +12,6 @@
   version: 0.0.1
 - src: galaxyproject.cvmfs
   version: 0.3.0
-- src: usegalaxy_eu.apptainer
-  version: main
 - src: usegalaxy_eu.tpv_auto_lint
   version: 0.4.4
 - src: galaxyproject.rabbitmq
