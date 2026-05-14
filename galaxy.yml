@@ -134,21 +134,24 @@
             endscript
           }
 
-- hosts: noletsencrypt
+- hosts: cloudservers
   become: true
-  become_user: root
   tasks:
-    - name: Certificate
-      copy:
-        src: "{{ nginx_ssl_src_dir }}/{{ nginx_conf_ssl_certificate | basename }}"
-        dest: "/etc/ssl/cert.pem"
-        mode: "0644"
-    - name: RabbitMQ key
-      copy:
-        content: "{{ sslkeys[nginx_conf_ssl_certificate_key | basename] }}"
-        dest: "{{ rabbitmq_conf_ssl_certificate_key }}"
-        owner: "999"
-        mode: "0400"
+    - name: Add Metacentrum apt repo key
+      apt_key:
+        url: https://repo.metacentrum.cz/key.asc
+        id: 3CCAEBFDC3398E762111FB2B403875C13E1F1A7D
+      when: ansible_os_family == 'Debian'
+    - name: Add Metacentrum apt repo
+      apt_repository:
+        repo: "deb https://repo.metacentrum.cz/ {{ ansible_facts['lsb']['codename'] }} main pilot"
+        filename: meta_repo
+      when: ansible_os_family == 'Debian'
+    - name: Install Metacentrum singularity package
+      package:
+        name:
+          - singularity-ce
+
 
 - hosts: galaxyservers
   become: true
