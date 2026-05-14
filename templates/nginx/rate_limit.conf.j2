@@ -32,8 +32,8 @@ map $http_x_api_key:$rate_limit_path_exempt $rate_limit_zone_key {
 }
 
 # Rate limiting zones
-limit_req_zone $rate_limit_zone_key zone=galaxy_relaxed:10m rate=8r/s;
-limit_req_zone $rate_limit_zone_key zone=galaxy_strict:10m rate=4r/s;
+limit_req_zone $rate_limit_zone_key zone=galaxy_relaxed:10m rate=12r/s;
+limit_req_zone $rate_limit_zone_key zone=galaxy_strict:10m rate=6r/s;
 
 # Return 429 for rate limited requests
 limit_req_status 429;

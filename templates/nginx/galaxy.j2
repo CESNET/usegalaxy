@@ -33,7 +33,7 @@ server {
 
 	location {{ csnt_galaxy_url_prefix }}/ {
 		# Rate limiting - relaxed zone for general traffic
-		limit_req zone=galaxy_relaxed burst=20 nodelay;
+		limit_req zone=galaxy_relaxed burst=40 nodelay;
 
 		# Remove any forwarded headers that clients might have sent
 		proxy_set_header X-Forwarded-For "";
