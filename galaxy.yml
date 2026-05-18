@@ -101,6 +101,13 @@
       become: true
       become_user: postgres
   post_tasks:
+    - name: Change postgresql_backup_dir folder permissions
+      file:
+        path:  "{{ postgresql_backup_dir }}"
+        state: directory
+        owner: postgres
+        group: "{{ galaxy_user_group_name }}"
+        mode:  0750
     - name: Create pg_dump backup folder if needed
       file:
         path:  "{{ postgresql_backup_dir }}/pg_dump"
@@ -129,8 +136,8 @@
             postrotate
               sudo -u postgres pg_dump {{ galaxy_db_name }} --file={{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql --verbose 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
               echo "calling: postgres gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && sudo -u postgres gzip {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
-              echo "calling: chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
-              echo "calling: chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql" && chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz" && chown postgres:{{ galaxy_user_group_name }} {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
+              echo "calling: chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz" && chmod 640 {{ postgresql_backup_dir }}/pg_dump/{{ postgresql_pg_dump_prefix }}.sql.gz 2>&1 | logger -t {{ postgresql_pg_dump_prefix }}
             endscript
           }
 
