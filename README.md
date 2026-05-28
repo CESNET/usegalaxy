@@ -21,10 +21,30 @@ This playbook installs and configures Galaxy server on Metacentrum CZ infrastruc
 
 ## auth with the playbook
 
-Use your existing ssh key or generate a new one with `$ ssh-keygen -t ed25519`
+### production instances
 
-- If you want to run the playbook through github action you need to add your key to your github profile.
-- For executing this from a local machine you can forward your sshkey to the host.
+In general: to access the production Galaxy instances as a admin you must use kerberos. The easiest way is to connect to a frontend instance
+of MetaCentrum infrastructure (e.g., skirit.metacentrum.cz) and call `kinit <YOUR_USERNAME>@ADMIN.META` following by `ssh root@<GALAXY_HOST>`
+(e.g., `ssh root@galaxy-umsa.grid.cesnet.cz`). **Important: you need to have a valid `<YOUR_USERNAME>@ADMIN.META` principal and another admin 
+must add your `<YOUR_USERNAME>@ADMIN.META` principal into `/root/.k5login` first.**
+
+To run the playbook, you must configure kerberos locally on your compouter. [This](https://docs.metacentrum.cz/en/docs/access/security/kerberos)
+is a good place to start wih **How to install and configure kerberos and SSH**. Remember to use `ADMIN.META` realm to connect to Galaxy hosts
+and to add your valid `<YOUR_USERNAME>@ADMIN.META` principal into `/home/<GALAXY_PRIVILEGED_USER>/.k5login` manually before running the playbook.
+The list of **Galaxy privileged users** is available in hosts.yaml as `ansible_user` for the particular Galaxy host. Some Galaxy hosts (i.e., usegalaxy.cz
+and repeatexplorer-elixir.cerit-sc.cz) need special care when setting-up ssh access from your local machine. Specificaly, add the following lines into your `~/.ssh/config`:
+```
+Host usegalaxy.cz
+    HostName galaxy-cz.grid.cesnet.cz
+
+Host repeatexplorer-elixir.cerit-sc.cz
+    HostName galaxy-re.grid.cesnet.cz
+```
+
+### QA instances
+
+You need an existing ssh key or generate a new one with `$ ssh-keygen -t ed25519`.
+For executing this from a local machine you need to ask another admin with access to add your sshkey to the QA hosts.
 
 ## add a host
 
