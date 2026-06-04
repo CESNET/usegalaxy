@@ -374,7 +374,7 @@ destinations:
         --env JAVA_OPTS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
         --env JAVA_TOOL_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"
     env:
-      SINGULARITY_CACHEDIR: "/cvmfs/singularity.galaxyproject.org/all/"
+      SINGULARITY_CACHEDIR: $SCRATCHDIR
       SINGULARITY_TMPDIR: $SCRATCHDIR
       XDG_CACHE_HOME: $SCRATCHDIR
     scheduling:
@@ -456,3 +456,14 @@ destinations:
     scheduling:
       require:
         - alphafold
+  tpv_pulsar_repex:
+    inherits: tpv_pulsar
+    env:
+      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
+    container_resolvers:
+    -   type: explicit_singularity
+    -   cache_directory: "$SINGULARITY_CACHEDIR"
+        type: cached_mulled_singularity
+    scheduling:
+      require:
+        - repex
