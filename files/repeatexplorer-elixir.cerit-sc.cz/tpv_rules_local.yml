@@ -173,7 +173,7 @@ tools:
     context:
       scratch: 64
       walltime: 168
-  
+
   # ReapeatExplorer tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*:
     cores: 10
@@ -186,6 +186,7 @@ tools:
         - conda
       require:
         - singularity
+        - repex
     container_resolvers:
     -   type: cached_explicit_singularity
         cache_directory: "$SINGULARITY_CACHEDIR"
