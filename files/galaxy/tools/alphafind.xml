@@ -10,9 +10,7 @@ python3 '$__tool_directory__/alphafind_search.py' --version 2>/dev/null || echo 
     <command detect_errors="exit_code"><![CDATA[
         python3 '$__tool_directory__/alphafind_search.py'
             --query '$query'
-            #for $idx in $index
-                --index '$idx'
-            #end for
+            --index '$index'
             #if $filtering.organism
                 --filter-organism '$filtering.organism'
             #end if
@@ -38,12 +36,12 @@ python3 '$__tool_directory__/alphafind_search.py' --version 2>/dev/null || echo 
         <!-- Required: Query protein ID -->
         <param name="query" type="text" optional="false" label="Protein Query" help="Enter a UniProt protein ID (e.g., P0A6F5, Q8Y547, Q9SBL1)"/>
         <!-- Required: Index type selection -->
-        <param name="index" type="select" label="Search Index" multiple="true" help="Select one or more index types to search. Defaults to all.">
-            <option value="chains">Chains</option>
-            <option value="chains_90">Chains 90% identity</option>
-            <option value="chains_80">Chains 80% identity</option>
-            <option value="chains_70">Chains 70% identity</option>
-            <option value="domains">Domains</option>
+        <param name="index" value="chains" type="select" optional="false" label="Search Index" help="Select one or more index types to search. Defaults to 'Full-chain AlphaFold structures'.">
+            <option value="chains">Full-chain AlphaFold structures</option>
+            <option value="chains_90">Chains filtered by pLDDT ≥ 90</option>
+            <option value="chains_80">Chains filtered by pLDDT ≥ 80</option>
+            <option value="chains_70">Chains filtered by pLDDT ≥ 70</option>
+            <option value="domains">TED domain structures</option>
         </param>
         <!-- Optional Filters Section -->
         <section name="filtering" title="Filtering Options" expanded="false">

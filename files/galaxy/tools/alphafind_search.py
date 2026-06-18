@@ -107,7 +107,7 @@ STATUS_FINAL = (STATUS_COMPLETED, STATUS_FAILED)
 class SearchConfig:
     """Configuration for a search operation."""
     query: str
-    index: Optional[List[str]]  # None = use server default
+    index: str  # Required
     filters: Dict[str, Any]
     options: Dict[str, Any]
     output_file: str
@@ -161,7 +161,7 @@ class AlphaFindClient:
     def submit_search(
         self,
         query: str,
-        index: Optional[List[str]],
+        index: str,
         filters: Dict[str, Any],
         options: Dict[str, Any]
     ) -> tuple[str, str, str]:
@@ -169,7 +169,7 @@ class AlphaFindClient:
 
         Args:
             query: Protein ID to search for
-            index: Index types to search (None for server default)
+            index: Index type to search
             filters: Filter criteria
             options: Search options
 
@@ -181,15 +181,12 @@ class AlphaFindClient:
         """
         payload = {
             "query": query,
+            "index": [index],
             "filters": filters,
             "options": options
         }
 
-        # Only include index if specified
-        if index:
-            payload["index"] = index
-
-        logging.info(f"Submitting search for query: {query}")
+        logging.info(f"Submitting search for query: {query}, index: {index}")
         logging.info(f"API URL: {self.base_url}/api/search")
         logging.info(f"API Payload: {json.dumps(payload)}")
 
@@ -557,12 +554,12 @@ Examples:
         help='UniProt protein ID to search (e.g., "P0A6F5")'
     )
 
-    # Optional: index selection
+    # Required: index selection
     parser.add_argument(
         '--index',
-        nargs='+',
-        help=f'Index types to search (uses server default if not specified). '
-             f'Valid: {", ".join(VALID_INDEXES)}'
+        required=True,
+        choices=VALID_INDEXES,
+        help=f'Index type to search. Valid: {", ".join(VALID_INDEXES)}'
     )
 
     # Optional: filters
@@ -843,13 +840,13 @@ def main() -> int:
         logging.info("AlphaFind API Client")
         logging.info("=" * 60)
         logging.info(f"Query: {config.query}")
-        logging.info(f"Index: {config.index or 'Server default'}")
+        logging.info(f"Index: {config.index}")
         logging.info(f"Filters: {config.filters}")
         logging.info(f"Options: {config.options}")
         logging.info(f"Output: {config.output_file}")
         logging.info(f"Base URL: {config.base_url}")
         logging.info(f"Timeout: {config.timeout}s, Poll interval: {config.poll_interval}s")
-        logging.info(f"Page size: {config.page_size}, Sort by: {config.sort_by} {config.sort_order}")
+        logging.info(f"Page size: {config.page_size}, Sort by: {config.sort_by}, Order: {config.sort_order}")
         logging.info("=" * 60)
 
     if config.dry_run:
