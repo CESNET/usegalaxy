@@ -93,7 +93,7 @@ tools:
           import os
           import functools
           from typing import Optional
-      
+
           @functools.lru_cache(maxsize=128)
           def get_ref_size(lookup_value: str, table_name: str, lookup_column: str, value_column: str, value_template: str) -> Optional[int]:
               ref_size = None  # optional int will be None unless set
