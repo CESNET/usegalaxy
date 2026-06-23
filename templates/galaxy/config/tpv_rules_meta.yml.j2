@@ -259,16 +259,12 @@ tools:
     inherits: local_running_tools
     env:
       LITELLM_CONFIG_FILE: "{{ galaxy_config_dir }}/llm_hub_config.yaml"
-  toolshed.g2.bx.psu.edu/repos/recetox/aoptk_find_relationships_chemicals/aoptk_find_relationships_chemicals/.*
+  toolshed.g2.bx.psu.edu/repos/recetox/aoptk_.*:
     inherits: local_running_tools
     env:
       LITELLM_CONFIG_FILE: "{{ galaxy_config_dir }}/llm_hub_config.yaml"
-  toolshed.g2.bx.psu.edu/repos/recetox/aoptk_parse_pdf/aoptk_parse_pdf/.*:
-    inherits: toolshed.g2.bx.psu.edu/repos/recetox/aoptk_find_relationships_chemicals/aoptk_find_relationships_chemicals/.*
-  toolshed.g2.bx.psu.edu/repos/recetox/aoptk_normalize_chemicals/aoptk_normalize_chemicals/.*:
-    inherits: toolshed.g2.bx.psu.edu/repos/recetox/aoptk_find_relationships_chemicals/aoptk_find_relationships_chemicals/.*
-  
-     
+      docker_env_LITELLM_CONFIG_FILE: "{{ galaxy_config_dir }}/llm_hub_config.yaml"
+      SINGULARITYENV_LITELLM_CONFIG_FILE: "{{ galaxy_config_dir }}/llm_hub_config.yaml"
 
 roles:
   training.*:
