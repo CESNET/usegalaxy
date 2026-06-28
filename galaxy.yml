@@ -308,7 +308,7 @@
         name: "tmpreaper in galaxy temp dir"
         minute: "7"
         hour: "*"
-        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_mutable_data_dir }}/tmp >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_temp_dir.log"
+        job: "/usr/sbin/tmpreaper --verbose=0 --showdeleted --all --mtime --mtime-dir --runtime=600 24h {{ galaxy_mutable_data_dir }}/tmp/ >> {{ galaxy_mutable_data_dir }}/cleaning_galaxy_temp_dir.log"
       become: yes
       become_user: "{{ galaxy_user_name }}"
 #    - name: Creates entry in crontab "tmpreaper call in galaxy jobs dir"

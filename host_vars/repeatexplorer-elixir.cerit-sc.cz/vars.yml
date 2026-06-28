@@ -126,6 +126,49 @@ galaxy_extra_dirs:
   - "{{ galaxy_config_dir }}/plugins/activities"
   - "{{ galaxy_server_dir }}/static/images/umbr_programs_icons"
 
+rabbitmq_vhosts:
+  - name: pulsar
+  - name: pulsar2
+  - name: galaxy_internal
+
+rabbitmq_users:
+  - user: guest
+    state: absent
+  - user: debian
+    password: "{{ rabbitmq_users_password.mqadmin }}"
+    tags: administrator
+    permissions:
+          - vhost: /
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+  - user: "{{ pulsar.user_name }}"
+    password: "{{ rabbitmq_users_password.pulsar }}"
+    permissions:
+          - vhost: pulsar
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+          - vhost: pulsar2
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+  - user: galaxy
+    password: "{{ vault_rabbitmq_password_galaxy }}"
+    permissions:
+          - vhost: galaxy_internal
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+  - user: flower
+    password: "{{ vault_rabbitmq_password_flower }}"
+    tags: administrator
+    permissions:
+          - vhost: galaxy_internal
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+
 #tusd_instances:
 #      - name: uploads
 #        # user that tusd will run as
