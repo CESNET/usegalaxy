@@ -284,6 +284,10 @@ roles:
     scheduling:
       require:
         - highmem
+  pulsar2:
+    scheduling:
+      require:
+        - pulsar2
 
 destinations:
   tpv_local:
@@ -317,7 +321,7 @@ destinations:
   # DEMON: this is the common pulsar configuration
   tpv_pulsar_common:
     abstract: true
-    runner: pulsar_tpv_runner
+    runner: pulsar2_tpv_runner
     # DEMON: sum of cores in one VM (i.e., elmo5-*)
     max_accepted_cores: 32
     # DEMON: sum of memory in one VM (i.e., elmo5-*)
@@ -367,7 +371,6 @@ destinations:
   # DEMON: this one uses singularity exclusively (consider it as a default configuration)
   tpv_pulsar:
     inherits: tpv_pulsar_common
-    runner: pulsar_tpv_runner
     params:
       singularity_enabled: true
       # DEMON: We need to enable /tmp for writing and it could be possible either by using the tmp_dir: treu or by adding explicit volume like $SCRATCHDIR:/tmp:rw (which should be more benefitial for us)
@@ -387,14 +390,12 @@ destinations:
   # DEMON: Pulsar for TIAAS. It could schedule to a private small queue to ensure the participants of some course will not have to wait
   tpv_pulsar_training:
     inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
     scheduling:
       require:
         - training
   # DEMON: For tools/users that need more memory for their jobs. Current approach is to add the user to highmem role for some time. Better approach would be to implement rescheduling for PBS over Pulsar runner
   tpv_pulsar_highmem:
     inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
     max_accepted_mem: 512
     max_mem: 512
     scheduling:
@@ -403,7 +404,6 @@ destinations:
   # DEMON: For jobs that need whole computing node exclusively (typically RepeatExplorer, DANTE, etc.)
   tpv_pulsar_excl_jobs:
     inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
     params:
       submit_native_specification: >-
         -l place=exclhost
@@ -417,14 +417,12 @@ destinations:
   # DEMON: For testing purposes, set whatever you want here when needed
   tpv_pulsar_test:
     inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
     scheduling:
       require:
         - test
   # DEMON: Some JAVA tools just ignore the traditional way of limiting the allowed memory
   tpv_pulsar_nasty_java:
     inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
     params:
       singularity_run_extra_arguments: '--env _JAVA_OPTIONS="-Xmx{int(mem)}g -Djava.io.tmpdir=$SCRATCHDIR"'
     scheduling:
@@ -432,7 +430,6 @@ destinations:
         - nasty-java
   tpv_pulsar_rosettafold:
     inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
     params:
       singularity_enabled: false
       submit_native_specification: >-
@@ -461,7 +458,6 @@ destinations:
     inherits: tpv_pulsar
     max_accepted_gpus: 1
     max_gpus: 1
-    runner: pulsar_tpv_runner
     params:
       singularity_run_extra_arguments: '--nv'
       singularity_volumes: '$job_directory:ro,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$SCRATCHDIR,$ALPHAFOLD_DB:/data/2.3:ro'
@@ -484,3 +480,29 @@ destinations:
     scheduling:
       require:
         - repex
+
+  tpv_pulsar2:
+    inherits: tpv_pulsar
+    runner: pulsar_tpv_runner
+    params:
+      ssh_key: "FAKE"
+#      ssh_key: |
+#        -----BEGIN OPENSSH PRIVATE KEY-----
+#        FAKE
+#        -----END OPENSSH PRIVATE KEY-----
+#
+    scheduling:
+      require:
+        - pulsar2
+  tpv_pulsar2_conda:
+    inherits: tpv_pulsar_conda
+    runner: pulsar_tpv_runner
+    scheduling:
+      require:
+        - pulsar2
+  tpv_pulsar2_repex:
+    inherits: tpv_pulsar_repex
+    runner: pulsar_tpv_runner
+    scheduling:
+      require:
+        - pulsar2

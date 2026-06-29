@@ -7,7 +7,7 @@
 - src: galaxyproject.postgresql_objects
   version: 1.2.0
 - src: usegalaxy_eu.certbot
-  version: 0.1.11
+  version: 0.1.13
 - src: galaxyproject.tusd
   version: 0.0.1
 - src: galaxyproject.cvmfs

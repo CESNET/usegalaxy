@@ -87,6 +87,16 @@ galaxy_job_config:
       amqp_publish_retry: true
       amqp_publish_retry_max_retries: 60
       manager: _default_
+    pulsar2_tpv_runner:
+      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+      galaxy_url: "https://{{ rabbitmq_hostname }}{{ csnt_galaxy_url_prefix }}"
+      amqp_url: "pyamqp://{{ pulsar.user_name }}:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_hostname }}:5671/pulsar2?ssl=1"
+      amqp_acknowledge: true
+      amqp_ack_republish_time: 1200
+      amqp_consumer_timeout: 2
+      amqp_publish_retry: true
+      amqp_publish_retry_max_retries: 60
+      manager: _default_
   handling:
     assign: ['db-skip-locked']
   execution:
@@ -453,7 +463,7 @@ rabbitmq_users:
 
 # TUS
 galaxy_tusd_port: 1080
-galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus" # /mnt/data/tus
+galaxy_tus_upload_store: "{{ galaxy_mutable_data_dir }}/tus/" # /mnt/data/tus
 
 #Redis
 galaxy_additional_venv_packages:
