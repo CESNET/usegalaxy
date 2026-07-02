@@ -1,0 +1,8 @@
+#<model_id>	<display_name>	<domain>	<provider>	<free_tag>
+glm 	Latest GLM, large context	text	CERIT-SC	tag
+kimi	Latest Kimi, strong coding performance	multimodal	CERIT-SC	tag
+deepseek	Latest DeepSeek, mathematics, coding	text	CERIT-SC	tag
+deepseek-thinking	Latest DeepSeek, reasoning on	text	CERIT-SC	tag
+mini	Compact fast default model	text	CERIT-SC	tag
+coder	Default model suitable for coding	multimodal	CERIT-SC	tag
+thinker	Default model suitable for complex reasoning	text	CERIT-SC	tag

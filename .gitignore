@@ -14,4 +14,3 @@ roles/*
 
 # this is ours
 !roles/usegalaxy_cz.llm_hub
-genai_models.loc
