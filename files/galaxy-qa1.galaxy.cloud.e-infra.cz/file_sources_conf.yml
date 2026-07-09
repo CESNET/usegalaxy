@@ -24,7 +24,20 @@
   writable: true
   multipart_threshold: 100  # MB
   multipart_chunk_size: 50  # MB
-  default_resource_type: c_ddb1 # from https://vocabularies.coar-repositories.org/resource_types/
+  default_resource_type: c_ddb1 # "dataset" from https://vocabularies.coar-repositories.org/resource_types/
+  # default_resource_type: c_393c # "workflow" from https://vocabularies.coar-repositories.org/resource_types/
+- type: inveniordm
+  id: cesnet_invenio_datarepo
+  doc: CESNET-Invenio datarepo
+  label: CESNET-Invenio datarepo
+  url: https://datarepo.eosc.cz/
+  token: ${user.user_vault.read_secret('preferences/cesnet_invenio_datarepo/token')}
+  public_name: ${user.preferences['cesnet_invenio_datarepo|public_name']}
+  writable: true
+  multipart_threshold: 100  # MB
+  multipart_chunk_size: 50  # MB
+  default_resource_type: c_ddb1 # "dataset" from https://vocabularies.coar-repositories.org/resource_types/
+  # default_resource_type: c_393c # "workflow" from https://vocabularies.coar-repositories.org/resource_types/
 - type: zenodo
   id: zenodo_sandbox
   doc: Testing instance of Zenodo, content is NOT preserved and DOIs created in this instance are not real.
