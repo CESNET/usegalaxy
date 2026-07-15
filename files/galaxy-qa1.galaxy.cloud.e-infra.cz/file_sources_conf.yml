@@ -1,23 +1,23 @@
 - type: inveniordm
   id: invenio_sandbox
-  doc: Testing instance of Invenio, content is NOT preserved and DOIs created in this instance are not real.
-  label: InvenioRDM TESTING
+  doc: Official testing instance of InvenioRDM https://inveniordm.web.cern.ch/
+  label: Official InvenioRDM TESTING https://inveniordm.web.cern.ch/
   url: https://inveniordm.web.cern.ch/
   token: ${user.user_vault.read_secret('preferences/invenio_sandbox/token')}
   public_name: ${user.preferences['invenio_sandbox|public_name']}
   writable: true
 - type: inveniordm
   id: cz_nma_invenio
-  doc:  CZ National Metadata Directory
-  label: CZ NMA TESTING
+  doc:  CZ National Metadata Directory https://nma.eosc.cz/
+  label: CZ NMA TESTING https://nma.eosc.cz/
   url: https://nma.eosc.cz/
   token: ${user.user_vault.read_secret('preferences/cz_nma_invenio/token')}
   public_name: ${user.preferences['cz_nma_invenio|public_name']}
   writable: true
 - type: inveniordm
   id: cesnet_invenio_sandbox
-  doc: CESNET-Invenio instance
-  label: CESNET-Invenio TESTING
+  doc: CESNET-Invenio instance https://workflow-repo.test.du.cesnet.cz/
+  label: CESNET-Invenio TESTING https://workflow-repo.test.du.cesnet.cz/
   url: https://workflow-repo.test.du.cesnet.cz/
   token: ${user.user_vault.read_secret('preferences/cesnet_invenio_sandbox/token')}
   public_name: ${user.preferences['cesnet_invenio_sandbox|public_name']}
@@ -28,8 +28,8 @@
   # default_resource_type: c_393c # "workflow" from https://vocabularies.coar-repositories.org/resource_types/
 - type: inveniordm
   id: cesnet_invenio_datarepo
-  doc: CESNET-Invenio datarepo
-  label: CESNET-Invenio datarepo
+  doc: CESNET-Invenio datarepo https://datarepo.eosc.cz/
+  label: CESNET-Invenio datarepo https://datarepo.eosc.cz/
   url: https://datarepo.eosc.cz/
   token: ${user.user_vault.read_secret('preferences/cesnet_invenio_datarepo/token')}
   public_name: ${user.preferences['cesnet_invenio_datarepo|public_name']}
@@ -40,8 +40,8 @@
   # default_resource_type: c_393c # "workflow" from https://vocabularies.coar-repositories.org/resource_types/
 - type: inveniordm
   id: cesnet_invenio_datarepo_test
-  doc: CESNET-Invenio datarepo TEST
-  label: CESNET-Invenio datarepo TEST
+  doc: CESNET-Invenio datarepo TEST https://test1.datarepo.du.cesnet.cz/
+  label: CESNET-Invenio datarepo TEST https://test1.datarepo.du.cesnet.cz/
   url: https://test1.datarepo.du.cesnet.cz/
   token: ${user.user_vault.read_secret('preferences/cesnet_invenio_datarepo_test/token')}
   public_name: ${user.preferences['cesnet_invenio_datarepo_test|public_name']}
@@ -52,8 +52,8 @@
   # default_resource_type: c_393c # "workflow" from https://vocabularies.coar-repositories.org/resource_types/
 - type: zenodo
   id: zenodo_sandbox
-  doc: Testing instance of Zenodo, content is NOT preserved and DOIs created in this instance are not real.
-  label: Zenodo TESTING
+  doc: Official Testing instance of Zenodo https://sandbox.zenodo.org
+  label: Zenodo TESTING https://sandbox.zenodo.org
   url: https://sandbox.zenodo.org
   token: ${user.user_vault.read_secret('preferences/zenodo_sandbox/token')}
   public_name: ${user.preferences['zenodo_sandbox|public_name']}
@@ -61,7 +61,7 @@
 - type: zenodo
   id: zenodo
   doc: Zenodo is a general-purpose open-access repository. For each submission, a DOI is created, making items easily citeable.
-  label: Zenodo
+  label: Zenodo https://zenodo.org
   url: https://zenodo.org
   token: ${user.user_vault.read_secret('preferences/zenodo/token')}
   public_name: ${user.preferences['zenodo|public_name']}
