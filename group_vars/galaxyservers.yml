@@ -38,6 +38,7 @@ csnt_celery_concurrency: 2
 csnt_celery_memory_limit: 2
 csnt_handlers_processes: 2
 csnt_galaxy_cleanup_delay: 60
+csnt_inference_services: null
 
 admin_ssh_keys: false
 enable_telegraf: false
@@ -214,6 +215,7 @@ galaxy_config:
     # FTP
     ftp_upload_dir: "{{ galaxy_mutable_data_dir }}/uploads"
     ftp_upload_site: "{{ inventory_hostname }}"
+    inference_services: "{{ csnt_inference_services }}"
   gravity:
     process_manager: systemd
     galaxy_root: "{{ galaxy_root }}/server"

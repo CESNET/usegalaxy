@@ -12,6 +12,13 @@ csnt_default_panel_view: all_tools
 shed_tools_shadowing: true
 csnt_require_login: false
 csnt_registered_user_jobs_limit: 100
+csnt_inference_services:
+  default:
+    model: "{{ galaxyai.model }}"
+    api_key: "{{ galaxyai.token }}"
+    api_base_url: "{{ galaxyai.endpoint }}"
+    temperature: 0.7
+    max_tokens: 5000
 
 pulsar:
   user_name: galaxy-qa1
