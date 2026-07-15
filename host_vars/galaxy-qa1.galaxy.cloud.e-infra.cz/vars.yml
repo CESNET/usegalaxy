@@ -2,7 +2,7 @@ galaxy_build_client: false
 galaxy_client_make_target: client-production
 
 galaxy_repo: https://github.com/CESNET/galaxy.git
-galaxy_commit_id: cesnet_invenio_26.0
+galaxy_commit_id: multipart_release_26_1
 
 csnt_brand: "QA1-TEST-{{ galaxy_commit_id }}"
 csnt_log_level: DEBUG
