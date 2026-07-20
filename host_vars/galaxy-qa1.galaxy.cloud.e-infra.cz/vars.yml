@@ -18,7 +18,6 @@ csnt_inference_services:
     api_key: "{{ galaxyai.token }}"
     api_base_url: "{{ galaxyai.endpoint }}"
     temperature: 0.7
-    max_tokens: 5000
 
 pulsar:
   user_name: galaxy-qa1
