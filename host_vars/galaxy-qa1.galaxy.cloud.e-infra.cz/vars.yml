@@ -1,9 +1,8 @@
-galaxy_commit_id: release_25.1
 galaxy_build_client: false
 galaxy_client_make_target: client-production
 
 galaxy_repo: https://github.com/CESNET/galaxy.git
-galaxy_commit_id: cesnet_invenio
+galaxy_commit_id: multipart_release_26_1
 
 csnt_brand: "QA1-TEST-{{ galaxy_commit_id }}"
 csnt_log_level: DEBUG
@@ -13,6 +12,12 @@ csnt_default_panel_view: all_tools
 shed_tools_shadowing: true
 csnt_require_login: false
 csnt_registered_user_jobs_limit: 100
+csnt_inference_services:
+  default:
+    model: "{{ galaxyai.model }}"
+    api_key: "{{ galaxyai.token }}"
+    api_base_url: "{{ galaxyai.endpoint }}"
+    temperature: 0.7
 
 pulsar:
   user_name: galaxy-qa1

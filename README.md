@@ -5,7 +5,7 @@ This playbook installs and configures Galaxy server on Metacentrum CZ infrastruc
 ## requirements
 
 - You need to have `ansible`. Python virtualenv is a recommended way to its installation.
-
+- tested on `ansible 11.1.0` and `ansible-core 2.18.1`
 - These ports enabled on host machine:
 ```
 80(HTTP)
