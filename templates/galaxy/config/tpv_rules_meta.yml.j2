@@ -420,6 +420,13 @@ destinations:
     scheduling:
       require:
         - highmem
+  tpv_pulsar_highmem_conda:
+    inherits: tpv_pulsar_conda
+    max_accepted_mem: 512
+    max_mem: 512
+    scheduling:
+      require:
+        - highmem
   # DEMON: For jobs that need whole computing node exclusively (typically RepeatExplorer, DANTE, etc.)
   tpv_pulsar_excl_jobs:
     inherits: tpv_pulsar
