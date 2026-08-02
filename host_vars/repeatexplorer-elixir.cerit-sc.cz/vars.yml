@@ -1,5 +1,3 @@
-galaxy_mutable_data_dir: /mnt/galaxy-re
-#galaxy_mutable_data_dir: "{{ rbd_mount_point }}/galaxy"
 csnt_galaxy_url_prefix: "/galaxy"
 
 rbd_cluster_code: CL5
