@@ -60,14 +60,7 @@ galaxy_build_client: false
 
 galaxy_systemd_nofile_limit: 150000
 
-# Postgresql DB backup using dump is not implemented in main branch (find the code in galaxy-re branch)
-#postgresql_pg_dump_prefix: galaxy_db_backup
 postgresql_backup_local_dir: "{{ galaxy_mutable_data_dir }}/backups/scripts"
-
-miniconda_prefix: "{{ galaxy_tool_dependency_dir }}/conda"
-miniconda_version: 23.5.2 # 23.5.0 # 4.12.0
-miniconda_channels: ['conda-forge', 'bioconda', 'iuc', 'r', 'anaconda', 'petrnovak', 'defaults']
-miniconda_base_env_packages: ['mamba']
 
 pulsar:
   user_name: galaxyelixir
