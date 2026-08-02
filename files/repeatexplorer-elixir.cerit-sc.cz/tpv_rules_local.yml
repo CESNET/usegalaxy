@@ -195,9 +195,6 @@ tools:
         cache_directory: "$SINGULARITY_CACHEDIR"
     -   auto_install: true
         type: mulled_singularity
-    -   auto_install: false
-        cache_directory: /mnt/galaxy-re/singularity/mulled
-        type: build_mulled_singularity
     params:
       singularity_default_container_id: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache/cache/library/sha256.660dda926394f3db2400f7800e064cf731c75566853cac43a30be44e3b5f5d73"
     env:
