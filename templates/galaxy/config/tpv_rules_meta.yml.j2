@@ -344,7 +344,7 @@ destinations:
   # DEMON: this is the common pulsar configuration
   tpv_pulsar_common:
     abstract: true
-    runner: pulsar2_tpv_runner
+    runner: pulsar_tpv_runner
     # DEMON: sum of cores in one VM (i.e., elmo5-*)
     max_accepted_cores: 32
     # DEMON: sum of memory in one VM (i.e., elmo5-*)
@@ -513,26 +513,19 @@ destinations:
 
   tpv_pulsar2:
     inherits: tpv_pulsar
-    runner: pulsar_tpv_runner
-    params:
-      ssh_key: "FAKE"
-#      ssh_key: |
-#        -----BEGIN OPENSSH PRIVATE KEY-----
-#        FAKE
-#        -----END OPENSSH PRIVATE KEY-----
-#
+    runner: pulsar2_tpv_runner
     scheduling:
       require:
         - pulsar2
   tpv_pulsar2_conda:
     inherits: tpv_pulsar_conda
-    runner: pulsar_tpv_runner
+    runner: pulsar2_tpv_runner
     scheduling:
       require:
         - pulsar2
   tpv_pulsar2_repex:
     inherits: tpv_pulsar_repex
-    runner: pulsar_tpv_runner
+    runner: pulsar2_tpv_runner
     scheduling:
       require:
         - pulsar2
