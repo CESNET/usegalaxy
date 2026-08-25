@@ -16,6 +16,12 @@ csnt_enable_notification_system: true
 csnt_short_term_storage_dir: "{{ galaxy_mutable_data_dir }}/short_term_web_storage"
 csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
+csnt_inference_services:
+  default:
+    model: "{{ galaxyai.model }}"
+    api_key: "{{ galaxyai.token }}"
+    api_base_url: "{{ galaxyai.endpoint }}"
+    temperature: 0.7
 
 pulsar:
   user_name: galaxyeu
