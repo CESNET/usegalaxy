@@ -247,3 +247,27 @@ tools:
 
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/.*:
     inherits: toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*
+
+  toolshed.g2.bx.psu.edu/repos/petr-novak/carp/carp/.*:
+    cores: 16
+    mem: 64
+    context:
+      scratch: 50
+      walltime: 336 # = 2 weeks
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
+    container_resolvers:
+    -   type: cached_explicit_singularity
+        cache_directory: "$SINGULARITY_CACHEDIR"
+    -   type: explicit_singularity
+    -   type: cached_mulled_singularity
+        cache_directory: "$SINGULARITY_CACHEDIR"
+    -   auto_install: true
+        type: mulled_singularity
+    env:
+      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
+
