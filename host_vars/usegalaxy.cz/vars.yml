@@ -18,11 +18,16 @@ csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
 csnt_inference_services:
   default:
-    model: "{{ galaxyai.model }}"
+    model: "mini"
     api_key: "{{ galaxyai.token }}"
     api_base_url: "{{ galaxyai.endpoint }}"
     temperature: 0.7
-
+  custom_tool:
+    model: "kimi"
+    temperature: 0.4
+  error_analysis:
+    model: "qwen3.8-27b"
+    temperature: 0.2
 pulsar:
   user_name: galaxyeu
   nfs_home: praha5-elixir
@@ -45,6 +50,8 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
     dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
+  - src: files/galaxy/config/agent_model_capabilities.yml
+    dest: "{{ galaxy_config_dir }}/agent_model_capabilities.yml"
 
 galaxy_local_tools:
   - testing.xml
