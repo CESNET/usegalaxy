@@ -16,7 +16,6 @@ csnt_inference_services:
     model: "mini"
     api_key: "{{ galaxyai.token }}"
     api_base_url: "{{ galaxyai.endpoint }}"
-    structured_output_override: false
     temperature: 0.7
   custom_tool:
     model: "kimi"
