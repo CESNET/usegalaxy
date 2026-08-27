@@ -414,6 +414,18 @@ destinations:
     scheduling:
       require:
         - training
+  # DEMON: Pulsar for cached explicit singularity based tools
+  tpv_pulsar_repex:
+    inherits: tpv_pulsar
+    env:
+      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
+    container_resolvers:
+    -   type: explicit_singularity
+    -   cache_directory: "$SINGULARITY_CACHEDIR"
+        type: cached_mulled_singularity
+    scheduling:
+      require:
+        - repex
   # DEMON: For tools/users that need more memory for their jobs. Current approach is to add the user to highmem role for some time. Better approach would be to implement rescheduling for PBS over Pulsar runner
   tpv_pulsar_highmem:
     inherits: tpv_pulsar
@@ -425,6 +437,13 @@ destinations:
         - highmem
   tpv_pulsar_highmem_conda:
     inherits: tpv_pulsar_conda
+    max_accepted_mem: 512
+    max_mem: 512
+    scheduling:
+      require:
+        - highmem
+  tpv_pulsar_highmem_repex:
+    inherits: tpv_pulsar_repex
     max_accepted_mem: 512
     max_mem: 512
     scheduling:
@@ -503,14 +522,3 @@ destinations:
     scheduling:
       require:
         - alphafold
-  tpv_pulsar_repex:
-    inherits: tpv_pulsar
-    env:
-      SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
-    container_resolvers:
-    -   type: explicit_singularity
-    -   cache_directory: "$SINGULARITY_CACHEDIR"
-        type: cached_mulled_singularity
-    scheduling:
-      require:
-        - repex
