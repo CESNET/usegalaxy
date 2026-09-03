@@ -208,6 +208,13 @@
       become_user: root
       ansible.builtin.command: galaxyctl stop
       when: "inventory_hostname in ['galaxy-qa1.galaxy.cloud.e-infra.cz', 'galaxy-qa2.galaxy.cloud.e-infra.cz']"
+    - name: Configure GitHub auth for git access without anonymous rate limiting
+      ansible.builtin.git_config:
+        name: https.https://github.com/.extraheader
+        scope: system
+        value: "Authorization: Basic {{ (github_username ~ ':' ~ github_pat) | b64encode }}"
+      no_log: true
+      when: github_pat is defined
 
   roles:
     - galaxyproject.tusd

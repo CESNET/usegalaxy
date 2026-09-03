@@ -25,7 +25,7 @@ This playbook installs and configures Galaxy server on Metacentrum CZ infrastruc
 
 In general: to access the production Galaxy instances as a admin you must use kerberos. The easiest way is to connect to a frontend instance
 of MetaCentrum infrastructure (e.g., skirit.metacentrum.cz) and call `kinit <YOUR_USERNAME>@ADMIN.META` following by `ssh root@<GALAXY_HOST>`
-(e.g., `ssh root@galaxy-umsa.grid.cesnet.cz`). **Important: you need to have a valid `<YOUR_USERNAME>@ADMIN.META` principal and another admin 
+(e.g., `ssh root@galaxy-umsa.grid.cesnet.cz`). **Important: you need to have a valid `<YOUR_USERNAME>@ADMIN.META` principal and another admin
 must add your `<YOUR_USERNAME>@ADMIN.META` principal into `/root/.k5login` first.**
 
 To run the playbook, you must configure kerberos locally on your compouter. [This](https://docs.metacentrum.cz/en/docs/access/security/kerberos)
@@ -85,6 +85,10 @@ einfracz_client_secret: string-with-client-secret
 
 # Galaxy admin API key for tool installation
 api_key: dont-be-lazy-a-really-long-password-here
+
+# to avoid github anon rate limiting
+github_username: our-github-bot-username
+github_pat: bot_pat
 # see https://github.com/galaxyproject/galaxy/blob/dev/doc/source/admin/special_topics/vault.md
 vault_encryption_keys:
 - generated_key_NUDIABSUmny78sad8a7sby87av8dv=
