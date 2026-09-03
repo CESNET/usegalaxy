@@ -1,4 +1,4 @@
-galaxy_build_client: false
+galaxy_build_client: true
 galaxy_client_make_target: client-production
 
 galaxy_commit_id: release_26.1
