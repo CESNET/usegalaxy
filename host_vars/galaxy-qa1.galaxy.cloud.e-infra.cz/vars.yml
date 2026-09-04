@@ -11,18 +11,6 @@ csnt_default_panel_view: all_tools
 shed_tools_shadowing: true
 csnt_require_login: false
 csnt_registered_user_jobs_limit: 100
-csnt_inference_services:
-  default:
-    model: "mini"
-    api_key: "{{ galaxyai.token }}"
-    api_base_url: "{{ galaxyai.endpoint }}"
-    temperature: 0.7
-  custom_tool:
-    model: "kimi"
-    temperature: 0.4
-  error_analysis:
-    model: "qwen3.8-27b"
-    temperature: 0.2
 
 pulsar:
   user_name: galaxy-qa1
@@ -32,8 +20,6 @@ pulsar:
   pbs_gpu_queue: galaxy_gpu
 
 galaxy_config_files:
-  - src: files/galaxy/themes.yml
-    dest: "{{ galaxy_config.galaxy.themes_config_file }}"
   - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/tpv_rules_local.yml', 'files/galaxy/config/tpv_rules_local.yml']) }}"
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
@@ -46,5 +32,3 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
     dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
-  - src: files/galaxy/config/agent_model_capabilities.yml
-    dest: "{{ galaxy_config_dir }}/agent_model_capabilities.yml"
