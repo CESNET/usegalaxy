@@ -27,7 +27,6 @@ csnt_handlers_processes: 4
 csnt_celery_memory_limit: 4
 csnt_celery_concurrency: 8
 
-enable_tiaas: false
 shed_tools_shadowing: false
 
 galaxy_user_name: galaxyelixir
