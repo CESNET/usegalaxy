@@ -235,6 +235,23 @@
       when: enable_telegraf | bool
 
   post_tasks:
+    - name: Adjust login page on RE (apply patch)
+      ansible.posix.patch:
+        src: "{{ playbook_dir }}/files/{{inventory_hostname}}/patch/login_page.patch"
+        basedir: "{{ galaxy_root }}/server"
+        backup: true
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz','galaxy-qa2.galaxy.cloud.e-infra.cz']"
+    - name: Adjust login page on RE (build client)
+      shell:
+        cmd: make client-production
+        chdir: "{{ galaxy_root }}/server"
+      environment:
+        VENV: "{{ galaxy_venv_dir }}"
+        VIRTUAL_ENV: "{{ galaxy_venv_dir }}"
+        PATH: "{{ galaxy_venv_dir }}/bin:{{ ansible_env.PATH }}"
+        COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz','galaxy-qa2.galaxy.cloud.e-infra.cz']"
+
     - name: Add Nginx warning about maintenance
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/files/nginx/warning.html"
