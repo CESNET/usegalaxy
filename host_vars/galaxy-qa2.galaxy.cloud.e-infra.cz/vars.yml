@@ -8,9 +8,11 @@ csnt_log_level: DEBUG
 csnt_enable_notification_system: true
 csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
-shed_tools_shadowing: true
 csnt_require_login: false
 csnt_registered_user_jobs_limit: 100
+
+shed_tools_shadowing: true
+enable_tiaas: true
 
 pulsar:
   user_name: galaxy-qa1
@@ -20,8 +22,6 @@ pulsar:
   pbs_gpu_queue: galaxy_gpu
 
 galaxy_config_files:
-  - src: files/galaxy/themes.yml
-    dest: "{{ galaxy_config.galaxy.themes_config_file }}"
   - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/tpv_rules_local.yml', 'files/galaxy/config/tpv_rules_local.yml']) }}"
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   - src: files/{{ inventory_hostname }}/file_sources_conf.yml

@@ -38,12 +38,23 @@ csnt_celery_concurrency: 2
 csnt_celery_memory_limit: 2
 csnt_handlers_processes: 2
 csnt_galaxy_cleanup_delay: 60
-csnt_inference_services: null
+csnt_inference_services:
+  default:
+    model: "mini"
+    api_key: "{{ galaxyai.token }}"
+    api_base_url: "{{ galaxyai.endpoint }}"
+    temperature: 0.7
+  custom_tool:
+    model: "kimi"
+    temperature: 0.4
+  error_analysis:
+    model: "qwen3.8-27b"
+    temperature: 0.2
 
 admin_ssh_keys: false
 enable_telegraf: false
 enable_flower: false
-enable_tiaas: true
+enable_tiaas: false
 shed_tools_shadowing: false
 
 # LLM Hub placeholders; provide real values in secrets.yml
@@ -272,6 +283,8 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
 
 galaxy_config_templates:
+  - src: files/galaxy/themes.yml
+    dest: "{{ galaxy_config.galaxy.themes_config_file }}"
   - src: templates/galaxy/config/reports.yml.j2
     dest: "{{ galaxy_config.gravity.reports.config_file }}"
   - src: "{{ lookup('first_found', ['templates/'+inventory_hostname+'/config/oidc_backends_config.xml.j2', 'templates/galaxy/config/oidc_backends_config.xml.j2']) }}"
@@ -292,6 +305,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/llm_hub_config.yaml"
   - src: templates/galaxy/config/local_data_table_conf.xml.j2
     dest: "{{ galaxy_config_dir }}/local_data_table_conf.xml"
+  - src: files/galaxy/config/agent_model_capabilities.yml
+    dest: "{{ galaxy_config_dir }}/agent_model_capabilities.yml"
 
 galaxy_local_tools:
   - testing.xml
