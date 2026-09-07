@@ -253,7 +253,7 @@ tools:
     mem: 64
     context:
       scratch: 50
-      walltime: 336 # = 2 weeks
+#      walltime: 336 # = 2 weeks
     scheduling:
       reject:
         - conda
@@ -270,4 +270,33 @@ tools:
         type: mulled_singularity
     env:
       SINGULARITY_CACHEDIR: "/storage/brno11-elixir/home/galaxyelixir/pulsar-re/files/singularity_cache"
-
+    rules:
+      - id: input_size_small
+        if: input_size > 0.1 and input_size <= 0.5
+        cores: 16
+        mem: 128
+        context:
+          walltime: 10
+      - id: input_size_medium
+        if: input_size > 0.5 and input_size <= 2
+        cores: 32
+        mem: 256
+        context:
+          walltime: 32
+          queue: elixircz
+        scheduling:
+          require:
+            - highmem
+      - id: input_size_big
+        if: input_size > 2 and input_size <= 8
+        cores: 32
+        mem: 256
+        context:
+          walltime: 168 # = 7 days
+          queue: elixircz
+        scheduling:
+          require:
+            - highmem
+      - id: input_size_too_big
+        if: input_size > 8
+        fail: Input file is too big
