@@ -10,6 +10,7 @@ csnt_edam_panel_views: operations,topics
 csnt_default_panel_view: all_tools
 csnt_require_login: false
 csnt_registered_user_jobs_limit: 100
+csnt_gunicorn_workers: 2
 
 shed_tools_shadowing: true
 enable_tiaas: true
