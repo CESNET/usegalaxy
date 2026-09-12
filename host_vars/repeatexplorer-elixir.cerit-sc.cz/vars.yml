@@ -50,10 +50,9 @@ extra_certbot_domains:
   - galaxy-re.grid.cesnet.cz
   - galaxyelixir.vm.cesnet.cz
 
-#galaxy_commit_id: 72070dbd0a6d0f418d0b8f914825ea2b8e6a0a88
-galaxy_repo: https://github.com/CESNET/galaxy.git
-galaxy_commit_id: release_25.0_regalaxy
-galaxy_build_client: false
+galaxy_commit_id: release_26.1
+galaxy_build_client: true
+galaxy_client_make_target: client-production
 
 galaxy_systemd_nofile_limit: 150000
 

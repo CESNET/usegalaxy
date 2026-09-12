@@ -1,0 +1,50 @@
+--- client/src/components/Login/LoginForm.vue   2026-09-07 10:02:10.555050572 +0000
++++ client/src/components/Login/LoginForm.vue   2026-09-07 10:39:54.269463354 +0000
+@@ -180,10 +180,10 @@
+                             </BCardHeader>
+ 
+                             <BCardBody :class="{ 'd-flex w-100': !loginColumnDisplay }">
+-                                <BForm v-if="!disableLocalAccounts" id="login" @submit.prevent="submitLogin()">
++                                <BForm id="login" @submit.prevent="submitLogin()">
+                                     <!-- standard internal galaxy login -->
+                                     <BFormGroup
+-                                        :label="localize('Public Name or Email Address')"
++                                        :label="localize('Registered login')"
+                                         label-for="login-form-name">
+                                         <BFormInput
+                                             v-if="!connectExternalProvider"
+@@ -216,10 +216,9 @@
+ 
+                                             <a
+                                                 v-localize
+-                                                href="javascript:void(0)"
+-                                                role="button"
+-                                                @click.prevent="resetLogin">
+-                                                Click here to reset your password.
++                                                href="mailto:regalaxy@rt.cesnet.cz?subject=RepeatExplorer Galaxy: password reset request"
++                                                role="button">
++                                                Click here and ask the support team to reset your password.
+                                             </a>
+                                         </BFormText>
+                                     </BFormGroup>
+@@ -255,16 +254,12 @@
+                             <BCardFooter>
+                                 <span v-if="!connectExternalProvider">
+                                     Don't have an account?
+-                                    <GLink
+-                                        v-if="allowUserCreation && !disableLocalAccounts"
++                                    <a
+                                         id="register-toggle"
+-                                        to="/register/start">
++                                        href="https://metavo.metacentrum.cz/osobniv3/wayf/elixir.jsp"
++                                        role="button">
+                                         Register here.
+-                                    </GLink>
+-                                    <span v-else data-description="registration disabled message">
+-                                        Registration for this Galaxy instance is disabled. Please contact an
+-                                        administrator for assistance.
+-                                    </span>
++                                    </a>
+                                 </span>
+                                 <span v-else>
+                                     Do not wish to connect to an external provider?
