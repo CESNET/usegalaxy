@@ -1,7 +1,11 @@
 --- client/src/components/Login/LoginForm.vue   2026-09-07 10:02:10.555050572 +0000
 +++ client/src/components/Login/LoginForm.vue   2026-09-07 10:39:54.269463354 +0000
-@@ -183,7 +183,7 @@
-                                 <BForm v-if="!disableLocalAccounts" id="login" @submit.prevent="submitLogin()">
+@@ -180,10 +180,10 @@
+                             </BCardHeader>
+ 
+                             <BCardBody :class="{ 'd-flex w-100': !loginColumnDisplay }">
+-                                <BForm v-if="!disableLocalAccounts" id="login" @submit.prevent="submitLogin()">
++                                <BForm id="login" @submit.prevent="submitLogin()">
                                      <!-- standard internal galaxy login -->
                                      <BFormGroup
 -                                        :label="localize('Public Name or Email Address')"
