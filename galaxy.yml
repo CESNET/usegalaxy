@@ -240,7 +240,7 @@
         src: "{{ playbook_dir }}/files/{{inventory_hostname}}/patch/login_page.patch"
         basedir: "{{ galaxy_root }}/server"
         backup: true
-      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz','galaxy-qa2.galaxy.cloud.e-infra.cz']"
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz']"
     - name: Adjust login page on RE (build client)
       shell:
         cmd: make client-production
@@ -250,7 +250,7 @@
         VIRTUAL_ENV: "{{ galaxy_venv_dir }}"
         PATH: "{{ galaxy_venv_dir }}/bin:{{ ansible_env.PATH }}"
         COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
-      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz','galaxy-qa2.galaxy.cloud.e-infra.cz']"
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz']"
 
     - name: Add Nginx warning about maintenance
       ansible.builtin.copy:
