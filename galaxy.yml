@@ -36,14 +36,16 @@
           key = {{ rbd_key }}
         dest: "/etc/ceph/ceph.keyring"
         mode: '0600'
-    - name: Copy rbdmap
-      ansible.builtin.copy:
-        content: |
-          # RbdDevice             Parameters
-          #poolname/imagename     id=client,keyring=/etc/ceph/ceph.client.keyring
-          {{ rbd_pool }}/{{ rbd_image }}     id={{ rbd_user }},keyring=/etc/ceph/ceph.keyring
-        dest: "/etc/ceph/rbdmap"
+    - name: Add proper line to rbdmap
+      ansible.builtin.lineinfile:
+        regexp:  '^{{ rbd_pool }}/{{ rbd_image }}\s+id={{ rbd_user }},keyring=/etc/ceph/ceph.keyring$'
+        line:  "{{ rbd_pool }}/{{ rbd_image }}    id={{ rbd_user }},keyring=/etc/ceph/ceph.keyring"
+        path: /etc/ceph/rbdmap
+        owner: root
+        group: root
         mode: '0644'
+        create: true
+        backup: true
     - name: Check RBD device list output
       ansible.builtin.command: "rbd device list --format json"
       register: rbd_devices
@@ -52,7 +54,7 @@
         rbd_dev_data: "{{ rbd_devices.stdout | from_json }}"
     - name: Identify RBD device name
       set_fact:
-        rbd_dev_name: "{{ rbd_dev_data | selectattr('name', 'equalto', rbd_image) | map(attribute='device') | first | default('/dev/rbd0') }}"
+        rbd_dev_name: "{{ rbd_dev_data | selectattr('name', 'equalto', rbd_image) | selectattr('pool', 'equalto', rbd_pool) | map(attribute='device') | last | default('/dev/rbd0') }}"
     - name: Check if RBD device exists
       stat:
         path: "{{ rbd_dev_name }}"
