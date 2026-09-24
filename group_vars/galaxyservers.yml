@@ -281,6 +281,8 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/eu_msmt_eosc.svg"
   - src: files/galaxy/static/e-infra_logo.svg
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
+  - src: files/galaxy/static/lslogin-icon.jpg.png
+    dest: "{{ galaxy_server_dir }}/static/lslogin-icon.png"
 
 galaxy_config_templates:
   - src: files/galaxy/themes.yml
