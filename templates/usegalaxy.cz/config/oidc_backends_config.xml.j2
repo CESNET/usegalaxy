@@ -4,7 +4,13 @@
         <client_id>{{ einfracz_client_id }}</client_id>
         <client_secret>{{ einfracz_client_secret }}</client_secret>
         <redirect_uri>https://{{ inventory_hostname }}/authnz/einfracz/callback</redirect_uri>
-        <icon>https://www.e-infra.cz/img/logo.svg</icon>
+        <icon>https://{{ inventory_hostname }}/static/e-infra_logo.svg</icon>
+    </provider>
+    <provider name="cesid">
+        <client_id>{{ einfracz_client_id }}</client_id>
+        <client_secret>{{ einfracz_client_secret }}</client_secret>
+        <redirect_uri>https://{{ inventory_hostname }}/authnz/cesid/callback</redirect_uri>
+        <icon>https://{{ inventory_hostname }}/static/cesid_logo.png</icon>
     </provider>
     <provider name="Lifescience">
         <client_id>{{ lifescience_client_id }}</client_id>
