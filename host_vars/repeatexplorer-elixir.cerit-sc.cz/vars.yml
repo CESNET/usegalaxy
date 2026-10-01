@@ -24,7 +24,7 @@ csnt_watch_job_rules: 'polling' # used to be auto
 csnt_retry_job_output_collection: 5
 csnt_gunicorn_workers: 5
 csnt_handlers_processes: 4
-csnt_celery_memory_limit: 4
+csnt_celery_memory_limit: 8
 csnt_celery_concurrency: 8
 
 shed_tools_shadowing: false
