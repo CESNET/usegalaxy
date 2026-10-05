@@ -59,6 +59,13 @@ tools:
     context:
       scratch: 150
       walltime: 336
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster/1.21.3.2:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
 
   # repeat_annotation_pipeline tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3
 #  toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/extract_re_contigs/.*:
