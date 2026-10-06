@@ -221,6 +221,7 @@ tools:
       require:
         - singularity
         - repex
+        - exclusive
     container_resolvers:
     -   type: cached_explicit_singularity
         cache_directory: "$SINGULARITY_CACHEDIR"

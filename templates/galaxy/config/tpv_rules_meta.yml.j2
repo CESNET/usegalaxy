@@ -437,6 +437,18 @@ destinations:
     scheduling:
       require:
         - repex
+  tpv_pulsar_repex_excl:
+    inherits: tpv_pulsar_repex
+    params:
+      submit_native_specification: >-
+        -l place=exclhost
+        -l select=1:ncpus={int(cores)}:mem={int(mem)}gb:scratch_local={int(scratch)}gb
+        -l walltime={int(walltime)}:00:00
+        -q {queue}
+        -N {{ pulsar.nfs_prefix }}_j{job.id}__{(tool.id if '/' not in tool.id else tool.id.split('/')[-2]+'_v'+tool.id.split('/')[-1]).replace(' ','_')}__{user.username if user and hasattr(user, 'username') else 'anonymous'}
+    scheduling:
+      require:
+        - exclusive
   # DEMON: For tools/users that need more memory for their jobs. Current approach is to add the user to highmem role for some time. Better approach would be to implement rescheduling for PBS over Pulsar runner
   tpv_pulsar_highmem:
     inherits: tpv_pulsar
