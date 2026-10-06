@@ -171,29 +171,35 @@ tools:
       walltime: 48
 
   # DANTE_ltr tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr
-#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
-#    cores: 2
-#    mem: 10
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*:
+    cores: 32
+    mem: 64
+    context:
+      scratch: 64
+      walltime: 168
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/clean_dante_ltr/.*:
+#    cores: 32
+#    mem: 64
 #    context:
-#      scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/clean_dante_ltr/.*:
-    cores: 32
-    mem: 64
+#      scratch: 64
+#      walltime: 168
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_search/.*:
+#    cores: 32
+#    mem: 64
+#    context:
+#      scratch: 64
+#      walltime: 168
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_to_library/.*:
+#    cores: 32
+#    mem: 64
+#    context:
+#      scratch: 64
+#      walltime: 168
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
+    cores: 2
+    mem: 10
     context:
-      scratch: 64
-      walltime: 168
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_search/.*:
-    cores: 32
-    mem: 64
-    context:
-      scratch: 64
-      walltime: 168
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_to_library/.*:
-    cores: 32
-    mem: 64
-    context:
-      scratch: 64
-      walltime: 168
+      scratch: 15
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*/6.3.*:
     scheduling:
       reject:
