@@ -28,6 +28,13 @@ tools:
     mem: 32
     context:
       walltime: 48
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/dante_tir/0.3.2.*:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
 
   # DANTE toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter/.*:
@@ -59,7 +66,14 @@ tools:
     context:
       scratch: 150
       walltime: 336
-  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster/1.21.3.2:
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.2:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.3:
     scheduling:
       reject:
         - conda
@@ -180,6 +194,13 @@ tools:
     context:
       scratch: 64
       walltime: 168
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*/6.3.*:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
 
   # ReapeatExplorer tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*:
