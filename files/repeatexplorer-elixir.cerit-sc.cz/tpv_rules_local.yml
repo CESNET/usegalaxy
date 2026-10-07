@@ -73,7 +73,7 @@ tools:
       require:
         - singularity
         - repex
-  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.3:
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.4:
     scheduling:
       reject:
         - conda
