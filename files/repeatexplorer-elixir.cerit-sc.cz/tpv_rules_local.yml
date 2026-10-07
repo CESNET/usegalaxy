@@ -28,6 +28,13 @@ tools:
     mem: 32
     context:
       walltime: 48
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/dante_tir/0.3.2.*:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
 
   # DANTE toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter/.*:
@@ -59,7 +66,14 @@ tools:
     context:
       scratch: 150
       walltime: 336
-  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster/1.21.3.2:
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.2:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.3:
     scheduling:
       reject:
         - conda
@@ -157,29 +171,42 @@ tools:
       walltime: 48
 
   # DANTE_ltr tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr
-#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
-#    cores: 2
-#    mem: 10
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*:
+    cores: 32
+    mem: 64
+    context:
+      scratch: 64
+      walltime: 168
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/clean_dante_ltr/.*:
+#    cores: 32
+#    mem: 64
 #    context:
-#      scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/clean_dante_ltr/.*:
-    cores: 32
-    mem: 64
+#      scratch: 64
+#      walltime: 168
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_search/.*:
+#    cores: 32
+#    mem: 64
+#    context:
+#      scratch: 64
+#      walltime: 168
+#  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_to_library/.*:
+#    cores: 32
+#    mem: 64
+#    context:
+#      scratch: 64
+#      walltime: 168
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary/.*:
+    cores: 2
+    mem: 10
     context:
-      scratch: 64
-      walltime: 168
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_search/.*:
-    cores: 32
-    mem: 64
-    context:
-      scratch: 64
-      walltime: 168
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_to_library/.*:
-    cores: 32
-    mem: 64
-    context:
-      scratch: 64
-      walltime: 168
+      scratch: 15
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*/6.3.*:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
 
   # ReapeatExplorer tools http://toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*:
@@ -194,6 +221,7 @@ tools:
       require:
         - singularity
         - repex
+        - exclusive
     container_resolvers:
     -   type: cached_explicit_singularity
         cache_directory: "$SINGULARITY_CACHEDIR"
