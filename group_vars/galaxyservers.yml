@@ -283,6 +283,8 @@ galaxy_config_files_public:
     dest: "{{ galaxy_server_dir }}/static/e-infra_logo.svg"
   - src: files/galaxy/static/lslogin-icon.jpg.png
     dest: "{{ galaxy_server_dir }}/static/lslogin-icon.png"
+  - src: files/galaxy/static/cesid_logo.png
+    dest: "{{ galaxy_server_dir }}/static/cesid_logo.png"
 
 galaxy_config_templates:
   - src: files/galaxy/themes.yml
