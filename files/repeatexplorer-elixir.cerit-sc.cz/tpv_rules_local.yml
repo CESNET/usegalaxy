@@ -37,17 +37,10 @@ tools:
         - repex
 
   # DANTE toolset: https://toolshed.g2.bx.psu.edu/repos/petr-novak/dante
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter/.*:
-    mem: 25
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_to_tabular/.*:
-    mem: 25
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_summary/.*:
-    mem: 25
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_extract/.*:
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante/.*:
     mem: 25
   toolshed.g2.bx.psu.edu/repos/petr-novak/dante/dante/.*:
     cores: 32
-    mem: 25
     context:
       walltime: 336
 
@@ -74,6 +67,13 @@ tools:
         - singularity
         - repex
   toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.4:
+    scheduling:
+      reject:
+        - conda
+      require:
+        - singularity
+        - repex
+  toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.22.*:
     scheduling:
       reject:
         - conda
@@ -200,7 +200,7 @@ tools:
     mem: 10
     context:
       scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*/6.3.*:
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*/6.*:
     scheduling:
       reject:
         - conda
@@ -221,7 +221,7 @@ tools:
       require:
         - singularity
         - repex
-        - exclusive
+#        - exclusive
     container_resolvers:
     -   type: cached_explicit_singularity
         cache_directory: "$SINGULARITY_CACHEDIR"
@@ -283,7 +283,7 @@ tools:
   toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean/.*:
     inherits: toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2/.*
 
-  toolshed.g2.bx.psu.edu/repos/petr-novak/carp/carp/.*:
+  toolshed.g2.bx.psu.edu/repos/petr-novak/carp/.*:
     cores: 16
     mem: 64
     context:
