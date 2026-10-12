@@ -21,6 +21,7 @@ csnt_jobs_output_size_limit: 50GB
 csnt_tool_config_file:
   - "{{ galaxy_config_dir }}/tool_conf.xml"
   - "{{ galaxy_config_dir }}/local_tool_conf.xml"
+csnt_oidc_auth_pipeline: null
 csnt_library_import_dir: null
 csnt_user_library_import_dir: null
 csnt_allow_path_paste: false
@@ -135,6 +136,7 @@ galaxy_job_config:
 galaxy_config:
   galaxy:
     # Main Configuration
+    oidc_auth_pipeline: "{{ csnt_oidc_auth_pipeline }}"
     new_file_path: "{{ galaxy_mutable_data_dir }}/tmp"
     object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
     auth_config_file: "{{ csnt_auth_config_file }}"
