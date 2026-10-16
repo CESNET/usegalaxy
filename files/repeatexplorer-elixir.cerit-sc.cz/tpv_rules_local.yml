@@ -60,12 +60,10 @@ tools:
       scratch: 150
       walltime: 336
   toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.2:
-    scheduling:
-      reject:
-        - conda
-      require:
-        - singularity
-        - repex
+    rules:
+      - id: broken version
+        if: true
+        fail: DEPRECATED - Broken version
   toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/.*/1.21.3.4:
     scheduling:
       reject:
@@ -200,7 +198,7 @@ tools:
     mem: 10
     context:
       scratch: 15
-  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*/6.*:
+  toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/.*/6..*:
     scheduling:
       reject:
         - conda
