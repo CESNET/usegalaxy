@@ -13,8 +13,7 @@ csnt_jobs_output_size_limit: 250GB
 csnt_tool_config_file:
 - "{{ galaxy_config_dir }}/local_tool_conf.xml"
 - "{{ galaxy_root }}/server/config/tool_conf.xml.sample"
-#csnt_edam_panel_views: operations,topics
-#csnt_default_panel_view: all_tools
+csnt_default_panel_view: repex_tools
 csnt_allow_path_paste: true
 csnt_allow_user_deletion: true
 csnt_enable_oidc: false
@@ -74,8 +73,8 @@ galaxy_config_files:
     dest: "{{ tpv_mutable_dir }}/tpv_rules_{{ inventory_hostname }}.yml"
   - src: "{{ lookup('first_found', ['files/'+inventory_hostname+'/config/tool_conf.xml', 'files/galaxy/config/tool_conf.xml']) }}"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
-#  - src: "files/{{ inventory_hostname }}/all_tools.yml"
-#    dest: "{{ galaxy_config_dir }}/plugins/activities/all_tools.yml"
+ - src: "files/{{ inventory_hostname }}/repex_tools.yml"
+   dest: "{{ galaxy_config_dir }}/plugins/activities/repex_tools.yml"
 
 galaxy_config_files_public:
   - src: files/galaxy/config/sanitize_allowlist.txt

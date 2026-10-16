@@ -1,0 +1,107 @@
+name: RepeatExplorer
+type: generic
+id: repex_tools
+items:
+- section: "getext"
+- type: section
+  id: repeatexplorer
+  name: RepeatExplorer
+  items:
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/repeatexplorer2
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/repeatexplorer2_testing/tarean
+  - items_from: repeatexplorer
+- type: section
+  id: dante
+  name: DANTE
+  items:
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante/dante
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_filter
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante/domains_extract
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_to_tabular
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante/gff_summary
+  - items_from: dante
+- type: section
+  id: dante_tir
+  name: DANTE_TIR
+  items:
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/dante_tir
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante_tir/dante_tir_summary
+  - items_from: dante_tir
+- type: section
+  id: dante_ltr
+  name: DANTE_LTR
+  items:
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_search
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_summary
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/clean_dante_ltr
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/dante_ltr/dante_ltr_to_library
+  - items_from: dante_ltr
+- type: section
+  id: tidecluster
+  name: TideCluster
+  items:
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster_annotation
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tc_reannotate
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/tidecluster/tidecluster_comparative
+  - items_from: tidecluster
+- type: section
+  id: assembly_annotation_tools
+  name: Assembly annotation tools
+  items:
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/carp/carp
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/carp/carp_validate_repeat_library
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/repeat_annotate
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/annotate_contigs
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/extract_re_contigs
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/summarize_gff_by_attribute
+  - type: tool
+    id: toolshed.g2.bx.psu.edu/repos/petr-novak/repeat_annotation_pipeline3/compare_gff
+  - items_from: assembly_annotation_tools
+- section: "repeatexplorer_utilities"
+- section: "ngs:_qc_and_manipulation"
+- section: "fasta/fastq_manipulation"
+- section: "genomic_file_utilities"
+- section: "bed"
+- section: "textutil"
+- section: "convert"
+- section: "filter"
+- section: "group"
+- section: "bxops"
+- section: "stats"
+- section: "collection_operations"
+- section: "jbrowse"
+- section: "visualisation"
+- section: "expression_tools"
+- section: "liftOver"
+- section: "fetchAlignSeq"
+- section: "plots"
+- section: "text_manipulation"
+- section: "hgv"
+- section: "builtin_converters"
+- section: "send"
+- section: "local_tools"
+- section: "test_tools"
