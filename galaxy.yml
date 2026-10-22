@@ -180,9 +180,13 @@
         path: .ssh/authorized_keys
         block: "{{ admin_ssh_keys }}"
       when: admin_ssh_keys
-    - name: Install Dependencies
+    - name: Install dependencies
       package:
-        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-passlib', 'nginx-full', 'logrotate', 'proftpd-mod-ldap', 'squashfs-tools', 'libldap2-dev', 'libsasl2-dev']#, 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
+        name: ['acl', 'bzip2', 'git', 'make', 'tar', 'python3-bioblend', 'python3-venv', 'python3-setuptools', 'python3-pip', 'python3-psycopg2', 'rsync', 'python3-passlib', 'nginx-full', 'logrotate', 'squashfs-tools', 'libsasl2-dev']#, 'krb5-user'] # krb5-user is neccessary only if you need to mount NFS storage
+    - name: Install RE specific dependencies
+      package:
+        name: ['proftpd-mod-ldap', 'libldap2-dev']
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz']"
     - name: Install RHEL/CentOS/Rocky specific dependencies
       package:
         name: ['tmpwatch']
@@ -229,7 +233,8 @@
     - role: galaxyproject.tiaas2
       when: enable_tiaas | bool
     - galaxyproject.nginx
-    - galaxyproject.proftpd
+    - role: galaxyproject.proftpd
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz']"
     - galaxyproject.rabbitmq
     - galaxyproject.gxadmin
     - galaxyproject.cvmfs
@@ -269,6 +274,7 @@
         backup: yes
       notify:
       - reload proftpd
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz']"
 
     - name: Adds nginx's www-data user into galaxy user group
       ansible.builtin.user:
@@ -469,6 +475,7 @@
         - /var/log/proftpd/tls.log
         - /var/log/proftpd/ldap.log
         - /var/log/proftpd/sql.log
+      when: "inventory_hostname in ['repeatexplorer-elixir.cerit-sc.cz']"
 
     - name: Add pulsar public ssh key
       ansible.posix.authorized_key:
