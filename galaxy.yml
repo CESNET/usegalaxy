@@ -80,7 +80,7 @@
         src: "{{ rbd_dev_name }}"
         path: "{{ rbd_mount_point }}"
         fstype: xfs
-        opts: rw,_netdev
+        opts: rw,_netdev,X-fstrim.notrim
         state: mounted
     - name: Create RBD data directory
       file:
