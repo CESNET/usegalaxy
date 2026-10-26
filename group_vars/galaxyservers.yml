@@ -441,6 +441,7 @@ rabbitmq_config:
   management:
     disable_stats: 'false'
   consumer_timeout: 21600000 # 6 hours in milliseconds
+  max_message_size: 134217728 # 128 MB for message as some tools produce messages bigger than default 16 MB
 
 rabbitmq_vhosts:
   - name: pulsar
