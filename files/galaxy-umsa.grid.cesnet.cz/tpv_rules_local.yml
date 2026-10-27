@@ -47,3 +47,6 @@ tools:
     cores: 1
     context:
       walltime: 2
+
+  .*/matchms_spectral_similarity/matchms_spectral_similarity/.*:
+    mem: 8
