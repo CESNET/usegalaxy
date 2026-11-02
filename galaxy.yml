@@ -80,7 +80,7 @@
         src: "{{ rbd_dev_name }}"
         path: "{{ rbd_mount_point }}"
         fstype: xfs
-        opts: rw,_netdev
+        opts: rw,_netdev,X-fstrim.notrim
         state: mounted
     - name: Create RBD data directory
       file:
@@ -89,6 +89,25 @@
         path: "{{ rbd_data_dir }}"
         state: directory
         mode: '0755'
+    # DEMON: This override.conf is to turn off fstrim on RBD mount points.
+    - name: Create fstrim override.conf (parent dir)
+      ansible.builtin.file:
+        state: directory
+        dest: "/etc/systemd/system/fstrim.service.d"
+        mode: '0755'
+    - name: Create fstrim override.conf
+      ansible.builtin.copy:
+        content: |
+          [Service]
+          ExecStart=/sbin/fstrim --listed-in /etc/fstab --verbose --quiet-unsupported
+        dest: "/etc/systemd/system/fstrim.service.d/override.conf"
+        mode: '0644'
+    - name: Create fstrim override.conf (restart service)
+      ansible.builtin.systemd:
+        daemon_reload: true
+        state: restarted
+        name: fstrim
+
 
 - hosts: dbservers
   become: true
