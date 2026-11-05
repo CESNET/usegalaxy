@@ -78,61 +78,61 @@
     <tool file="filters/sorter.xml" />
     <tool file="filters/grep.xml" />
     <tool file="filters/grep_1.0.1.xml"/>
-    <tool file="filters/gff/extract_GFF_Features.xml" />
-    <tool file="filters/gff/gff_filter_by_attribute.xml" />
-    <tool file="filters/gff/gff_filter_by_feature_count.xml" />
-    <tool file="filters/gff/gtf_filter_by_attribute_values_list.xml" />
+    <tool file="filters/gff/extract_GFF_Features.xml" hidden="true" />
+    <tool file="filters/gff/gff_filter_by_attribute.xml" hidden="true" />
+    <tool file="filters/gff/gff_filter_by_feature_count.xml" hidden="true" />
+    <tool file="filters/gff/gtf_filter_by_attribute_values_list.xml" hidden="true" />
   </section>
   <section id="join__subtract_and_group" name="Join, Subtract and Group">
-    <tool file="filters/joiner.xml" />
-    <tool file="filters/compare.xml" />
-    <tool file="stats/grouping.xml" />
+    <tool file="filters/joiner.xml" hidden="true" />
+    <tool file="filters/compare.xml" hidden="true" />
+    <tool file="stats/grouping.xml" hidden="true" />
   </section>
   <label id="genomic_manip_label" text="Genomic File Manipulation" />
   <section id="convert_formats" name="Convert Formats">
-    <tool file="filters/axt_to_concat_fasta.xml" />
-    <tool file="filters/axt_to_fasta.xml" />
-    <tool file="filters/axt_to_lav.xml" />
-    <tool file="filters/bed2gff.xml" />
-    <tool file="filters/gff2bed.xml" />
-    <tool file="filters/lav_to_bed.xml" />
-    <tool file="maf/maf_to_bed.xml" />
-    <tool file="maf/maf_to_interval.xml" />
-    <tool file="maf/maf_to_fasta.xml" />
-    <tool file="filters/wiggle_to_simple.xml" />
-    <tool file="filters/sff_extractor.xml" />
-    <tool file="filters/gtf2bedgraph.xml" />
-    <tool file="filters/wig_to_bigwig.xml" />
-    <tool file="filters/bed_to_bigbed.xml" />
-    <tool file="extract/liftOver_wrapper.xml" />
-    <tool file="filters/ucsc_gene_bed_to_exon_bed.xml" />
-    <tool file="stats/aggregate_binned_scores_in_intervals.xml" />
+    <tool file="filters/axt_to_concat_fasta.xml" hidden="true" />
+    <tool file="filters/axt_to_fasta.xml" hidden="true" />
+    <tool file="filters/axt_to_lav.xml" hidden="true" />
+    <tool file="filters/bed2gff.xml" hidden="true" />
+    <tool file="filters/gff2bed.xml" hidden="true" />
+    <tool file="filters/lav_to_bed.xml" hidden="true" />
+    <tool file="maf/maf_to_bed.xml" hidden="true" />
+    <tool file="maf/maf_to_interval.xml" hidden="true" />
+    <tool file="maf/maf_to_fasta.xml" hidden="true" />
+    <tool file="filters/wiggle_to_simple.xml" hidden="true" />
+    <tool file="filters/sff_extractor.xml" hidden="true" />
+    <tool file="filters/gtf2bedgraph.xml" hidden="true" />
+    <tool file="filters/wig_to_bigwig.xml" hidden="true" />
+    <tool file="filters/bed_to_bigbed.xml" hidden="true" />
+    <tool file="extract/liftOver_wrapper.xml" hidden="true" />
+    <tool file="filters/ucsc_gene_bed_to_exon_bed.xml" hidden="true" />
+    <tool file="stats/aggregate_binned_scores_in_intervals.xml" hidden="true" />
   </section>
   <section id="fetch_sequences___alignments" name="Fetch Sequences / Alignments">
-    <tool file="maf/interval2maf_pairwise.xml" />
-    <tool file="maf/interval2maf.xml" />
-    <tool file="maf/maf_split_by_species.xml" />
-    <tool file="maf/interval_maf_to_merged_fasta.xml" />
-    <tool file="maf/genebed_maf_to_fasta.xml" />
-    <tool file="maf/maf_stats.xml" />
-    <tool file="maf/maf_thread_for_species.xml" />
-    <tool file="maf/maf_limit_to_species.xml" />
-    <tool file="maf/maf_limit_size.xml" />
-    <tool file="maf/maf_by_block_number.xml" />
-    <tool file="maf/maf_reverse_complement.xml" />
-    <tool file="maf/maf_filter.xml" />
+    <tool file="maf/interval2maf_pairwise.xml" hidden="true" />
+    <tool file="maf/interval2maf.xml" hidden="true" />
+    <tool file="maf/maf_split_by_species.xml" hidden="true" />
+    <tool file="maf/interval_maf_to_merged_fasta.xml" hidden="true" />
+    <tool file="maf/genebed_maf_to_fasta.xml" hidden="true" />
+    <tool file="maf/maf_stats.xml" hidden="true" />
+    <tool file="maf/maf_thread_for_species.xml" hidden="true" />
+    <tool file="maf/maf_limit_to_species.xml" hidden="true" />
+    <tool file="maf/maf_limit_size.xml" hidden="true" />
+    <tool file="maf/maf_by_block_number.xml" hidden="true" />
+    <tool file="maf/maf_reverse_complement.xml" hidden="true" />
+    <tool file="maf/maf_filter.xml" hidden="true" />
   </section>
   <section id="mapping" name="Mapping" version="">
-    <tool file="sr_mapping/bfast_wrapper.xml" />
-    <tool file="sr_mapping/PerM.xml" />
-    <tool file="sr_mapping/srma_wrapper.xml" />
-    <tool file="sr_mapping/mosaik.xml" />
+    <tool file="sr_mapping/bfast_wrapper.xml" hidden="true" />
+    <tool file="sr_mapping/PerM.xml" hidden="true" />
+    <tool file="sr_mapping/srma_wrapper.xml" hidden="true" />
+    <tool file="sr_mapping/mosaik.xml" hidden="true" />
   </section>
   <section id="phenotype_association" name="Phenotype Association">
-    <tool file="phenotype_association/linkToGProfile.xml" />
-    <tool file="phenotype_association/linkToDavid.xml" />
-    <tool file="phenotype_association/ldtools.xml" />
-    <tool file="phenotype_association/master2pg.xml" />
+    <tool file="phenotype_association/linkToGProfile.xml" hidden="true" />
+    <tool file="phenotype_association/linkToDavid.xml" hidden="true" />
+    <tool file="phenotype_association/ldtools.xml" hidden="true" />
+    <tool file="phenotype_association/master2pg.xml" hidden="true" />
   </section>
   <section id="statistics" name="Statistics">
     <tool file="stats/gsummary.xml" />
@@ -141,6 +141,6 @@
   <section id="graph_display_data" name="Graph/Display Data">
     <tool file="plotting/bar_chart.xml" />
     <tool file="plotting/boxplot.xml" />
-    <tool file="maf/vcf_to_maf_customtrack.xml" />
+    <tool file="maf/vcf_to_maf_customtrack.xml" hidden="true" />
   </section>
 </toolbox>
