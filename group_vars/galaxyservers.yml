@@ -135,6 +135,9 @@ galaxy_job_config:
       value: "{{ csnt_registered_user_jobs_limit }}"
     - type: anonymous_user_concurrent_jobs
       value: 1
+    - type: destination_total_concurrent_jobs
+      value: 4
+      id: tpv_local_llm
     - type: output_size
       value: "{{ csnt_jobs_output_size_limit }}"
   tools:
