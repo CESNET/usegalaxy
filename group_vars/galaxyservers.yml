@@ -3,6 +3,8 @@
 csnt_brand: ""
 csnt_contact_email: "galaxy@cesnet.cz"
 csnt_galaxy_url_prefix: ''
+# serve a robots.txt that disallows all crawlers (e.g. for QA instances)
+csnt_disallow_crawlers: false
 csnt_short_term_storage_dir: short_term_web_storage
 csnt_enable_account_interface: true
 csnt_log_level: WARNING

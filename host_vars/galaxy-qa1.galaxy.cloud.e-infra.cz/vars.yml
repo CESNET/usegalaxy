@@ -33,3 +33,6 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   - src: files/{{ inventory_hostname }}/user_preferences_extra_conf.yml
     dest: "{{ galaxy_config_dir }}/user_preferences_extra_conf.yml"
+
+# keep QA instances out of search engines
+csnt_disallow_crawlers: true
