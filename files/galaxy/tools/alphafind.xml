@@ -1,16 +1,17 @@
-<tool id="alphafind_search" name="AlphaFind Protein Search" version="1.0.0">
+<tool id="alphafind_search" name="AlphaFind Protein Search" version="1.2.1">
     <description>Search AlphaFind API for structurally similar proteins</description>
     <requirements>
-        <requirement type="package" version="3.6">python</requirement>
+        <requirement type="package" version="3.12">python</requirement>
         <requirement type="package" version="2.31.0">requests</requirement>
     </requirements>
     <version_command><![CDATA[
-python3 '$__tool_directory__/alphafind_search.py' --version 2>/dev/null || echo "1.0.0"
+python3 '$__tool_directory__/alphafind_search.py' --version
     ]]></version_command>
     <command detect_errors="exit_code"><![CDATA[
         python3 '$__tool_directory__/alphafind_search.py'
             --query '$query'
             --index '$index'
+            --mode '$mode'
             #if $filtering.organism
                 --filter-organism '$filtering.organism'
             #end if
@@ -36,28 +37,33 @@ python3 '$__tool_directory__/alphafind_search.py' --version 2>/dev/null || echo 
         <!-- Required: Query protein ID -->
         <param name="query" type="text" optional="false" label="Protein Query" help="Enter a UniProt protein ID (e.g., P0A6F5, Q8Y547, Q9SBL1)"/>
         <!-- Required: Index type selection -->
-        <param name="index" value="chains" type="select" optional="false" label="Search Index" help="Select one or more index types to search. Defaults to 'Full-chain AlphaFold structures'.">
+        <param name="index" value="chains" type="select" optional="false" label="Search Index" help="Select one index type to search. Defaults to 'Full-chain AlphaFold structures'. With 'domains', a UniProt accession (e.g. Q73WU1) is resolved to all its TED domains, each domain searched independently, and results merged into one CSV with an extra 'domain' column naming the source TED ID.">
             <option value="chains">Full-chain AlphaFold structures</option>
             <option value="chains_90">Chains filtered by pLDDT ≥ 90</option>
             <option value="chains_80">Chains filtered by pLDDT ≥ 80</option>
             <option value="chains_70">Chains filtered by pLDDT ≥ 70</option>
             <option value="domains">TED domain structures</option>
         </param>
+        <!-- Result type: full TM-score computation or fast kNN-only -->
+        <param name="mode" type="select" label="Result Type" help="'Approximate results' returns kNN hits immediately, without TM-scores or experimental-structure mapping. 'TM-scores and experimental structures' waits until TM-scores are computed for every result and adds the experimental-structure (PDB) mapping; this can take a long time for large k.">
+            <option value="full" selected="true">TM-scores and experimental structures (slow)</option>
+            <option value="fast">Approximate results (fast, kNN only)</option>
+        </param>
         <!-- Optional Filters Section -->
         <section name="filtering" title="Filtering Options" expanded="false">
-            <param name="organism" type="text" label="Organism Name" help="Filter by organism name (e.g., 'Mycobacterium tuberculosis')" optional="true"/>
+            <param name="organism" type="text" label="Organism Name" help="Filter by organism scientific name: the 'Scientific name' of a species-rank taxon per UniProt taxonomy (https://www.uniprot.org/taxonomy/?query=rank:species), e.g., 'Mycobacterium tuberculosis'" optional="true"/>
             <param name="tax_id" type="integer" label="Taxonomy ID" help="NCBI Taxonomy ID (numeric)" optional="true"/>
-            <param name="gene_name" type="text" label="Gene Name" help="Filter by gene name" optional="true"/>
+            <param name="gene_name" type="text" label="Gene Name" help="Filter by gene name exactly as AlphaFind stores it: the whole name, with the same capitalisation. Copy it from the gene_name column of earlier AlphaFind results, e.g. 'gpgS', 'MAP_2569c'. A name taken from UniProt may not match, because UniProt can list a different name than the one AlphaFind indexed." optional="true"/>
             <param name="cath_annotation" type="text" label="CATH Annotation" help="Filter by CATH annotation (only applied when using 'domains' index)" optional="true"/>
         </section>
         <!-- Search Options Section -->
         <section name="searching" title="Search Options" expanded="false">
             <param name="k" type="integer" label="Number of Similar Proteins" value="10" min="1" max="5000" help="Maximum number of similar proteins to return (k). Note: API can return up to 5000 results."/>
-            <param name="timeout" type="integer" label="Timeout (seconds)" value="600" min="60" max="3600" help="Maximum time to wait for API to complete the search and computations."/>
+            <param name="timeout" type="integer" label="Timeout (seconds)" value="3600" min="60" max="7200" help="Maximum total time to wait for the API. With 'TM-scores and experimental structures' this covers the search and all lazy TM-score computations."/>
         </section>
         <!-- Sorting Options -->
         <section name="sorting" title="Sorting Options" expanded="false">
-            <param name="sort_by" type="select" label="Sort Results By" help="Choose how to order the results">
+            <param name="sort_by" type="select" label="Sort Results By" help="Choose how to order the results. TM-Score sorting needs TM-scores: with 'Approximate results' the results are sorted by KNN similarity instead.">
                 <option value="knn">KNN Similarity Score (default)</option>
                 <option value="tm_score">TM-Score</option>
             </param>
@@ -75,15 +81,26 @@ python3 '$__tool_directory__/alphafind_search.py' --version 2>/dev/null || echo 
         <test>
             <param name="query" value="P9WGR1"/>
             <param name="index" value="chains"/>
+            <param name="mode" value="full"/>
             <section name="filtering">
                 <param name="organism" value="Mycobacterium tuberculosis"/>
             </section>
-            <output name="output" file="test-data/P9WGR1_basic.csv"/>
+            <!-- Live API: results drift, so check shape rather than exact bytes -->
+            <output name="output" ftype="csv">
+                <assert_contents>
+                    <has_text text="query_id,index_type,page_number,target_id,score,organism,tax_id,gene_name,protein_name,avg_plddt,tm_score_query,tm_score_target,rmsd,sequential_identity,aligned_residues,status,created_at,completed_at,has_experimental_structure,pdb_ids,chopping"/>
+                    <not_has_text text=",pending,"/>
+                    <not_has_text text=",scoring,"/>
+                    <has_n_lines min="2"/>
+                    <has_text text=",Q9S681_0,"/>
+                </assert_contents>
+            </output>
         </test>
         <!-- Test with TM-score sorting -->
         <test>
             <param name="query" value="Q9SBL1"/>
             <param name="index" value="chains"/>
+            <param name="mode" value="full"/>
             <section name="filtering">
                 <param name="organism" value="Mycobacterium tuberculosis"/>
             </section>
@@ -91,7 +108,76 @@ python3 '$__tool_directory__/alphafind_search.py' --version 2>/dev/null || echo 
                 <param name="sort_by" value="tm_score"/>
                 <param name="sort_order" value="desc"/>
             </section>
-            <output name="output" file="test-data/Q9SBL1_sorted.csv"/>
+            <output name="output" ftype="csv">
+                <assert_contents>
+                    <has_text text="query_id,index_type,page_number,target_id,score,organism,tax_id,gene_name,protein_name,avg_plddt,tm_score_query,tm_score_target,rmsd,sequential_identity,aligned_residues,status,created_at,completed_at,has_experimental_structure,pdb_ids,chopping"/>
+                    <not_has_text text=",pending,"/>
+                    <not_has_text text=",scoring,"/>
+                    <has_n_lines min="2"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test domains index with resolved TED identifier -->
+        <test>
+            <param name="query" value="Q73WU1_TED01"/>
+            <param name="index" value="domains"/>
+            <param name="mode" value="full"/>
+            <output name="output" ftype="csv">
+                <assert_contents>
+                    <has_text text="query_id,index_type,page_number,target_id,score,organism,tax_id,gene_name,protein_name,avg_plddt,tm_score_query,tm_score_target,rmsd,sequential_identity,aligned_residues,status,created_at,completed_at,has_experimental_structure,pdb_ids,chopping,domain"/>
+                    <not_has_text text=",pending,"/>
+                    <not_has_text text=",scoring,"/>
+                    <has_n_lines min="2"/>
+                    <has_text text=",Q73WU1_TED01,"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Test fast mode (kNN only, no TM-scores) -->
+        <test>
+            <param name="query" value="P9WGR1"/>
+            <param name="index" value="chains"/>
+            <param name="mode" value="fast"/>
+            <section name="filtering">
+                <param name="organism" value="Mycobacterium tuberculosis"/>
+            </section>
+            <!-- Fast mode honours k exactly: header + 10 rows -->
+            <output name="output" ftype="csv">
+                <assert_contents>
+                    <has_text text="query,index_type,target_id,score,organism,tax_id,gene_name,protein_name,avg_plddt"/>
+                    <has_n_lines n="11"/>
+                    <has_text text=",Q9S681_0,"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Filters matching nothing: a successful job with a header-only CSV (full) -->
+        <test>
+            <param name="query" value="Q73WU1"/>
+            <param name="index" value="chains"/>
+            <param name="mode" value="full"/>
+            <section name="filtering">
+                <param name="gene_name" value="C731_3243"/>
+            </section>
+            <output name="output" ftype="csv">
+                <assert_contents>
+                    <has_text text="query_id,index_type,page_number,target_id,score,organism,tax_id,gene_name,protein_name,avg_plddt,tm_score_query,tm_score_target,rmsd,sequential_identity,aligned_residues,status,created_at,completed_at,has_experimental_structure,pdb_ids,chopping"/>
+                    <has_n_lines n="1"/>
+                </assert_contents>
+            </output>
+        </test>
+        <!-- Filters matching nothing: a successful job with a header-only CSV (fast) -->
+        <test>
+            <param name="query" value="Q73WU1"/>
+            <param name="index" value="chains"/>
+            <param name="mode" value="fast"/>
+            <section name="filtering">
+                <param name="gene_name" value="C731_3243"/>
+            </section>
+            <output name="output" ftype="csv">
+                <assert_contents>
+                    <has_text text="query,index_type,target_id,score,organism,tax_id,gene_name,protein_name,avg_plddt"/>
+                    <has_n_lines n="1"/>
+                </assert_contents>
+            </output>
         </test>
     </tests>
     <help><![CDATA[
@@ -118,25 +204,33 @@ AlphaFind is a service for searching protein structures using AlphaFold predicti
   - *Chains 70%*: Chains filtered to 70% sequence identity
   - *Domains*: Protein domains (independent structural units)
 
+* **Result Type**:
+  - *Approximate results*: fast. Returns the kNN hits right away, without TM-scores, alignment metrics or experimental-structure mapping.
+  - *TM-scores and experimental structures* (default): slow. Waits until TM-scores are computed for every result and adds the experimental-structure (PDB) mapping. Large k can take tens of minutes.
+
 * **Optional Filters**: Narrow your search results
-  - *Organism Name*: Filter by organism (e.g., 'Mycobacterium tuberculosis')
+  - *Organism Name*: Filter by organism scientific name — the "Scientific name" of a species-rank taxon per UniProt taxonomy (https://www.uniprot.org/taxonomy/?query=rank:species), e.g., 'Mycobacterium tuberculosis'
   - *Taxonomy ID*: Filter by NCBI taxonomy ID (numeric)
-  - *Gene Name*: Filter by gene symbol
+  - *Gene Name*: Filter by gene name exactly as AlphaFind stores it — the whole name, with the same capitalisation (e.g. 'gpgS', 'MAP_2569c'). The reliable source is the *gene_name* column of earlier AlphaFind results. A name taken from UniProt may not match, because UniProt can list a different name than the one AlphaFind indexed: for example UniProt lists K5B7Z4 as 'C731_3243', but AlphaFind stores it as 'gpgS'.
   - *CATH Annotation*: Filter by CATH structural classification (domains only)
 
 * **Search Options**:
   - *Number of Similar Proteins*: Control result size (1-5000). Note that even with low k, the API may return all available matches up to 5000.
-  - *Timeout*: Maximum wait time for computations (60-3600 seconds). Complex searches may take several minutes.
+  - *Timeout*: Maximum wait time (60-7200 seconds, default 3600). Mainly matters for *TM-scores and experimental structures*: large lazy TM-score batches can take a long time.
+
+* **Domains index note**: With `domains`, the tool resolves a UniProt accession to all its TED domains and runs one search per domain (in both result types). If the protein has no TED domains, the result is empty — this is expected behavior, not an error.
 
 * **Sorting**:
   - *KNN Similarity*: Sort by embedding similarity score
-  - *TM-Score*: Sort by structural alignment TM-score
+  - *TM-Score*: Sort by structural alignment TM-score. Only available with *TM-scores and experimental structures*; with *Approximate results* there are no TM-scores, so results are sorted by KNN similarity instead.
 
 -----
 
 **Output Format**
 
-The tool produces a CSV file with 23 columns:
+*Approximate results* produce a CSV with 9 columns: query, index_type, target_id, score, organism, tax_id, gene_name, protein_name, avg_plddt. With the `domains` index three more follow: chopping, cath_annotation, and domain (the source TED ID).
+
+*TM-scores and experimental structures* produce a CSV with 21 columns (22 with `domains`, adding `domain`; the internal API `tar_index` field is omitted):
 
 - query_id: Unique query identifier
 - index_type: Index type used
@@ -159,7 +253,10 @@ The tool produces a CSV file with 23 columns:
 - has_experimental_structure: Experimental structure available
 - pdb_ids: PDB identifiers
 - chopping: Domain boundaries (if domains)
-- tar_index: Internal reference
+
+**Lazy TM-score computation**
+
+TM-scores are computed lazily by the API — initially only for the first few targets. With *TM-scores and experimental structures* the tool automatically pages through all results and waits until every page reports its computations complete, so the CSV always contains full TM-score coverage. For large result sets this can add substantial wall-clock time; consider raising the timeout for such queries.
 
 -----
 
@@ -209,10 +306,10 @@ The tool produces a CSV file with 23 columns:
 
 * **"Protein not found"**: The query ID may not exist in AlphaFold DB or lacks embedding vectors. Verify the UniProt ID.
 * **Timeout exceeded**: Increase the timeout value in Search Options.
-* **Empty results**: Your filters may be too restrictive, or no similar proteins exist with the specified criteria.
+* **Empty results**: When nothing matches, the job still succeeds and the dataset holds only the CSV header row. Your filters may be too restrictive, or no similar proteins exist with the specified criteria. For *Gene Name*, check that the name is copied exactly from the *gene_name* column of earlier AlphaFind results (see above).
 * **"Search failed"**: The API encountered an error. Try again or check the API status.
     ]]></help>
     <citations>
-        <citation type="doi">10.1038/nature14539</citation>
+        <citation type="doi">10.1093/nar/gkae397</citation>
     </citations>
 </tool>
