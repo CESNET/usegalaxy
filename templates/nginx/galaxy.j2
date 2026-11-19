@@ -31,6 +31,12 @@ server {
 	client_body_timeout   3600s;
 	client_header_timeout  600s;
 
+{% if csnt_disallow_crawlers | bool %}
+	# ask search engines not to index this instance; note that locations
+	# defining their own add_header do not inherit this and must repeat it
+	add_header X-Robots-Tag "noindex, nofollow" always;
+{% endif %}
+
 	location {{ csnt_galaxy_url_prefix }}/ {
 		# Rate limiting - relaxed zone for general traffic
 		limit_req zone=galaxy_relaxed burst=40 nodelay;
@@ -111,7 +117,12 @@ server {
 	}
 
 	location {{ csnt_galaxy_url_prefix }}/robots.txt {
+{% if csnt_disallow_crawlers | bool %}
+		default_type text/plain;
+		return 200 "User-agent: *\nDisallow: /\n";
+{% else %}
 		alias {{ galaxy_server_dir }}/static/robots.txt;
+{% endif %}
 	}
 
 	location /favicon.ico {
@@ -126,6 +137,9 @@ server {
 		# Add upstream response headers that would otherwise be omitted
 		add_header Access-Control-Allow-Origin $upstream_http_access_control_allow_origin;
 		add_header Access-Control-Allow-Methods $upstream_http_access_control_allow_methods;
+{% if csnt_disallow_crawlers | bool %}
+		add_header X-Robots-Tag "noindex, nofollow" always;
+{% endif %}
 	}
 
 	# Support click-to-run in the GTN-in-Galaxy Webhook
