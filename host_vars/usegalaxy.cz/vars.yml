@@ -49,3 +49,5 @@ galaxy_local_tools:
   - testing_html.xml
   - rosettafold2.xml
   - rosettafold2_sing.xml
+  - alphafind.xml
+  - alphafind_search.py
